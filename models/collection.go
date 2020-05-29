@@ -5,9 +5,9 @@ import "github.com/jinzhu/gorm"
 //Collection
 type Collection struct {
 	gorm.Model
-	Descrip
-	Active
-	BalanceTotal
+	Descrip      string
+	Active       bool
+	BalanceTotal int
 }
 
 /*

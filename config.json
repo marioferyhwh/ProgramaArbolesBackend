@@ -1,9 +1,7 @@
 {
-	"database":{
   "server": "localhost",
 	"port": "5432",
 	"user": "arbol",
 	"password": "arboles",
-  "name": "forest"
-  }
+  "database": "forest"  
 }

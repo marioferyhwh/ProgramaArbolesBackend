@@ -1,3 +1,5 @@
+package models
+
 /*
 DROP TABLE public.expense;
 
@@ -13,15 +15,15 @@ CREATE TABLE public.expense
   cod_collection integer NOT NULL,
   CONSTRAINT pk_expense PRIMARY KEY(id),
 
-  CONSTRAINT fk_expense_expensed FOREIGN KEY(cod_expense_descrip) 
+  CONSTRAINT fk_expense_expensed FOREIGN KEY(cod_expense_descrip)
     REFERENCES public.expensedescrips(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
 
-  CONSTRAINT fk_expense_users FOREIGN KEY(cod_user) 
+  CONSTRAINT fk_expense_users FOREIGN KEY(cod_user)
     REFERENCES public.users(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
 
-  CONSTRAINT fk_expense_collectiones FOREIGN KEY(cod_collection) 
+  CONSTRAINT fk_expense_collectiones FOREIGN KEY(cod_collection)
     REFERENCES public.collectiones(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
 

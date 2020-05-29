@@ -1,4 +1,6 @@
-/* 
+package models
+
+/*
 DROP TABLE public.teldescrips;
 
 CREATE TABLE public.teldescrips
@@ -12,4 +14,4 @@ CREATE TABLE public.teldescrips
   CONSTRAINT pk_tel_d PRIMARY KEY(id),
   CONSTRAINT uk_tel_d_descrip UNIQUE(descrip)
 );
- */
+*/

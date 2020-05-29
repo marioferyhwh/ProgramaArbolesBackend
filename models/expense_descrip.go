@@ -1,3 +1,5 @@
+package models
+
 /*
 DROP TABLE public.expensedescrips;
 
@@ -11,7 +13,7 @@ CREATE TABLE public.expensedescrips
   descrip varchar(11) NOT NULL DEFAULT '',
 
   CONSTRAINT pk_expense_d PRIMARY KEY(id),
-  CONSTRAINT fk_expense_d_collectiones FOREIGN KEY(cod_collection) 
+  CONSTRAINT fk_expense_d_collectiones FOREIGN KEY(cod_collection)
     REFERENCES public.collectiones(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
   CONSTRAINT uk_expense_d_ccollection_descrip UNIQUE(cod_collection,descrip)

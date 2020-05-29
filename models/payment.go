@@ -1,3 +1,5 @@
+package models
+
 /*
 DROP TABLE public.payments;
 
@@ -14,18 +16,18 @@ CREATE TABLE public.payments
 
   CONSTRAINT pk_payments PRIMARY KEY(id),
 
-  CONSTRAINT fk_payments_loans FOREIGN KEY(cod_loan) 
+  CONSTRAINT fk_payments_loans FOREIGN KEY(cod_loan)
     REFERENCES public.loans(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
 
-  CONSTRAINT fk_payments_users FOREIGN KEY(cod_user) 
+  CONSTRAINT fk_payments_users FOREIGN KEY(cod_user)
     REFERENCES public.users(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
 
-  CONSTRAINT fk_payments_collectiones FOREIGN KEY(cod_collection) 
+  CONSTRAINT fk_payments_collectiones FOREIGN KEY(cod_collection)
     REFERENCES public.collectiones(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
-  
+
   CONSTRAINT ck_payments_cash CHECK(cash > 0)
 
 );

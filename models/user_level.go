@@ -1,3 +1,5 @@
+package models
+
 /*
 
 DROP TABLE public.userlevels;

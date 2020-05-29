@@ -1,3 +1,5 @@
+package models
+
 /*
 DROP TABLE public.listlocationes;
 
@@ -11,7 +13,7 @@ CREATE TABLE public.listlocationes
   descrip varchar(11) NOT NULL DEFAULT '',
 
   CONSTRAINT pk_list_l PRIMARY KEY(id),
-  CONSTRAINT fk_list_l_collectiones FOREIGN KEY(cod_collection) 
+  CONSTRAINT fk_list_l_collectiones FOREIGN KEY(cod_collection)
     REFERENCES public.collectiones(id)
     ON UPDATE RESTRICT ON DELETE RESTRICT ,
   CONSTRAINT uk_list_l_ccollection_descrip UNIQUE(cod_collection,descrip)

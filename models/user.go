@@ -1,3 +1,5 @@
+package models
+
 /*
 DROP TABLE public.users;
 
@@ -20,7 +22,7 @@ CREATE TABLE public.users
   CONSTRAINT uk_users_email UNIQUE(email),
   CONSTRAINT uk_users_cdocumentt_document UNIQUE(cod_document_type,document),
   CONSTRAINT fk_users_document_t FOREIGN key(cod_document_type)
-    REFERENCES public.documenttypes (id) 
+    REFERENCES public.documenttypes (id)
     ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 */
