@@ -1,5 +1,11 @@
 package models
 
+//TelDescrip descripcion telefono
+type TelDescrip struct {
+	Modelsmall
+	Descrip string `gorm:"type:varchar(20);not null;default:'';unique"`
+}
+
 /*
 DROP TABLE public.teldescrips;
 
