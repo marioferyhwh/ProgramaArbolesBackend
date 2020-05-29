@@ -1,5 +1,12 @@
 package models
 
+//DocumentType tipo de documento de identificacion
+type DocumentType struct {
+	id string `gorm:"type:varchar(3);DEFAULT:'CC';NOT NULL;primary_key"`
+	TimeModel
+	descrip string `gorm:"type:varchar(20);DEFAULT:'':NOT NULL;unique"`
+}
+
 /*
 DROP TABLE public.documenttypes;
 
