@@ -13,8 +13,10 @@ func Migrate() {
 	db.DropTableIfExists(&models.Collection{})
 	db.DropTableIfExists(&models.UserLevel{})
 	db.DropTableIfExists(&models.LoanState{})
+	db.DropTableIfExists(&models.DocumentType{})
 
 	db.CreateTable(&models.Collection{})
 	db.CreateTable(&models.UserLevel{})
 	db.CreateTable(&models.LoanState{})
+	db.CreateTable(&models.DocumentType{})
 }
