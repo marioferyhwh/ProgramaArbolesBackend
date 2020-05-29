@@ -1,17 +1,15 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 //Collection
 type Collection struct {
-	gorm.Model
-	Descrip      string
-	Active       bool
-	BalanceTotal int
+	Model
+	Descrip      string `gorm:"type:varchar(256);DEFAULT:'' "`
+	Active       bool   `gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	BalanceTotal int    `gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 }
 
 /*
-CREATE TABLE public.collectiones
+CREATE TABLE public.collections
 (
   id serial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),

@@ -9,6 +9,7 @@ import (
 func Migrate() {
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.DropTableIfExists(&models.Collection{})
 
 	db.CreateTable(&models.Collection{})
 }
