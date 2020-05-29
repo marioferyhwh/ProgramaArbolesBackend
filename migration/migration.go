@@ -9,7 +9,12 @@ import (
 func Migrate() {
 	db := configuration.GetConnection()
 	defer db.Close()
+
 	db.DropTableIfExists(&models.Collection{})
+	db.DropTableIfExists(&models.UserLevel{})
+	db.DropTableIfExists(&models.LoanState{})
 
 	db.CreateTable(&models.Collection{})
+	db.CreateTable(&models.UserLevel{})
+	db.CreateTable(&models.LoanState{})
 }

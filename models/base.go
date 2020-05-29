@@ -14,7 +14,7 @@ type TimeModel struct {
 //      gorm.Modelsmall
 //    }
 type Modelsmall struct {
-	ID uint `gorm:"type:smallserial;primary_key"`
+	ID uint `gorm:"type:smallserial;NOT NULL;primary_key"`
 	TimeModel
 }
 
@@ -23,7 +23,7 @@ type Modelsmall struct {
 //      gorm.Model
 //    }
 type Model struct {
-	ID uint `gorm:"type:serial;primary_key"`
+	ID uint `gorm:"type:serial;NOT NULL;primary_key"`
 	TimeModel
 }
 
@@ -32,6 +32,6 @@ type Model struct {
 //      gorm.ModelBig
 //    }
 type ModelBig struct {
-	ID uint `gorm:"type:bigserial;primary_key"`
+	ID uint `gorm:"type:bigserial;NOT NULL;primary_key"`
 	TimeModel
 }

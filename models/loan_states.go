@@ -1,5 +1,11 @@
 package models
 
+//LoanState Estado del prestamo
+type LoanState struct {
+	Modelsmall
+	State string `gorm:"type:varchar(20);NOT NULL;DEFAULT:'';unique"`
+}
+
 /*
 DROP TABLE public.loanstates;
 

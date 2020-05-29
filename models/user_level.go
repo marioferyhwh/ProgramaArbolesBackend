@@ -1,5 +1,11 @@
 package models
 
+//UserLevel nivel de acceso del usario a la base de datos
+type UserLevel struct {
+	Modelsmall
+	Level string `gorm:"type:varchar(11);NOT NULL;DEFAULT:'';UNIQUE"`
+}
+
 /*
 
 DROP TABLE public.userlevels;

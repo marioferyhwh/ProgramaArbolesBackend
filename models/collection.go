@@ -1,6 +1,6 @@
 package models
 
-//Collection
+//Collection prestamos
 type Collection struct {
 	Model
 	Descrip      string `gorm:"type:varchar(256);DEFAULT:'' "`
