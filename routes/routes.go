@@ -5,7 +5,7 @@ import "github.com/gorilla/mux"
 //InitRoutes en rutamiento de la API
 func InitRoutes() *mux.Router {
 	router := mux.NewRouter().StrictSlash(false)
+	SetLoginRoutes(router)
 
 	return router
-
 }
