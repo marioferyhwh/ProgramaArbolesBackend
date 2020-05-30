@@ -1,16 +1,19 @@
 package controllers
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
+
+	"github.com/marioferyhwh/IMFBackend_forest/commons"
+	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
 //Login funcion de inicio de seccion
 func Login(w http.ResponseWriter, r *http.Request) {
-	j, err := json.Marshal("login")
-	if err != nil {
-		log.Fatal("no se combirtio mensaje->", err)
+
+	m := models.Message{
+		Code:    200,
+		Message: "login",
 	}
-	w.Write(j)
+
+	commons.DisplayMessage(w, m)
 }
