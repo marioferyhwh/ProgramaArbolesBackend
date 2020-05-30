@@ -6,6 +6,7 @@ import (
 
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/migration"
+	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 	if migrate == "yes" {
 		migration.Migrate()
 	}
+	var user models.User
 
+	fmt.Println(user)
 	fmt.Println("Finaliza Backend")
 }
