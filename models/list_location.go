@@ -4,7 +4,7 @@ package models
 type ListLocation struct {
 	ModelBig
 	CodCollection uint32 `json:"id_collection,omit" gorm:"type:integer;not null"`
-	Descrip       string `json:"name,omitempty" gorm:"type:varchar(11);not null;default:''"`
+	Descrip       string `json:"name,omitempty"     gorm:"type:varchar(11);not null;default:''"`
 }
 
 /*

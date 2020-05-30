@@ -3,17 +3,17 @@ package models
 //Client  cliente al que se le presta
 type Client struct {
 	ModelBig
-	Name            string `json:"name,omitempty" gorm:"type:varchar(50); NOT NULL"`
-	Email           string `json:"email,omitempty" gorm:"type:varchar(100)"`
-	CodDocumentType string `json:"document_codige,omitempty" gorm:"type:varchar(3);default:'CC'"`
-	Document        string `json:"document_number,omitempty" gorm:"type:NUMERIC(11)"`
-	Adress          string `json:"adress,omitempty" gorm:"type:varchar(60); NOT NULL"`
-	LoanNumber      uint8  `json:"number_loans,omitempty" gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodCollection   uint32 `json:"id_collection,omit" gorm:"type:integer; NOT NULL"`
-	CodLoanState    uint8  `json:"id_loan_state,omit" gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodBusinessType uint16 `json:"id_type_business,omit" gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodListLocation uint64 `json:"id_location,omit" gorm:"type:BIGINT; NOT NULL;default:0"`
-	CodUser         uint32 `json:"id_user,omit" gorm:"type:integer; NOT NULL"`
+	Name            string `json:"name,omitempty"             gorm:"type:varchar(50); NOT NULL"`
+	Email           string `json:"email,omitempty"            gorm:"type:varchar(100)"`
+	CodDocumentType string `json:"document_codige,omitempty"  gorm:"type:varchar(3);default:'CC'"`
+	Document        string `json:"document_number,omitempty"  gorm:"type:NUMERIC(11)"`
+	Adress          string `json:"adress,omitempty"           gorm:"type:varchar(60); NOT NULL"`
+	LoanNumber      uint8  `json:"number_loans,omitempty"     gorm:"type:SMALLINT; NOT NULL;default:0"`
+	CodCollection   uint32 `json:"id_collection,omit"         gorm:"type:integer; NOT NULL"`
+	CodLoanState    uint8  `json:"id_loan_state,omit"         gorm:"type:SMALLINT; NOT NULL;default:0"`
+	CodBusinessType uint16 `json:"id_type_business,omit"      gorm:"type:SMALLINT; NOT NULL;default:0"`
+	CodListLocation uint64 `json:"id_location,omit"           gorm:"type:BIGINT; NOT NULL;default:0"`
+	CodUser         uint32 `json:"id_user,omit"               gorm:"type:integer; NOT NULL"`
 
 	DocumentType  DocumentType `json:"document_description,omitempty"`
 	LoanState     LoanState    `json:"state,omitempty"`
