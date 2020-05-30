@@ -3,6 +3,9 @@ package models
 //UserTel telefono de usuario
 type UserTel struct {
 	ModelBig
+	CodUser       uint  `gorm:"type:integer; NOT NULL"`
+	Phone         uint  `gorm:"type:NUMERIC(12); NOT NULL;check(Phone > 999999);unique"`
+	CodTelDescrip uint8 `gorm:"type:SMALLINT; NOT NULL;DEFAULT:0"`
 }
 
 /*

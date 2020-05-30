@@ -3,6 +3,11 @@ package models
 //ListUser lista de usarios
 type ListUser struct {
 	ModelBig
+	Active        bool  `gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	CodUser       uint  `gorm:"type:integer;not null"`
+	CodCollection uint  `gorm:"type:integer;not null"`
+	CodUserLevel  uint8 `gorm:"type:smallint;not null;default:1"`
+	Cash          int   `gorm:"type:numeric(6,1);not null;default: 0"`
 }
 
 /*

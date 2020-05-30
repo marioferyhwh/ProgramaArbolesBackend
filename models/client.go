@@ -3,6 +3,17 @@ package models
 //Client  cliente al que se le presta
 type Client struct {
 	ModelBig
+	Name            string `gorm:"type:varchar(50)"`
+	Email           string `gorm:"type:varchar(100)"`
+	CodDocumentType string `gorm:"type:varchar(3)"`
+	Document        uint   `gorm:"type:NUMERIC(11)"`
+	Adress          string `gorm:"type:varchar(60)"`
+	LoanNumber      uint   `gorm:"type:SMALLINT"`
+	CodCollection   uint   `gorm:"type:integer"`
+	CodLoanState    uint8  `gorm:"type:SMALLINT"`
+	CodBusinessType uint   `gorm:"type:SMALLINT"`
+	CodListLocation uint   `gorm:"type:BIGINT"`
+	CodUser         uint   `gorm:"type:integer"`
 }
 
 /*
