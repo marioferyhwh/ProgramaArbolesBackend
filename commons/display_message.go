@@ -12,7 +12,7 @@ import (
 func DisplayMessage(w http.ResponseWriter, m models.Message) {
 	j, err := json.Marshal(m)
 	if err != nil {
-		log.Fatal("no se comvvirtio mensaje->", err)
+		log.Fatal("no se comvirtio mensaje->", err)
 	}
 	w.WriteHeader(m.Code)
 	w.Write(j)
