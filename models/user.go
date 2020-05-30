@@ -8,9 +8,12 @@ type User struct {
 	Email           string `gorm:"type:varchar(100);not null"`
 	Password        string `gorm:"type:varchar(256);not null"`
 	CodDocumentType string `gorm:"type:varchar(3);not null;default:''"`
-	DocumentType    DocumentType
 	Document        int    `gorm:"type:numeric(11);not null"`
 	Name            string `gorm:"type:varchar(50);not null;default:''"`
+
+	DocumentType DocumentType
+	ListUser     []ListUser
+	UserTel      []UserTel
 }
 
 /*

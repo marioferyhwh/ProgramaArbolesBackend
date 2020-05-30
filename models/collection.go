@@ -6,6 +6,10 @@ type Collection struct {
 	Descrip      string `gorm:"type:varchar(256);DEFAULT:'' "`
 	Active       bool   `gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	BalanceTotal int    `gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
+
+	Cash   Cash
+	Client []Client
+	User   []User
 }
 
 /*

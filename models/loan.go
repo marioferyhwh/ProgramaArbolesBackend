@@ -11,6 +11,11 @@ type Loan struct {
 	CodClient     int `gorm:"type:BIGINT;NOT NULL"`
 	CodCollection int `gorm:"type:integer;NOT NULL"`
 	CodUser       int `gorm:"type:integer;NOT NULL"`
+	LoanState     LoanState
+	Payments      []Payment
+	Client        Client
+	Collection    Collection
+	User          User
 }
 
 /*

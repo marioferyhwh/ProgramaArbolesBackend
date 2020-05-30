@@ -7,6 +7,7 @@ type Expense struct {
 	CodExpenseDescrip uint32 `gorm:"type:BIGINT;NOT NULL"`
 	CodUser           uint   `gorm:"type:integer;NOT NULL"`
 	CodCollection     uint   `gorm:"type:integer;NOT NULL"`
+	ExpenseDescrip    ExpenseDescrip
 }
 
 /*

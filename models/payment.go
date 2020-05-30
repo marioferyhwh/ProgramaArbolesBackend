@@ -7,6 +7,9 @@ type Payment struct {
 	Cash          int    `gorm:"type:numeric(6,1) ;NOT NULL"`
 	CodUser       uint   `gorm:"type:integer ;NOT NULL"`
 	CodCollection uint   `gorm:"type:integer ;NOT ;NULL"`
+	Loan          Loan
+	User          User
+	Collection    Collection
 }
 
 /*

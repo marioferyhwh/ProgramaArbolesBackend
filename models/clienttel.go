@@ -6,6 +6,7 @@ type ClientTel struct {
 	CodClient     int  `gorm:"integer"`
 	Phone         int  `gorm:"NUMERIC"`
 	CodTelDescrip int8 `gorm:"SMALLINT"`
+	TelDescrip    TelDescrip
 }
 
 /*

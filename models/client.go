@@ -14,6 +14,14 @@ type Client struct {
 	CodBusinessType uint   `gorm:"type:SMALLINT; NOT NULL;default:0"`
 	CodListLocation uint   `gorm:"type:BIGINT; NOT NULL;default:0"`
 	CodUser         uint   `gorm:"type:integer; NOT NULL"`
+
+	DocumentType  DocumentType
+	LoanState     LoanState
+	BusinessTypes BusinessTypes
+	ListLocation  ListLocation
+	User          User
+	ClientTel     []ClientTel
+	Loan          []Loan
 }
 
 /*
