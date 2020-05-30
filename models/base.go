@@ -14,7 +14,7 @@ type TimeModel struct {
 //      gorm.Modelsmall
 //    }
 type Modelsmall struct {
-	ID uint `json:"id,omitempty" gorm:"type:smallserial;NOT NULL;primary_key" `
+	ID uint8 `json:"id,omitempty" gorm:"type:smallserial;NOT NULL;primary_key" `
 	TimeModel
 }
 
@@ -23,7 +23,7 @@ type Modelsmall struct {
 //      gorm.Model
 //    }
 type Model struct {
-	ID uint `json:"id,omitempty" gorm:"type:serial;NOT NULL;primary_key"`
+	ID uint32 `json:"id,omitempty" gorm:"type:serial;NOT NULL;primary_key"`
 	TimeModel
 }
 
@@ -32,6 +32,6 @@ type Model struct {
 //      gorm.ModelBig
 //    }
 type ModelBig struct {
-	ID uint `json:"id,omitempty" gorm:"type:bigserial;NOT NULL;primary_key"`
+	ID uint64 `json:"id,omitempty" gorm:"type:bigserial;NOT NULL;primary_key"`
 	TimeModel
 }

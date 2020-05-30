@@ -3,10 +3,10 @@ package models
 //Payment pagos de prestamo
 type Payment struct {
 	ModelBig
-	CodLoan       uint32 `json:"id_loan,omit"       gorm:"type:BIGINT ;NOT NULL"`
-	Cash          int    `json:"money,omitempty"    gorm:"type:numeric(6,1) ;NOT NULL"`
-	CodUser       uint   `json:"id_user,omit"       gorm:"type:integer ;NOT NULL"`
-	CodCollection uint   `json:"id_collection,omit" gorm:"type:integer ;NOT ;NULL"`
+	CodLoan       uint64  `json:"id_loan,omit"       gorm:"type:BIGINT ;NOT NULL"`
+	Cash          float32 `json:"money,omitempty"    gorm:"type:numeric(6,1) ;NOT NULL"`
+	CodUser       uint32  `json:"id_user,omit"       gorm:"type:integer ;NOT NULL"`
+	CodCollection uint32  `json:"id_collection,omit" gorm:"type:integer ;NOT ;NULL"`
 
 	User User `json:"user_create,omitempty"`
 }
