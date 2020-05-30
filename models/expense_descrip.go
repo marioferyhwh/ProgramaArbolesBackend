@@ -1,5 +1,10 @@
 package models
 
+//ExpenseDescrip descripcion de gastos
+type ExpenseDescrip struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.expensedescrips;
 

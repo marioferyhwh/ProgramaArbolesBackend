@@ -1,5 +1,10 @@
 package models
 
+//Expense lista de gastos
+type Expense struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.expense;
 

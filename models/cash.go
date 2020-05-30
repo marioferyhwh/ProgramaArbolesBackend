@@ -1,5 +1,10 @@
 package models
 
+//Cash lista de egresos e ingresoso dee cobro
+type Cash struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.cashs;
 

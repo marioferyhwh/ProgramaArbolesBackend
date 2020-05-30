@@ -1,5 +1,10 @@
 package models
 
+//UserTel telefono de usuario
+type UserTel struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.usertels;
 

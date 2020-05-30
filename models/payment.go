@@ -1,5 +1,10 @@
 package models
 
+//Payment pagos de prestamo
+type Payment struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.payments;
 

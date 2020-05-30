@@ -1,5 +1,10 @@
 package models
 
+//Loan prestamos
+type Loan struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.loans;
 

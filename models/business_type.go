@@ -1,5 +1,11 @@
 package models
 
+// BusinessTypes tipo de negocio que tien el cliente
+type BusinessTypes struct {
+	Modelsmall
+	Descrip string `gorm:"type:varchar(45);not null;default:'';unique"`
+}
+
 /*
 DROP TABLE public.businesstypes;
 

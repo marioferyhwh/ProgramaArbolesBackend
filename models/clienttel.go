@@ -1,5 +1,10 @@
 package models
 
+//ClientTel numero telefonico del cliente
+type ClientTel struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.clienttels;
 

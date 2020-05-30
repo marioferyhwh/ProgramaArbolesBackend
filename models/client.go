@@ -1,5 +1,10 @@
 package models
 
+//Client  cliente al que se le presta
+type Client struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.clients;
 

@@ -1,5 +1,12 @@
 package models
 
+// ListLocation ubicaion del cliente
+type ListLocation struct {
+	ModelBig
+	CodCollection uint   `gorm:"type:integer;not null"`
+	Descrip       string `gorm:"type:varchar(11);not null;default:''"`
+}
+
 /*
 DROP TABLE public.listlocationes;
 

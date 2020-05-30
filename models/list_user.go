@@ -1,5 +1,10 @@
 package models
 
+//ListUser lista de usarios
+type ListUser struct {
+	ModelBig
+}
+
 /*
 DROP TABLE public.listusers;
 
