@@ -33,9 +33,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		m.Message = "Verificar Nombre y clave"
 		return
 	}
-
+	// user.Password = ""
+	token := commons.GenetateJWT(user)
+	j, err := json.Marshal(models.Token{Token: token})
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = err.Error()
+		return
+	}
 	m.Code = http.StatusOK
-	m.Message = ""
+	m.Message = j
 }
 
 func encriptPasswordUser(password string) string {
