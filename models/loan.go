@@ -3,19 +3,20 @@ package models
 //Loan prestamos
 type Loan struct {
 	ModelBig
-	InitialValue  int `gorm:"type:numeric(6,1);NOT NULL"`
-	Interest      int `gorm:"type:numeric(2);DEFAULT 20 ;NOT NULL"`
-	Quota         int `gorm:"type:numeric(2);NOT NULL"`
-	Balance       int `gorm:"type:numeric(6,1);NOT NULL"`
-	CodLoanState  int `gorm:"type:SMALLINT;NOT NULL"`
-	CodClient     int `gorm:"type:BIGINT;NOT NULL"`
-	CodCollection int `gorm:"type:integer;NOT NULL"`
-	CodUser       int `gorm:"type:integer;NOT NULL"`
-	LoanState     LoanState
-	Payments      []Payment
-	Client        Client
-	Collection    Collection
-	User          User
+	InitialValue  int `json:"initial_value,omitempty" gorm:"type:numeric(6,1);NOT NULL"`
+	Interest      int `json:"interest,omitempty" gorm:"type:numeric(2);DEFAULT 20 ;NOT NULL"`
+	Quota         int `json:"quota,omitempty" gorm:"type:numeric(2);NOT NULL"`
+	Balance       int `json:"balance,omitempty" gorm:"type:numeric(6,1);NOT NULL"`
+	CodLoanState  int `json:"id_loan_state,omit" gorm:"type:SMALLINT;NOT NULL"`
+	CodClient     int `json:"id_client,omit" gorm:"type:BIGINT;NOT NULL"`
+	CodCollection int `json:"id_collection,omit" gorm:"type:integer;NOT NULL"`
+	CodUser       int `json:"id_user,omit" gorm:"type:integer;NOT NULL"`
+
+	LoanState  LoanState  `json:"loan_state,omitempty"`
+	Payments   []Payment  `json:"payments,omitempty"`
+	Client     Client     `json:"client,omitempty"`
+	Collection Collection `json:"collection,omitempty"`
+	User       User       `json:"user,omitempty"`
 }
 
 /*

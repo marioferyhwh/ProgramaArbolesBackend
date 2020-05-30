@@ -3,7 +3,7 @@ package models
 //LoanState Estado del prestamo
 type LoanState struct {
 	Modelsmall
-	State string `gorm:"type:varchar(20);NOT NULL;DEFAULT:''"`
+	State string `json:"state,omitempty" gorm:"type:varchar(20);NOT NULL;DEFAULT:''"`
 }
 
 /*

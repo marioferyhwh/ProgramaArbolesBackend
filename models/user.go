@@ -3,18 +3,18 @@ package models
 //User usuario
 type User struct {
 	Model
-	Active          bool   `gorm:"type:bool;not null;default:true"`
-	NickName        string `gorm:"type:varchar(50);not null;default:''"`
-	Email           string `gorm:"type:varchar(100);not null"`
-	Password        string `gorm:"type:varchar(256);not null"`
-	CodDocumentType string `gorm:"type:varchar(3);not null;default:''"`
-	Document        int    `gorm:"type:numeric(11);not null"`
-	Name            string `gorm:"type:varchar(50);not null;default:''"`
+	Active          bool   `json:"active,omit" gorm:"type:bool;not null;default:true"`
+	NickName        string `json:"nick_name,omitempty" gorm:"type:varchar(50);not null;default:''"`
+	Email           string `json:"email,omitempty" gorm:"type:varchar(100);not null"`
+	Password        string `json:"password,omit" gorm:"type:varchar(256);not null"`
+	CodDocumentType string `json:"document_codige,omitempty" gorm:"type:varchar(3);not null;default:''"`
+	Document        int    `json:"document_number,omitempty" gorm:"type:numeric(11);not null"`
+	Name            string `json:"name,omitempty" gorm:"type:varchar(50);not null;default:''"`
 
-	DocumentType DocumentType
-	ListUser     []ListUser
-	UserTel      []UserTel
-	Expense      []Expense
+	DocumentType DocumentType `json:"document_description,omitempty"`
+	ListUser     []ListUser   `json:"collections,omitempty"`
+	UserTel      []UserTel    `json:"tels,omitempty"`
+	Expense      []Expense    `json:"expenses,omitempty"`
 }
 
 /*

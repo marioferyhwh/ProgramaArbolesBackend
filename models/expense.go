@@ -3,11 +3,11 @@ package models
 //Expense lista de gastos
 type Expense struct {
 	ModelBig
-	Cash              int    `gorm:"type:numeric(6,1);NOT NULL"`
-	CodExpenseDescrip uint32 `gorm:"type:BIGINT;NOT NULL"`
-	CodUser           uint   `gorm:"type:integer;NOT NULL"`
-	CodCollection     uint   `gorm:"type:integer;NOT NULL"`
-	ExpenseDescrip    ExpenseDescrip
+	Cash              int            `json:"money,omitempty"    gorm:"type:numeric(6,1);NOT NULL"`
+	CodExpenseDescrip uint32         `json:"id_expense,omit"    gorm:"type:BIGINT;NOT NULL"`
+	CodUser           uint           `json:"id_user,omit"       gorm:"type:integer;NOT NULL"`
+	CodCollection     uint           `json:"id_collection,omit" gorm:"type:integer;NOT NULL"`
+	ExpenseDescrip    ExpenseDescrip `json:"description,omitempty"`
 }
 
 /*

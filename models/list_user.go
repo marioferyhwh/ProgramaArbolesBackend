@@ -6,13 +6,15 @@ import "github.com/jinzhu/gorm"
 type ListUser struct {
 	gorm.Model
 	ModelBig
-	Active        bool  `gorm:"type:bool;NOT NULL;DEFAULT:true"`
-	CodUser       uint  `gorm:"type:integer;not null"`
-	CodCollection uint  `gorm:"type:integer;not null"`
-	CodUserLevel  uint8 `gorm:"type:smallint;not null;default:1"`
-	Cash          int   `gorm:"type:numeric(6,1);not null;default: 0"`
+	Active        bool  `json:"active,omit" gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	CodUser       uint  `json:"id_user,omit" gorm:"type:integer;not null"`
+	CodCollection uint  `json:"id_collection,omit" gorm:"type:integer;not null"`
+	CodUserLevel  uint8 `json:"id_user_level,omit" gorm:"type:smallint;not null;default:1"`
+	Cash          int   `json:"money,omitempty" gorm:"type:numeric(6,1);not null;default: 0"`
 
-	UserLevel UserLevel
+	UserLevel  UserLevel  `json:"access,omitempty"`
+	User       User       `json:"user,omitempty"`
+	Collection Collection `json:"collection,omitempty"`
 }
 
 /*
