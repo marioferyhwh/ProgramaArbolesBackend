@@ -3,10 +3,10 @@ package models
 //ClientTel numero telefonico del cliente
 type ClientTel struct {
 	ModelBig
-	CodClient     int  `gorm:"integer"`
-	Phone         int  `gorm:"NUMERIC"`
-	CodTelDescrip int8 `gorm:"SMALLINT"`
-	TelDescrip    TelDescrip
+	CodClient     int        `json:"id_cliente,omit" gorm:"integer"`
+	Phone         int        `json:"number,omitempty" gorm:"NUMERIC"`
+	CodTelDescrip int8       `json:"id_tel_descript,omit" gorm:"SMALLINT"`
+	TelDescrip    TelDescrip `json:"type_tel,omitempty"`
 }
 
 /*

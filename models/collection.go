@@ -3,9 +3,9 @@ package models
 //Collection prestamos
 type Collection struct {
 	Model
-	Descrip      string `json:"description" gorm:"type:varchar(256);DEFAULT:'' "`
-	Active       bool   `json:"active" gorm:"type:bool;NOT NULL;DEFAULT:true"`
-	BalanceTotal int    `json:"balance_total" gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
+	Descrip      string `json:"description,omitempty" gorm:"type:varchar(256);DEFAULT:'' "`
+	Active       bool   `json:"active,omit" gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	BalanceTotal int    `json:"balance_total,omitempty" gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 
 	Cash     []Cash     `json:"cashes,omitempty"`
 	Expense  []Expense  `json:"expenses,omitempty"`
