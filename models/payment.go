@@ -3,10 +3,14 @@ package models
 //Payment pagos de prestamo
 type Payment struct {
 	ModelBig
+	CodLoan       uint32 `gorm:"type:BIGINT ;NOT NULL"`
+	Cash          int    `gorm:"type:numeric(6,1) ;NOT NULL"`
+	CodUser       uint   `gorm:"type:integer ;NOT NULL"`
+	CodCollection uint   `gorm:"type:integer ;NOT ;NULL"`
 }
 
 /*
-DROP TABLE public.payments;
+DROP TABLE public.payments;F
 
 CREATE TABLE public.payments
 (
@@ -19,22 +23,24 @@ CREATE TABLE public.payments
   cod_user integer NOT NULL,
   cod_collection integer NOT NULL,
 
-  CONSTRAINT pk_payments PRIMARY KEY(id),
-
-  CONSTRAINT fk_payments_loans FOREIGN KEY(cod_loan)
-    REFERENCES public.loans(id)
-    ON UPDATE RESTRICT ON DELETE RESTRICT ,
-
-  CONSTRAINT fk_payments_users FOREIGN KEY(cod_user)
-    REFERENCES public.users(id)
-    ON UPDATE RESTRICT ON DELETE RESTRICT ,
-
-  CONSTRAINT fk_payments_collectiones FOREIGN KEY(cod_collection)
-    REFERENCES public.collectiones(id)
-    ON UPDATE RESTRICT ON DELETE RESTRICT ,
-
-  CONSTRAINT ck_payments_cash CHECK(cash > 0)
-
+  CONSTRAINT pk_payments PRIMARY KEY(id)
 );
 
+ALTER TABLE public.payments ADD
+  CONSTRAINT fk_payments_loans FOREIGN KEY(cod_loan)
+    REFERENCES public.loans(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE public.payments ADD
+  CONSTRAINT fk_payments_users FOREIGN KEY(cod_user)
+    REFERENCES public.users(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE public.payments ADD
+
+  CONSTRAINT fk_payments_collections FOREIGN KEY(cod_collection)
+    REFERENCES public.collections(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE public.payments ADD
+  CONSTRAINT ck_payments_cash CHECK(cash > 0);
 */

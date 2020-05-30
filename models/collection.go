@@ -9,6 +9,8 @@ type Collection struct {
 }
 
 /*
+DROP TABLE public.collections;
+
 CREATE TABLE public.collections
 (
   id serial NOT NULL ,
@@ -19,6 +21,6 @@ CREATE TABLE public.collections
   active bool NOT NULL DEFAULT TRUE,
   balance_total numeric(7,1) NOT NULL DEFAULT 0,
 
-  CONSTRAINT pk_collectiones PRIMARY KEY(id)
+  CONSTRAINT pk_collections PRIMARY KEY(id)
 );
 */

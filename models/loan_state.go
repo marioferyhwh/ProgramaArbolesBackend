@@ -3,13 +3,13 @@ package models
 //LoanState Estado del prestamo
 type LoanState struct {
 	Modelsmall
-	State string `gorm:"type:varchar(20);NOT NULL;DEFAULT:'';unique"`
+	State string `gorm:"type:varchar(20);NOT NULL;DEFAULT:''"`
 }
 
 /*
-DROP TABLE public.loanstates;
+DROP TABLE public.loan_states;
 
-CREATE TABLE public.loanstates
+CREATE TABLE public.loan_states
 (
   id smallserial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),
@@ -17,8 +17,9 @@ CREATE TABLE public.loanstates
   delete_at timestamp,
   state varchar(20) NOT NULL DEFAULT '',
 
-  CONSTRAINT pk_loan_s PRIMARY KEY(id),
-  CONSTRAINT uk_loan_s_state UNIQUE(state)
+  CONSTRAINT pk_loan_s PRIMARY KEY(id)
 );
 
+ALTER TABLE public.loan_states ADD
+  CONSTRAINT uk_loan_s_state UNIQUE(state);
 */

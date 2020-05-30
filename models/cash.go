@@ -3,12 +3,16 @@ package models
 //Cash lista de egresos e ingresoso dee cobro
 type Cash struct {
 	ModelBig
+	CodCollection int `gorm:"type:integer;NOT NULL"`
+	CodUser       int `gorm:"type:integer;NOT NULL"`
+	Cash          int `gorm:"type:numeric(6,1);NOT NULL"`
 }
 
 /*
-DROP TABLE public.cashs;
+-- tabla 15
+DROP TABLE public.cashes;
 
-CREATE TABLE public.cashs
+CREATE TABLE public.cashes
 (
   id bigserial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),
@@ -18,17 +22,19 @@ CREATE TABLE public.cashs
   cod_user integer NOT NULL,
   cash numeric(6,1) NOT NULL,
 
-  CONSTRAINT pk_cashs PRIMARY KEY(id),
-
-  CONSTRAINT fk_cashs_collectiones FOREIGN KEY(cod_collection)
-    REFERENCES public.collectiones(id)
-    ON UPDATE RESTRICT ON DELETE RESTRICT ,
-
-  CONSTRAINT fk_cashs_users FOREIGN KEY(cod_user)
-    REFERENCES public.users(id)
-    ON UPDATE RESTRICT ON DELETE RESTRICT ,
-
-  CONSTRAINT ck_cashs_cash CHECK(cash != 0)
-
+  CONSTRAINT pk_cashes PRIMARY KEY(id)
 );
+
+ALTER TABLE public.cashes ADD
+  CONSTRAINT fk_cashes_collections FOREIGN KEY(cod_collection)
+    REFERENCES public.collections(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE public.cashes ADD
+  CONSTRAINT fk_cashes_users FOREIGN KEY(cod_user)
+    REFERENCES public.users(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE public.cashes ADD
+  CONSTRAINT ck_cashes_cash CHECK(cash != 0);
 */

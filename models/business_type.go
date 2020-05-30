@@ -3,13 +3,14 @@ package models
 // BusinessTypes tipo de negocio que tien el cliente
 type BusinessTypes struct {
 	Modelsmall
-	Descrip string `gorm:"type:varchar(45);not null;default:'';unique"`
+	Descrip string `gorm:"type:varchar(45);not null;default:''"`
 }
 
 /*
-DROP TABLE public.businesstypes;
+-- tabla 7
+DROP TABLE public.business_types;
 
-CREATE TABLE public.businesstypes
+CREATE TABLE public.business_types
 (
   id smallserial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),
@@ -17,7 +18,11 @@ CREATE TABLE public.businesstypes
   delete_at timestamp,
   descrip varchar(45) NOT NULL DEFAULT '',
 
-  CONSTRAINT pk_business_t PRIMARY KEY(id),
-  CONSTRAINT uk_business_t_descrip UNIQUE(descrip)
+  CONSTRAINT pk_business_t PRIMARY KEY(id)
 );
+
+ALTER TABLE public.business_types ADD
+  CONSTRAINT uk_business_t_descrip UNIQUE(descrip);
+
+
 */

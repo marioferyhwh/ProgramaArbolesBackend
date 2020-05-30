@@ -3,14 +3,13 @@ package models
 //UserLevel nivel de acceso del usario a la base de datos
 type UserLevel struct {
 	Modelsmall
-	Level string `gorm:"type:varchar(11);NOT NULL;DEFAULT:'';UNIQUE"`
+	Level string `gorm:"type:varchar(11);NOT NULL;DEFAULT:''"`
 }
 
 /*
+DROP TABLE public.user_levels;
 
-DROP TABLE public.userlevels;
-
-CREATE TABLE userlevels
+CREATE TABLE user_levels
 (
   id smallserial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),
@@ -18,7 +17,10 @@ CREATE TABLE userlevels
   delete_at timestamp,
   level varchar(11) NOT NULL DEFAULT '',
 
-  CONSTRAINT pk_user_l PRIMARY KEY(id),
-  CONSTRAINT uk_user_l_level UNIQUE(level)
+  CONSTRAINT pk_user_l PRIMARY KEY(id)
 );
+
+ALTER TABLE public.user_levels ADD
+  CONSTRAINT uk_user_l_level UNIQUE(level);
+
 */

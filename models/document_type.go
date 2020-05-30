@@ -4,21 +4,25 @@ package models
 type DocumentType struct {
 	ID string `gorm:"type:varchar(3);DEFAULT:'CC';NOT NULL;primary_key"`
 	TimeModel
-	Descrip string `gorm:"type:varchar(20);DEFAULT:'';NOT NULL;UNIQUE"`
+	Descrip string `gorm:"type:varchar(20);DEFAULT:'';NOT NULL"`
 }
 
 /*
-DROP TABLE public.documenttypes;
+-- tabla 7
+DROP TABLE public.business_types;
 
-CREATE TABLE public.documenttypes
+CREATE TABLE public.business_types
 (
-  id varchar(3) NOT NULL ,
+  id smallserial NOT NULL ,
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp,
   delete_at timestamp,
-  descrip varchar(20) NOT NULL DEFAULT '',
+  descrip varchar(45) NOT NULL DEFAULT '',
 
-  CONSTRAINT pk_document_t PRIMARY KEY(id),
-  CONSTRAINT uk_document_t_descrip UNIQUE(descrip)
+  CONSTRAINT pk_business_t PRIMARY KEY(id)
 );
+
+ALTER TABLE public.business_types ADD
+  CONSTRAINT uk_business_t_descrip UNIQUE(descrip);
+
 */
