@@ -4,9 +4,9 @@ import "time"
 
 //TimeModel tiempo
 type TimeModel struct {
-	CreatedAt time.Time `gorm:"NOT NULL;DEFAULT:CURRENT_TIMESTAMP"`
-	UpdatedAt time.Time
-	DeletedAt *time.Time `sql:"index"`
+	CreatedAt time.Time  `json:"create_at,omitempty" gorm:"NOT NULL;DEFAULT:CURRENT_TIMESTAMP"`
+	UpdatedAt time.Time  `json:"update_at,omitempty"`
+	DeletedAt *time.Time `json:"delete_at,omitempty" sql:"index"`
 }
 
 // Modelsmall base modelsmall
@@ -14,7 +14,7 @@ type TimeModel struct {
 //      gorm.Modelsmall
 //    }
 type Modelsmall struct {
-	ID uint `gorm:"type:smallserial;NOT NULL;primary_key"`
+	ID uint `json:"id,omitempty" gorm:"type:smallserial;NOT NULL;primary_key" `
 	TimeModel
 }
 

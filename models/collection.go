@@ -3,13 +3,14 @@ package models
 //Collection prestamos
 type Collection struct {
 	Model
-	Descrip      string `gorm:"type:varchar(256);DEFAULT:'' "`
-	Active       bool   `gorm:"type:bool;NOT NULL;DEFAULT:true"`
-	BalanceTotal int    `gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
+	Descrip      string `json:"description" gorm:"type:varchar(256);DEFAULT:'' "`
+	Active       bool   `json:"active" gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	BalanceTotal int    `json:"balance_total" gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 
-	Cash   []Cash
-	Client []Client
-	User   []User
+	Cash     []Cash     `json:"cashes,omitempty"`
+	Expense  []Expense  `json:"expenses,omitempty"`
+	Client   []Client   `json:"clients,omitempty"`
+	ListUser []ListUser `json:"users,omitempty"`
 }
 
 /*

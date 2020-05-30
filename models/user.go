@@ -14,6 +14,7 @@ type User struct {
 	DocumentType DocumentType
 	ListUser     []ListUser
 	UserTel      []UserTel
+	Expense      []Expense
 }
 
 /*

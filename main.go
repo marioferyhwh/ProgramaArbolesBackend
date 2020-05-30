@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("Inicia Backend")
 	var migrate string
-	flag.StringVar(&migrate, "migrate", "yes", "Generar la migracion")
+	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
 	flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")
 	flag.Parse()
 	if migrate == "yes" {
