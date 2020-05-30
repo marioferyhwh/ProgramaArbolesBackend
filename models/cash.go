@@ -3,8 +3,8 @@ package models
 //Cash lista de egresos e ingresoso dee cobro
 type Cash struct {
 	ModelBig
-	CodCollection int32   `json:"id_collection,omitempty" gorm:"type:integer;NOT NULL"`
-	CodUser       int32   `json:"id_user,omitempty"       gorm:"type:integer;NOT NULL"`
+	CodCollection uint32  `json:"id_collection,omitempty" gorm:"type:integer;NOT NULL"`
+	CodUser       uint32  `json:"id_user,omitempty"       gorm:"type:integer;NOT NULL"`
 	Cash          float32 `json:"money,omitempty"         gorm:"type:numeric(6,1);NOT NULL"`
 }
 
