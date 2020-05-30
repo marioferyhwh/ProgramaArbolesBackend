@@ -7,7 +7,7 @@ type Collection struct {
 	Active       bool   `gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	BalanceTotal int    `gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 
-	Cash   Cash
+	Cash   []Cash
 	Client []Client
 	User   []User
 }
