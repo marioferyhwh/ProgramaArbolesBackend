@@ -12,10 +12,10 @@ type User struct {
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
 	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-"`
 
-	DocumentType DocumentType `json:"document_description,omitempty"`
-	ListUser     []ListUser   `json:"collections,omitempty"`
-	UserTel      []UserTel    `json:"tels,omitempty"`
-	Expense      []Expense    `json:"expenses,omitempty"`
+	DocumentType DocumentType `json:"document_description,omitempty" gorm:"-"`
+	ListUser     []ListUser   `json:"collections,omitempty"          gorm:"-"`
+	UserTel      []UserTel    `json:"tels,omitempty"                 gorm:"-"`
+	Expense      []Expense    `json:"expenses,omitempty"             gorm:"-"`
 }
 
 /*

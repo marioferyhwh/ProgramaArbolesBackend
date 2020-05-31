@@ -7,7 +7,7 @@ type ClientTel struct {
 	Phone         string `json:"number,omitempty"          gorm:"type:NUMERIC(12)"`
 	CodTelDescrip uint8  `json:"id_tel_descript,omitempty" gorm:"type:SMALLINT"`
 
-	TelDescrip TelDescrip `json:"type_tel,omitempty"`
+	TelDescrip TelDescrip `json:"type_tel,omitempty"  gorm:"-"`
 }
 
 /*

@@ -8,7 +8,7 @@ type Payment struct {
 	CodUser       uint32  `json:"id_user,omitempty"       gorm:"type:integer ;NOT NULL"`
 	CodCollection uint32  `json:"id_collection,omitempty" gorm:"type:integer ;NOT ;NULL"`
 
-	User User `json:"user_create,omitempty"`
+	User User `json:"user_create,omitempty" gorm:"-"`
 }
 
 /*
