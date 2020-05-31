@@ -3,14 +3,14 @@ package models
 //Loan prestamos
 type Loan struct {
 	ModelBig
-	InitialValue  float32 `json:"initial_value,omitempty"  gorm:"type:numeric(6,1);NOT NULL"`
-	Interest      uint8   `json:"interest,omitempty"       gorm:"type:numeric(2);DEFAULT 20 ;NOT NULL"`
-	Quota         uint8   `json:"quota,omitempty"          gorm:"type:numeric(2);NOT NULL"`
-	Balance       float32 `json:"balance,omitempty"        gorm:"type:numeric(6,1);NOT NULL"`
-	CodLoanState  uint8   `json:"id_loan_state,omit"       gorm:"type:SMALLINT;NOT NULL"`
-	CodClient     uint64  `json:"id_client,omit"           gorm:"type:BIGINT;NOT NULL"`
-	CodCollection uint32  `json:"id_collection,omit"       gorm:"type:integer;NOT NULL"`
-	CodUser       uint32  `json:"id_user,omit"             gorm:"type:integer;NOT NULL"`
+	InitialValue  float32 `json:"initial_value,omitempty"       gorm:"type:numeric(6,1);NOT NULL"`
+	Interest      uint8   `json:"interest,omitempty"            gorm:"type:numeric(2);DEFAULT 20 ;NOT NULL"`
+	Quota         uint8   `json:"quota,omitempty"               gorm:"type:numeric(2);NOT NULL"`
+	Balance       float32 `json:"balance,omitempty"             gorm:"type:numeric(6,1);NOT NULL"`
+	CodLoanState  uint8   `json:"id_loan_state,omitempty"       gorm:"type:SMALLINT;NOT NULL"`
+	CodClient     uint64  `json:"id_client,omitempty"           gorm:"type:BIGINT;NOT NULL"`
+	CodCollection uint32  `json:"id_collection,omitempty"       gorm:"type:integer;NOT NULL"`
+	CodUser       uint32  `json:"id_user,omitempty"             gorm:"type:integer;NOT NULL"`
 
 	LoanState  LoanState  `json:"loan_state,omitempty"`
 	Payments   []Payment  `json:"payments,omitempty"`

@@ -3,11 +3,11 @@ package models
 //ListUser lista de usarios
 type ListUser struct {
 	ModelBig
-	Active        bool    `json:"active,omit"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
-	CodUser       uint32  `json:"id_user,omit"        gorm:"type:integer;not null"`
-	CodCollection uint32  `json:"id_collection,omit"  gorm:"type:integer;not null"`
-	CodUserLevel  uint8   `json:"id_user_level,omit"  gorm:"type:smallint;not null;default:1"`
-	Cash          float32 `json:"money,omitempty"     gorm:"type:numeric(6,1);not null;default: 0"`
+	Active        bool    `json:"active,omitempty"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	CodUser       uint32  `json:"id_user,omitempty"        gorm:"type:integer;not null"`
+	CodCollection uint32  `json:"id_collection,omitempty"  gorm:"type:integer;not null"`
+	CodUserLevel  uint8   `json:"id_user_level,omitempty"  gorm:"type:smallint;not null;default:1"`
+	Cash          float32 `json:"money,omitempty"          gorm:"type:numeric(6,1);not null;default: 0"`
 
 	UserLevel  UserLevel  `json:"access,omitempty"`
 	User       User       `json:"user,omitempty"`

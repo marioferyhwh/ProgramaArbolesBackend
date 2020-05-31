@@ -3,8 +3,8 @@ package models
 // ListLocation ubicaion del cliente
 type ListLocation struct {
 	ModelBig
-	CodCollection uint32 `json:"id_collection,omit" gorm:"type:integer;not null"`
-	Descrip       string `json:"name,omitempty"     gorm:"type:varchar(11);not null;default:''"`
+	CodCollection uint32 `json:"id_collection,omitempty" gorm:"type:integer;not null"`
+	Descrip       string `json:"name,omitempty"          gorm:"type:varchar(11);not null;default:''"`
 }
 
 /*

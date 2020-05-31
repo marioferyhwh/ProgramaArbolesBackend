@@ -3,9 +3,9 @@ package models
 //UserTel telefono de usuario
 type UserTel struct {
 	ModelBig
-	CodUser       uint16 `json:"id_user,omit"            gorm:"type:integer; NOT NULL"`
-	Phone         string `json:"number,omitempty"        gorm:"type:NUMERIC(12); NOT NULL"`
-	CodTelDescrip uint8  `json:"id_tel_description,omit" gorm:"type:SMALLINT; NOT NULL;DEFAULT:0"`
+	CodUser       uint16 `json:"id_user,omitempty"            gorm:"type:integer; NOT NULL"`
+	Phone         string `json:"number,omitempty"             gorm:"type:NUMERIC(12); NOT NULL"`
+	CodTelDescrip uint8  `json:"id_tel_description,omitempty" gorm:"type:SMALLINT; NOT NULL;DEFAULT:0"`
 
 	TelDescrip TelDescrip `json:"description,omitempty"`
 }

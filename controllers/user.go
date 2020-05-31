@@ -15,18 +15,22 @@ import (
 func Login(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	m := models.Message{}
-	defer commons.DisplayMessage(w, m)
+	defer commons.DisplayMessage(w, &m)
 	err := json.NewDecoder(r.Body).Decode(&user)
+
 	if err != nil {
+		fmt.Printf("Error:%s\n", err)
 		m.Code = http.StatusNotFound
-		m.Message = err.Error()
+		m.Message = fmt.Sprint("no", err.Error())
 		return
 	}
 
 	pwd := encriptPasswordUser(user.Password)
 
 	db := configuration.GetConnection()
+	defer db.Close()
 	db.Where("(nick_name = ? or email = ?) and password = ?", user.Email, user.Email, pwd).First(&user)
+	user.Password = ""
 
 	if user.ID <= 0 {
 		m.Code = http.StatusUnauthorized
@@ -35,14 +39,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	// user.Password = ""
 	token := commons.GenetateJWT(user)
-	j, err := json.Marshal(models.Token{Token: token})
-	if err != nil {
+	/*
+		fmt.Print(token)
+		j, err := json.Marshal(models.Token{Token: token})
+		if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = err.Error()
 		return
-	}
+		}
+	*/
 	m.Code = http.StatusOK
-	m.NewToken = j
+	m.NewToken = token
 }
 
 func encriptPasswordUser(password string) string {
@@ -71,7 +78,7 @@ func UserCreateInter(user models.User, m *models.Message) {
 func UserCreate(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	m := models.Message{}
-	defer commons.DisplayMessage(w, m)
+	defer commons.DisplayMessage(w, &m)
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		m.Code = http.StatusBadRequest

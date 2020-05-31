@@ -9,11 +9,11 @@ type Client struct {
 	Document        string `json:"document_number,omitempty"  gorm:"type:NUMERIC(11)"`
 	Adress          string `json:"adress,omitempty"           gorm:"type:varchar(60); NOT NULL"`
 	LoanNumber      uint8  `json:"number_loans,omitempty"     gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodCollection   uint32 `json:"id_collection,omit"         gorm:"type:integer; NOT NULL"`
-	CodLoanState    uint8  `json:"id_loan_state,omit"         gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodBusinessType uint16 `json:"id_type_business,omit"      gorm:"type:SMALLINT; NOT NULL;default:0"`
-	CodListLocation uint64 `json:"id_location,omit"           gorm:"type:BIGINT; NOT NULL;default:0"`
-	CodUser         uint32 `json:"id_user,omit"               gorm:"type:integer; NOT NULL"`
+	CodCollection   uint32 `json:"id_collection,omitempty"    gorm:"type:integer; NOT NULL"`
+	CodLoanState    uint8  `json:"id_loan_state,omitempty"    gorm:"type:SMALLINT; NOT NULL;default:0"`
+	CodBusinessType uint16 `json:"id_type_business,omitempty" gorm:"type:SMALLINT; NOT NULL;default:0"`
+	CodListLocation uint64 `json:"id_location,omitempty"      gorm:"type:BIGINT; NOT NULL;default:0"`
+	CodUser         uint32 `json:"id_user,omitempty"          gorm:"type:integer; NOT NULL"`
 
 	DocumentType  DocumentType `json:"document_description,omitempty"`
 	LoanState     LoanState    `json:"state,omitempty"`

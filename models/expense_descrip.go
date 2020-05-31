@@ -3,7 +3,7 @@ package models
 //ExpenseDescrip descripcion de gastos
 type ExpenseDescrip struct {
 	ModelBig
-	CodCollection uint32 `json:"id_collection,omit"     gorm:"type:integer;NOT NULL"`
+	CodCollection uint32 `json:"id_collection,omitempty"     gorm:"type:integer;NOT NULL"`
 	Descrip       string `json:"description,omitempty"  gorm:"type:varchar(11);NOT NULL;DEFAULT:''"`
 }
 

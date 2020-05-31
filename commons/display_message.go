@@ -9,7 +9,7 @@ import (
 )
 
 //DisplayMessage estructura de respuesta
-func DisplayMessage(w http.ResponseWriter, m models.Message) {
+func DisplayMessage(w http.ResponseWriter, m *models.Message) {
 	j, err := json.Marshal(m)
 	if err != nil {
 		log.Fatal("no se comvirtio mensaje->", err)

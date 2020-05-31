@@ -4,7 +4,7 @@ package models
 type Collection struct {
 	Model
 	Descrip      string  `json:"description,omitempty" gorm:"type:varchar(256);DEFAULT:'' "`
-	Active       bool    `json:"active,omit" gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	Active       bool    `json:"active,omitempty" gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	BalanceTotal float32 `json:"balance_total,omitempty" gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 
 	Cash     []Cash     `json:"cashes,omitempty"`

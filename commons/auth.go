@@ -40,7 +40,7 @@ func GenetateJWT(user models.User) string {
 		User: user,
 		StandardClaims: jwt.StandardClaims{
 			//ExpiresAt: time.Now().Add(time.hour * 2).Unix(),
-			Issuer: "Escuela Digital",
+			Issuer: "forest",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
