@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"io/ioutil"
 	"log"
+	"sync"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
@@ -13,9 +14,16 @@ var (
 	privateKey *rsa.PrivateKey
 	//PublicKey usada para validacion del token
 	PublicKey *rsa.PublicKey
+	once      sync.Once
 )
 
 func init() {
+	once.Do(func() {
+		loadSignFiles()
+	})
+}
+
+func loadSignFiles() {
 	privateBytes, err := ioutil.ReadFile("./keys/private.rsa")
 	if err != nil {
 		log.Fatal("no lee el archivo privado->", err)

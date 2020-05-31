@@ -1,40 +1,87 @@
 package controllers
 
 import (
-	"context"
+	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/dgrijalva/jwt-go/request"
+	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-type key string
+//ValidateJWT se valida que el token que llega sea valido
+func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 
-const keyUser key = "user"
+	return func(c echo.Context) error {
 
-//ValidateToken se valida que el token que llega sea valido
-func ValidateToken(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	var m models.Message
-	token, err := request.ParseFromRequestWithClaims(
-		r,
-		request.OAuth2Extractor,
-		&models.Claim{},
-		func(t *jwt.Token) (interface{}, error) {
+		var m models.Message
+		tokenString, err := getTokenFromAuthorizationHeader(c.Request())
+		if err != nil {
+			tokenString, err = getTokenFromURLParams(c.Request())
+			if err != nil {
+				m.Code = 102
+				return commons.DisplayMessage(c, &m)
+			}
+		}
+
+		verifyFuction := func(token *jwt.Token) (interface{}, error) {
 			return commons.PublicKey, nil
-		},
-	)
-	if err != nil {
-		m.Code = 102
-		return
+		}
+		token, err := jwt.ParseWithClaims(tokenString, &models.Claim{}, verifyFuction)
+		if err != nil {
+			switch err.(type) {
+			case *jwt.ValidationError:
+				mErr := ""
+				vErr := err.(*jwt.ValidationError)
+				//se puede agregar un modo debug e imprmiei el eror encaos de que ocurra
+				switch vErr.Errors {
+				case jwt.ValidationErrorExpired:
+					mErr = "su token a expirado"
+				default:
+					mErr = "erro de validacon de token"
+				}
+				m.Code = http.StatusBadRequest
+				m.Message = mErr
+			default:
+				m.Code = http.StatusBadRequest
+				m.Message = "erro y punto"
+			}
+			return commons.DisplayMessage(c, &m)
+		}
+		if !token.Valid {
+			m.Code = http.StatusUnauthorized
+			m.Message = "Su token no es valido"
+			return commons.DisplayMessage(c, &m)
+		}
+
+		user := token.Claims.(*models.Claim).User
+		c.Set("user", user)
+		return next(c)
 	}
-	if !token.Valid {
-		m.Code = http.StatusUnauthorized
-		m.Message = "Su token no es valido"
-		return
+}
+
+// getTokenFromAuthorizationHeader busca el token del header Authorization
+func getTokenFromAuthorizationHeader(r *http.Request) (string, error) {
+	ah := r.Header.Get("Authorization")
+	if ah == "" {
+		return "", errors.New("el encabezado no contiene la autorización")
 	}
 
-	ctx := context.WithValue(r.Context(), keyUser, token.Claims.(*models.Claim).User) // nolint
-	next(w, r.WithContext(ctx))
+	// Should be a bearer token
+	if len(ah) > 6 && strings.ToUpper(ah[0:6]) == "BEARER" {
+		return ah[7:], nil
+	}
+	return "", errors.New("el header no contiene la palabra Bearer")
+}
+
+// getTokenFromURLParams busca el token de la URL
+func getTokenFromURLParams(r *http.Request) (string, error) {
+	ah := r.URL.Query().Get("authorization")
+	if ah == "" {
+		return "", errors.New("la URL no contiene la autorización")
+	}
+
+	return ah, nil
 }
