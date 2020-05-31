@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"net/http"
 	"os"
 
+	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/migration"
 	"github.com/marioferyhwh/IMFBackend_forest/routes"
-	"github.com/urfave/negroni"
 )
 
 func main() {
@@ -35,20 +34,20 @@ func main() {
 		return
 	}
 
-	router := routes.InitRoutes()
 	//middleware
-	n := negroni.Classic()
-	n.UseHandler(router)
+
+	//routes
+	e := echo.New()
+	routes.InitRoutes(e)
 	//inicio del servidor
-	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", commons.Port),
-		Handler: n,
-	}
 	for _, a := range addrs {
 		log.Println("direccion:", a)
 	}
 	log.Println("puerto:", commons.Port)
-	log.Panicln(server.ListenAndServe())
-	log.Println("servicion detenido ¿eso es lo que queria?")
-	// fmt.Println("Finaliza Backend")
+	err = e.Start(fmt.Sprintf(":%d", commons.Port))
+	if err != nil {
+		log.Println("servicion detenido ¿eso es lo que queria?")
+		log.Println(err)
+	}
+
 }

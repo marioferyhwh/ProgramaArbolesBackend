@@ -1,11 +1,13 @@
 package routes
 
-import "github.com/gorilla/mux"
+import (
+	"github.com/labstack/echo"
+	"github.com/marioferyhwh/IMFBackend_forest/controllers"
+)
 
 //InitRoutes en rutamiento de la API
-func InitRoutes() *mux.Router {
-	router := mux.NewRouter().StrictSlash(false)
-	SetLoginRoutes(router)
+func InitRoutes(e *echo.Echo) {
+	const prefixAPI = "/api/v1/"
+	e.POST(prefixAPI+"login", controllers.Login)
 
-	return router
 }

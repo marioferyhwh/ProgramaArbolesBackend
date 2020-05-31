@@ -2,27 +2,32 @@ package controllers
 
 import (
 	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/configuration"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+type model struct {
+	Email    string
+	Password string
+}
+
 //Login funcion de inicio de seccion
-func Login(w http.ResponseWriter, r *http.Request) {
-	user := models.User{}
+func Login(c echo.Context) error {
+	var user models.User
 	m := models.Message{}
-	defer commons.DisplayMessage(w, &m)
-	err := json.NewDecoder(r.Body).Decode(&user)
+
+	err := c.Bind(&user)
 
 	if err != nil {
-		fmt.Printf("Error:%s\n", err)
+		fmt.Printf("Error : %s\n", err)
 		m.Code = http.StatusNotFound
 		m.Message = fmt.Sprint("no", err.Error())
-		return
+		return commons.DisplayMessage(c, &m)
 	}
 
 	pwd := encriptPasswordUser(user.Password)
@@ -35,7 +40,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if user.ID <= 0 {
 		m.Code = http.StatusUnauthorized
 		m.Message = "Verificar Nombre y clave"
-		return
+		return commons.DisplayMessage(c, &m)
 	}
 	// user.Password = ""
 	token := commons.GenetateJWT(user)
@@ -50,6 +55,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	*/
 	m.Code = http.StatusOK
 	m.NewToken = token
+	return commons.DisplayMessage(c, &m)
 }
 
 func encriptPasswordUser(password string) string {
@@ -75,21 +81,23 @@ func UserCreateInter(user models.User, m *models.Message) {
 }
 
 //UserCreate Creacion de usuario
-func UserCreate(w http.ResponseWriter, r *http.Request) {
+func UserCreate(c echo.Context) error {
 	user := models.User{}
 	m := models.Message{}
-	defer commons.DisplayMessage(w, &m)
-	err := json.NewDecoder(r.Body).Decode(&user)
+	//defer
+	err := c.Bind(&user)
+
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego usario ->", err)
-		return
+		return commons.DisplayMessage(c, &m)
 	}
 	if user.ConfirmPassword != user.Password {
 		m.Code = http.StatusBadRequest
 		m.Message = "contraseñas no coninciden"
-		return
+		return commons.DisplayMessage(c, &m)
 	}
 	UserCreateInter(user, &m)
+	return commons.DisplayMessage(c, &m)
 
 }

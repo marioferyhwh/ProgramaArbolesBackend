@@ -1,11 +1,16 @@
 package routes
 
 import (
-	"github.com/gorilla/mux"
-	"github.com/marioferyhwh/IMFBackend_forest/controllers"
+	"github.com/labstack/echo"
+	"github.com/marioferyhwh/IMFBackend_forest/commons"
+	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
 //SetLoginRoutes inicio de seccion
-func SetLoginRoutes(router *mux.Router) {
-	router.HandleFunc("/api/login", controllers.Login).Methods("POST")
+func SetLoginRoutes(e echo.Context) error {
+	m := models.Message{
+		Code:    203,
+		Message: "prueba",
+	}
+	return commons.DisplayMessage(e, &m)
 }
