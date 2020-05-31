@@ -1,7 +1,10 @@
 package migration
 
 import (
+	"fmt"
+
 	"github.com/marioferyhwh/IMFBackend_forest/configuration"
+	"github.com/marioferyhwh/IMFBackend_forest/controllers"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
@@ -46,10 +49,25 @@ func Migrate() {
 	db.CreateTable(&models.Cash{})
 	db.CreateTable(&models.ExpenseDescrip{})
 	db.CreateTable(&models.Expense{})
+	createDataInit()
 	//
 	// db.Model(&models.User{}).AddUniqueIndex("users_cdocumentt_document_key", "cod_document_type", "document").AddForeignKey("cod_document_type", "document_types(id)", "restrict", "restrict")
 	// db.Model(&models.ListLocation{}).AddForeignKey("cod_collection", "collections(id)", "restrict", "restrict").AddUniqueIndex("list_locations_ccollection_descrip_key", "cod_collection", "descrip")
 	// db.Model(&models.ListUser{}).AddForeignKey("cod_user", "users(id)", "restrict", "restrict").AddForeignKey("cod_collection", "collections(id)", "restrict", "restrict").AddForeignKey("cod_user_level", "user_levels(id)", "restrict", "restrict").AddUniqueIndex("list_users_cuser_ccollection_key", "cod_user", "cod_collection").AddIndex("list_users_ccollection_cuser_key", "cod_collection", "cod_user")
 	// db.Model(&models.UserTel{}).AddForeignKey("cod_user", "users(id)", "restrict", "restrict").AddForeignKey("cod_tel_descrip", "tel_descrips(id)", "restrict", "restrict")
 	// db.Model(&models.Client{}).AddUniqueIndex("clients_cdocumentt_document_key", "cod_document_type", "document").AddForeignKey("cod_document_type", "document_types(id)", "restrict", "restrict").AddForeignKey("cod_collection", "collections(id)", "restrict", "restrict").AddForeignKey("cod_loan_state", "loan_states(id)", "restrict", "restrict").AddForeignKey("cod_business_type", "business_types(id)", "restrict", "restrict").AddForeignKey("cod_list_location", "list_locations(id)", "restrict", "restrict").AddForeignKey("cod_user", "users(id)", "restrict", "restrict")
+}
+
+func createDataInit() {
+	user := models.User{
+		NickName:        "forest",
+		Email:           "forest",
+		Password:        "forest",
+		CodDocumentType: "CC",
+		Document:        "1111111111",
+		Name:            "forest",
+	}
+	m := models.Message{}
+	controllers.UserCreateInter(user, &m)
+	fmt.Println(m)
 }

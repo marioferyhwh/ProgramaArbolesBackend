@@ -10,6 +10,7 @@ type User struct {
 	CodDocumentType string `json:"document_codige,omitempty"  gorm:"type:varchar(3);not null;default:''"`
 	Document        string `json:"document_number,omitempty"  gorm:"type:numeric(11);not null"`
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
+	ConfirmPassword string `json:"confirm_Password,omit"      gorm:"-"`
 
 	DocumentType DocumentType `json:"document_description,omitempty"`
 	ListUser     []ListUser   `json:"collections,omitempty"`
