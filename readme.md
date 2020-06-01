@@ -1,0 +1,88 @@
+# Solicitudes
+
+- tipos de NIVEL
+  - crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - editar UNO
+- Cobro
+  - datos para crear
+  - Crear
+  - datos
+    - uno
+    - varios - listado
+  - Editar
+  - Agregar usuario
+  - Quitar usuario
+  - Registrar ingresos y egresos
+  - Listado de ingresos y egresos
+- tipos de gasto
+  - crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - editar UNO
+- tipos de negocio
+  - crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - editar UNO
+- tipos de negocio
+  - crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - editar UNO
+- User
+  - Login
+  - datos para crear
+  - Crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - Editar UNO
+- Cliente
+  - datos para crear
+  - Crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - Editar UNO
+- Prestamos
+  - datos para crear
+  - Crear UNO
+  - datos
+    - uno
+    - varios - listado
+  - Editar
+    - uno
+    - varios(->pagos)
+- Gastos
+  - datos para crear
+  - Crear
+  - datos
+    - uno
+    - varios - listado
+  - Editar
+- Pagos
+  - datos para crear
+  - crear
+  - datos
+    - uno
+    - varios - listado
+  - editar
+  - borrar
+- ubicacion
+  - crear
+  - datos
+    - uno
+    - varios - listado
+  - editar
+- tipos de telefono
+  - crear
+  - datos
+    - uno
+    - varios - listado
+  - editar
