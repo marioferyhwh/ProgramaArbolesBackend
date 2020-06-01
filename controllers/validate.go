@@ -17,13 +17,11 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		var m models.Message
-		tokenString, err := getTokenFromAuthorizationHeader(c.Request())
+		tokenString, err := getToken(c.Request())
 		if err != nil {
-			tokenString, err = getTokenFromURLParams(c.Request())
-			if err != nil {
-				m.Code = 102
-				return commons.DisplayMessage(c, &m)
-			}
+			m.Code = http.StatusBadRequest
+			m.Message = err.Error()
+			return commons.DisplayMessage(c, &m)
 		}
 
 		verifyFuction := func(token *jwt.Token) (interface{}, error) {
@@ -62,26 +60,18 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// getTokenFromAuthorizationHeader busca el token del header Authorization
-func getTokenFromAuthorizationHeader(r *http.Request) (string, error) {
+//getToken trae el token de params o de
+func getToken(r *http.Request) (string, error) {
 	ah := r.Header.Get("Authorization")
 	if ah == "" {
-		return "", errors.New("el encabezado no contiene la autorización")
+		ah = r.URL.Query().Get("authorization")
+		if ah == "" {
+			return "", errors.New("no llego ninguna authorization")
+		}
+		return ah, nil
 	}
-
-	// Should be a bearer token
 	if len(ah) > 6 && strings.ToUpper(ah[0:6]) == "BEARER" {
 		return ah[7:], nil
 	}
-	return "", errors.New("el header no contiene la palabra Bearer")
-}
-
-// getTokenFromURLParams busca el token de la URL
-func getTokenFromURLParams(r *http.Request) (string, error) {
-	ah := r.URL.Query().Get("authorization")
-	if ah == "" {
-		return "", errors.New("la URL no contiene la autorización")
-	}
-
-	return ah, nil
+	return "", errors.New("el header no contiene la palabra bearer")
 }
