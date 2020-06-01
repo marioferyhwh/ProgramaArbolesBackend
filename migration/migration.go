@@ -68,6 +68,6 @@ func createDataInit() {
 		Name:            "forest",
 	}
 	m := models.Message{}
-	controllers.UserCreateInter(user, &m)
+	controllers.UserCreate(user, &m)
 	fmt.Println(m)
 }
