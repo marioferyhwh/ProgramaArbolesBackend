@@ -8,6 +8,7 @@ type ListUser struct {
 	CodCollection uint32  `json:"id_collection,omitempty"  gorm:"type:integer;not null"`
 	CodUserLevel  uint8   `json:"id_user_level,omitempty"  gorm:"type:smallint;not null;default:1"`
 	Cash          float32 `json:"money,omitempty"          gorm:"type:numeric(6,1);not null;default: 0"`
+	Name          string  `json:"name,omitempty"          gorm:"type:varchar(20);default:'-'"`
 
 	UserLevel  UserLevel  `json:"access,omitempty"      gorm:"-"`
 	User       User       `json:"user,omitempty"        gorm:"-"`
@@ -28,6 +29,7 @@ CREATE TABLE public.list_users
   cod_collection integer NOT NULL,
   cod_user_level SMALLINT NOT NULL DEFAULT 1,
   cash NUMERIC(6,1) NOT NULL DEFAULT 0,
+  name VARCHAR(20) DEFAULT '',
 
   CONSTRAINT pk_list_u PRIMARY KEY(id)
 );
