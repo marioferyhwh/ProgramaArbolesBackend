@@ -6,30 +6,35 @@
     - Uno
     - Varios (listado)
   - Editar
+  - Borrar uno
 - 2.tipos de NIVEl
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
+  - Borrar uno
 - 3.tipos de Prestamo
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
+  - Borrar uno
 - 4.tipos de documentos
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
+  - Borrar uno
 - 5.tipos de telefono
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
+  - Borrar uno
 - 6.User
   - Login
   - Datos para crear(<-4.tipos de documentos)
@@ -38,63 +43,88 @@
     - Uno
     - Varios (listado)
   - Editar uno
+  - Borrar uno
 - 7.tipos de negocio
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
-- tipos de negocio
+  - Borrar uno
+- 8.Ubicaciones
+  - crear una
+  - Datos
+    - Una
+    - Varias (listado)
+  - Editar una
+  - Borrar una
+- 9.asignar
+  - Datos para crear(<-1.cobro<-6.usuario)(admin)
+  - crear asignacion
+  - Datos
+    - Una(..<-6.usario)
+    - Varias (listado)
+  - Editar una
+  - Borrar una
+- 10.Telefonos usuarios
+  - Datos para crear(<-5.tipos de telefono)
   - crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar uno
-- tipos de gasto
-  - crear uno
-  - Datos
-    - Uno
-    - Varios (listado)
-  - Editar uno
-- Cliente
-  - Datos para crear
+  - Borrar uno
+- 11.Cliente
+  - Datos para crear(<-4.tipos de documentos<-7.tipos de negocio<-8.Ubicaciones)
   - Crear uno
   - Datos
+    - Uno (<-4.tipos de documentos<-7.tipos de negocio<-8.Ubicaciones)
+    - Varios (listado)
+  - Editar uno
+  - Borrar uno
+- 12.Telefonos cliente(combinar con el de usuarios)
+  - Datos para crear(<-5.tipos de telefono)
+  - crear uno
+  - Datos
     - Uno
     - Varios (listado)
   - Editar uno
-- Prestamos
-  - Datos para crear
+  - Borrar uno
+- 13.Prestamos
+  - Datos para crear(<-11.clientes)
+  - Crear uno
+  - Datos
+    - Uno(<-11.clientes<-6.User)
+    - Varios (listado)
+  - Editar
+    - Uno (->14.pagos)
+    - Varios(->14.pagos)
+  - Borrar uno
+- 14.Pagos
   - Crear uno
   - Datos
     - Uno
     - Varios (listado)
   - Editar
+  - Borrar
+- 15.ingreso y engreso
+  - Crear uno
+  - Datos
     - Uno
-    - Varios(->pagos)
-- Gastos
-  - Datos para crear
+    - Varios (listado)
+  - Editar uno
+  - Borrar
+- 16.tipos de gasto
+  - Crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 17.Gastos
+  - Datos para crear(16<-16.tipos de gasto)
   - Crear
   - Datos
     - Uno
     - Varios (listado)
   - Editar
-- Pagos
-  - Datos para crear
-  - crear
-  - Datos
-    - Uno
-    - Varios (listado)
-  - Editar
-  - borrar
-- Ubicacion
-  - crear
-  - Datos
-    - Uno
-    - Varios (listado)
-  - Editar
 - otros
-  - Agregar usuario
-  - Quitar usuario
-  - Registrar ingresos y egresos
-  - Listado de ingresos y egresos
