@@ -1,88 +1,100 @@
 # Solicitudes
 
-- tipos de NIVEL
-  - crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - editar UNO
-- Cobro
-  - datos para crear
-  - Crear
-  - datos
-    - uno
-    - varios - listado
+- 1.Cobro
+  - Crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
   - Editar
+- 2.tipos de NIVEl
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 3.tipos de Prestamo
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 4.tipos de documentos
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 5.tipos de telefono
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 6.User
+  - Login
+  - Datos para crear(<-4.tipos de documentos)
+  - Crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- 7.tipos de negocio
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- tipos de negocio
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- tipos de gasto
+  - crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- Cliente
+  - Datos para crear
+  - Crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar uno
+- Prestamos
+  - Datos para crear
+  - Crear uno
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar
+    - Uno
+    - Varios(->pagos)
+- Gastos
+  - Datos para crear
+  - Crear
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar
+- Pagos
+  - Datos para crear
+  - crear
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar
+  - borrar
+- Ubicacion
+  - crear
+  - Datos
+    - Uno
+    - Varios (listado)
+  - Editar
+- otros
   - Agregar usuario
   - Quitar usuario
   - Registrar ingresos y egresos
   - Listado de ingresos y egresos
-- tipos de gasto
-  - crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - editar UNO
-- tipos de negocio
-  - crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - editar UNO
-- tipos de negocio
-  - crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - editar UNO
-- User
-  - Login
-  - datos para crear
-  - Crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - Editar UNO
-- Cliente
-  - datos para crear
-  - Crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - Editar UNO
-- Prestamos
-  - datos para crear
-  - Crear UNO
-  - datos
-    - uno
-    - varios - listado
-  - Editar
-    - uno
-    - varios(->pagos)
-- Gastos
-  - datos para crear
-  - Crear
-  - datos
-    - uno
-    - varios - listado
-  - Editar
-- Pagos
-  - datos para crear
-  - crear
-  - datos
-    - uno
-    - varios - listado
-  - editar
-  - borrar
-- ubicacion
-  - crear
-  - datos
-    - uno
-    - varios - listado
-  - editar
-- tipos de telefono
-  - crear
-  - datos
-    - uno
-    - varios - listado
-  - editar
