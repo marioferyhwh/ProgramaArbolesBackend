@@ -7,15 +7,15 @@ type User struct {
 	NickName        string `json:"nick_name,omitempty"        gorm:"type:varchar(50);not null;default:''"`
 	Email           string `json:"email,omitempty"            gorm:"type:varchar(100);not null"`
 	Password        string `json:"password,omitempty"         gorm:"type:varchar(256);not null"`
-	CodDocumentType string `json:"document_codige,omitempty"  gorm:"type:varchar(3);not null;default:''"`
-	Document        string `json:"document_number,omitempty"  gorm:"type:numeric(11);not null"`
+	CodDocumentType string `json:"document_code,omitempty"  gorm:"type:varchar(3);not null;default:''"`
+	Document        string `json:"document,omitempty"  gorm:"type:numeric(11);not null"`
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
 	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-"`
 
-	DocumentType DocumentType `json:"document_description,omitempty" gorm:"-"`
-	ListUser     []ListUser   `json:"collections,omitempty"          gorm:"-"`
-	UserTel      []UserTel    `json:"tels,omitempty"                 gorm:"-"`
-	Expense      []Expense    `json:"expenses,omitempty"             gorm:"-"`
+	DocumentType interface{} `json:"document_description,omitempty" gorm:"-"`
+	ListUser     []ListUser  `json:"collections,omitempty"          gorm:"-"`
+	UserTel      []UserTel   `json:"tels,omitempty"                 gorm:"-"`
+	Expense      []Expense   `json:"expenses,omitempty"             gorm:"-"`
 }
 
 /*

@@ -5,8 +5,8 @@ type Client struct {
 	ModelBig
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50); NOT NULL"`
 	Email           string `json:"email,omitempty"            gorm:"type:varchar(100)"`
-	CodDocumentType string `json:"document_codige,omitempty"  gorm:"type:varchar(3);default:'CC'"`
-	Document        string `json:"document_number,omitempty"  gorm:"type:NUMERIC(11)"`
+	CodDocumentType string `json:"document_code,omitempty"  gorm:"type:varchar(3);default:'CC'"`
+	Document        string `json:"document,omitempty"  gorm:"type:NUMERIC(11)"`
 	Adress          string `json:"adress,omitempty"           gorm:"type:varchar(60); NOT NULL"`
 	LoanNumber      uint8  `json:"number_loans,omitempty"     gorm:"type:SMALLINT; NOT NULL;default:0"`
 	CodCollection   uint32 `json:"id_collection,omitempty"    gorm:"type:integer; NOT NULL"`

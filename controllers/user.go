@@ -50,6 +50,34 @@ func encriptPasswordUser(password string) string {
 
 //UserCreate crea el usuario
 func UserCreate(user models.User, m *models.Message) {
+	//validacion de datos de usuario
+	if user.Email == "" {
+		m.Code = http.StatusBadRequest
+		m.Message = "falta email"
+		return
+	}
+	if user.Active {
+		user.Active = true
+	}
+	if user.NickName == "" {
+		user.NickName = user.Email
+	}
+	if user.CodDocumentType == "" {
+		m.Code = http.StatusBadRequest
+		m.Message = "falta tipo de documento"
+		return
+	}
+	if user.Document == "" {
+		m.Code = http.StatusBadRequest
+		m.Message = "falta Documento"
+		return
+	}
+	if user.Password == "" {
+		m.Code = http.StatusBadRequest
+		m.Message = "falta clave"
+		return
+	}
+	//encriptar clave
 	pwd := encriptPasswordUser(user.Password)
 	user.Password = pwd
 	db := configuration.GetConnection()
@@ -61,6 +89,11 @@ func UserCreate(user models.User, m *models.Message) {
 		m.Message = fmt.Sprintf("error a crear el registro :%s", err)
 		return
 	}
+
+	user.Password = ""
+	user.ConfirmPassword = ""
+
 	m.Code = http.StatusOK
-	m.Message = "Usuatio Creado"
+	m.Message = "Usuario Creado"
+	m.Data = user
 }
