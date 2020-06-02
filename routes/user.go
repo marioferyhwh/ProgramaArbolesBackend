@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
@@ -34,7 +35,7 @@ func SetUserCreateRoutes(c echo.Context) error {
 
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego usario ->", err)
+		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
 	if user.ConfirmPassword != user.Password {
@@ -49,22 +50,20 @@ func SetUserCreateRoutes(c echo.Context) error {
 
 //SetGetUserRoutes Creacion de usuario
 func SetGetUserRoutes(c echo.Context) error {
-	user := models.User{}
+	user := c.Get(commons.User)
 	m := models.Message{}
-	//defer
-	err := c.Bind(&user)
 
+	id := c.Param("id")
+	fmt.Println(user)
+	var u models.User
+	i64, err := strconv.ParseInt(id, 10, 32)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego usario ->", err)
+		m.Message = "identificador de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	if user.ConfirmPassword != user.Password {
-		m.Code = http.StatusBadRequest
-		m.Message = "contraseñas no coninciden"
-		return commons.DisplayMessage(c, &m)
-	}
-	controllers.GetUser(user, &m)
+	u.ID = uint32(i64)
+	controllers.GetUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -77,14 +76,10 @@ func SetEditUserRoutes(c echo.Context) error {
 
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego usario ->", err)
+		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	if user.ConfirmPassword != user.Password {
-		m.Code = http.StatusBadRequest
-		m.Message = "contraseñas no coninciden"
-		return commons.DisplayMessage(c, &m)
-	}
+
 	controllers.EditUser(user, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -101,11 +96,7 @@ func SetDeleteUserRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego usario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	if user.ConfirmPassword != user.Password {
-		m.Code = http.StatusBadRequest
-		m.Message = "contraseñas no coninciden"
-		return commons.DisplayMessage(c, &m)
-	}
+
 	controllers.DeleteUser(user, &m)
 	return commons.DisplayMessage(c, &m)
 }

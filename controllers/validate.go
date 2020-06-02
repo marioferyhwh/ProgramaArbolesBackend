@@ -38,7 +38,7 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 				case jwt.ValidationErrorExpired:
 					mErr = "su token a expirado"
 				default:
-					mErr = "erro de validacon de token"
+					mErr = "erro de validacion de token"
 				}
 				m.Code = http.StatusBadRequest
 				m.Message = mErr

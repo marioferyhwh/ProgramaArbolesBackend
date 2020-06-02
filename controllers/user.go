@@ -25,7 +25,6 @@ func encriptPasswordUser(password string) string {
 func Login(user models.User, m *models.Message) {
 	pwd := encriptPasswordUser(user.Password)
 
-	fmt.Println()
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Where("(nick_name = ? or email = ?) and password = ?", user.Email, user.Email, pwd).First(&user)
@@ -36,7 +35,12 @@ func Login(user models.User, m *models.Message) {
 		return
 	}
 	// user.Password = ""
-	token := commons.GenetateJWT(user)
+	token, err := commons.GenetateJWT(user)
+	if err != nil {
+		m.Code = http.StatusBadGateway
+		m.Message = "error generando token"
+		return
+	}
 	/*
 		fmt.Print(token)
 		j, err := json.Marshal(models.Token{Token: token})

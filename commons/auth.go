@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
@@ -43,18 +44,18 @@ func loadSignFiles() {
 }
 
 //GenetateJWT creacion de token
-func GenetateJWT(user models.User) string {
-	claims := models.Claim{
+func GenetateJWT(user models.User) (string, error) {
+	c := models.Claim{
 		User: user,
 		StandardClaims: jwt.StandardClaims{
-			//ExpiresAt: time.Now().Add(time.hour * 2).Unix(),
-			Issuer: "forest",
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			Issuer:    "forest",
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
-	resul, err := token.SignedString(privateKey)
+	t := jwt.NewWithClaims(jwt.SigningMethodRS256, c)
+	resul, err := t.SignedString(privateKey)
 	if err != nil {
-		log.Fatal("no se firma token->", err)
+		return "", err
 	}
-	return resul
+	return resul, nil
 }
