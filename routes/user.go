@@ -46,3 +46,66 @@ func SetUserCreateRoutes(c echo.Context) error {
 	return commons.DisplayMessage(c, &m)
 
 }
+
+//SetGetUserRoutes Creacion de usuario
+func SetGetUserRoutes(c echo.Context) error {
+	user := models.User{}
+	m := models.Message{}
+	//defer
+	err := c.Bind(&user)
+
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego usario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	if user.ConfirmPassword != user.Password {
+		m.Code = http.StatusBadRequest
+		m.Message = "contraseñas no coninciden"
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.GetUser(user, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetEditUserRoutes Creacion de usuario
+func SetEditUserRoutes(c echo.Context) error {
+	user := models.User{}
+	m := models.Message{}
+	//defer
+	err := c.Bind(&user)
+
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego usario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	if user.ConfirmPassword != user.Password {
+		m.Code = http.StatusBadRequest
+		m.Message = "contraseñas no coninciden"
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.EditUser(user, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetDeleteUserRoutes Creacion de usuario
+func SetDeleteUserRoutes(c echo.Context) error {
+	user := models.User{}
+	m := models.Message{}
+	//defer
+	err := c.Bind(&user)
+
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego usario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	if user.ConfirmPassword != user.Password {
+		m.Code = http.StatusBadRequest
+		m.Message = "contraseñas no coninciden"
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.DeleteUser(user, &m)
+	return commons.DisplayMessage(c, &m)
+}

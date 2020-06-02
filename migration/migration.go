@@ -20,7 +20,6 @@ func Migrate() {
 	db.DropTableIfExists(&models.Loan{})
 	db.DropTableIfExists(&models.ClientTel{})
 	db.DropTableIfExists(&models.Client{})
-
 	db.DropTableIfExists(&models.UserTel{})
 	db.DropTableIfExists(&models.ListUser{})
 	db.DropTableIfExists(&models.ListLocation{})
