@@ -15,13 +15,20 @@ type model struct {
 	Password string
 }
 
+//encriptPasswordUser Se encripta la clave
+func encriptPasswordUser(password string) string {
+	c := sha256.Sum256([]byte(password))
+	return fmt.Sprintf("%x", c)
+}
+
 //Login funcion de inicio de seccion
 func Login(user models.User, m *models.Message) {
 	pwd := encriptPasswordUser(user.Password)
 
+	fmt.Println()
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Where("(nick_name = ? or email = ?) and password = ? and active = 1", user.Email, user.Email, pwd).First(&user)
+	db.Where("(nick_name = ? or email = ?) and password = ?", user.Email, user.Email, pwd).First(&user)
 	user.Password = ""
 	if user.ID <= 0 {
 		m.Code = http.StatusUnauthorized
@@ -41,11 +48,6 @@ func Login(user models.User, m *models.Message) {
 	*/
 	m.Code = http.StatusOK
 	m.NewToken = token
-}
-
-func encriptPasswordUser(password string) string {
-	c := sha256.Sum256([]byte(password))
-	return fmt.Sprintf("%x", c)
 }
 
 //UserCreate crea el usuario
@@ -89,6 +91,48 @@ func UserCreate(user models.User, m *models.Message) {
 		m.Message = fmt.Sprintf("error a crear el registro :%s", err)
 		return
 	}
+
+	user.Password = ""
+	user.ConfirmPassword = ""
+
+	m.Code = http.StatusOK
+	m.Message = "Usuario Creado"
+	m.Data = user
+}
+
+//GetUser trae un usario
+func GetUser(user models.User, m *models.Message) {
+
+	db := configuration.GetConnection()
+	defer db.Close()
+
+	db.Where("id = ?", user.ID).First(&user)
+	if user.ID <= 0 {
+		m.Code = http.StatusUnauthorized
+		m.Message = "Verificar Nombre y/o clave"
+		return
+	}
+	user.Password = ""
+	user.ConfirmPassword = ""
+
+	m.Code = http.StatusOK
+	m.Message = "Usuario Creado"
+	m.Data = user
+}
+
+//EditUser trae un usario
+func EditUser(user models.User, m *models.Message) {
+
+	user.Password = ""
+	user.ConfirmPassword = ""
+
+	m.Code = http.StatusOK
+	m.Message = "Usuario Creado"
+	m.Data = user
+}
+
+//DeleteUser trae un usario
+func DeleteUser(user models.User, m *models.Message) {
 
 	user.Password = ""
 	user.ConfirmPassword = ""
