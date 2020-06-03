@@ -11,13 +11,28 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+func getid(c echo.Context) (uint64, error) {
+	i64, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return uint64(i64), nil
+}
+
+func getid32(c echo.Context) (uint32, error) {
+	i64, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint32(i64), nil
+}
+
 //SetLoginRoutes inicio de seccion
 func SetLoginRoutes(c echo.Context) error {
 	var user models.User
 	m := models.Message{}
 	err := c.Bind(&user)
 	if err != nil {
-		fmt.Printf("Error : %s\n", err)
 		m.Code = http.StatusNotFound
 		m.Message = fmt.Sprint("no", err.Error())
 		return commons.DisplayMessage(c, &m)
@@ -30,7 +45,6 @@ func SetLoginRoutes(c echo.Context) error {
 func SetUserCreateRoutes(c echo.Context) error {
 	user := models.User{}
 	m := models.Message{}
-	//defer
 	err := c.Bind(&user)
 
 	if err != nil {
@@ -53,50 +67,66 @@ func SetGetUserRoutes(c echo.Context) error {
 	user := c.Get(commons.User)
 	m := models.Message{}
 
-	id := c.Param("id")
-	fmt.Println(user)
 	var u models.User
-	i64, err := strconv.ParseInt(id, 10, 32)
+	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	u.ID = uint32(i64)
+	u.ID = id
+	u.GetListUser = true
+	u.GetUserTel = true
+	m.Data = user
 	controllers.GetUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
 //SetEditUserRoutes Creacion de usuario
 func SetEditUserRoutes(c echo.Context) error {
-	user := models.User{}
+	user := c.Get(commons.User)
 	m := models.Message{}
-	//defer
-	err := c.Bind(&user)
 
+	var u models.User
+	err := c.Bind(&u)
+	fmt.Println("se va a editar")
+	fmt.Println("se va a editar")
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
 
-	controllers.EditUser(user, &m)
+	id, err := getid32(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	if id != u.ID {
+		m.Code = http.StatusBadRequest
+		m.Message = "no hay conincidencia con el identificador"
+		return commons.DisplayMessage(c, &m)
+	}
+	u.ID = id
+	m.Data = user
+	controllers.EditUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
 //SetDeleteUserRoutes Creacion de usuario
 func SetDeleteUserRoutes(c echo.Context) error {
-	user := models.User{}
+	user := c.Get(commons.User)
 	m := models.Message{}
-	//defer
-	err := c.Bind(&user)
-
+	var u models.User
+	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego usario ->", err)
+		m.Message = "identificador de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-
-	controllers.DeleteUser(user, &m)
+	u.ID = id
+	m.Data = user
+	controllers.DeleteUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }

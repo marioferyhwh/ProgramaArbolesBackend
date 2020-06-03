@@ -48,7 +48,7 @@ func GenetateJWT(user models.User) (string, error) {
 	c := models.Claim{
 		User: user,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
 			Issuer:    "forest",
 		},
 	}

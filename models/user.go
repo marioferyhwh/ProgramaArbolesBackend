@@ -16,6 +16,11 @@ type User struct {
 	ListUser     []ListUser  `json:"collections,omitempty"          gorm:"-"`
 	UserTel      []UserTel   `json:"tels,omitempty"                 gorm:"-"`
 	Expense      []Expense   `json:"expenses,omitempty"             gorm:"-"`
+
+	GetDocumentType bool `json:"-" gorm:"-"`
+	GetListUser     bool `json:"-" gorm:"-"`
+	GetUserTel      bool `json:"-" gorm:"-"`
+	GetExpense      bool `json:"-" gorm:"-"`
 }
 
 /*
