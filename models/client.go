@@ -15,7 +15,6 @@ type Client struct {
 	CodListLocation uint64 `json:"id_location,omitempty"      gorm:"type:BIGINT; NOT NULL;default:0"`
 	CodUser         uint32 `json:"id_user,omitempty"          gorm:"type:integer; NOT NULL"`
 
-	DocumentType  DocumentType `json:"document_description,omitempty" gorm:"-"`
 	LoanState     LoanState    `json:"state,omitempty"                gorm:"-"`
 	BusinessTypes BusinessType `json:"bussiness,omitempty"            gorm:"-"`
 	ListLocation  ListLocation `json:"location,omitempty"             gorm:"-"`

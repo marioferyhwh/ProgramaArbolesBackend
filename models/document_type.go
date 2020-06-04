@@ -2,9 +2,9 @@ package models
 
 //DocumentType tipo de documento de identificacion
 type DocumentType struct {
-	ID string `json:"document,omitempty" gorm:"type:varchar(3);DEFAULT:'CC';NOT NULL;primary_key"`
-	TimeModel
-	Descrip string `json:"description,omitempty" gorm:"type:varchar(20);DEFAULT:'';NOT NULL"`
+	Modelsmall
+	NameShort string `json:"name_short,omitempty" gorm:"type:varchar(3);DEFAULT:'CC';NOT NULL"`
+	Descrip   string `json:"description,omitempty" gorm:"type:varchar(20);DEFAULT:'';NOT NULL"`
 }
 
 /*

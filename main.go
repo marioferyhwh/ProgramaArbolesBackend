@@ -15,6 +15,7 @@ import (
 
 func main() {
 	log.Println("Inicia Backend")
+	testdb := true
 	var migrate string
 	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
 	flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")
@@ -34,8 +35,12 @@ func main() {
 		return
 	}
 
-  //middleware
+	if testdb {
+		fmt.Println("se termina ejecucuion")
+		return
+	}
 
+	//middleware
 	//routes
 	e := echo.New()
 	routes.InitRoutes(e)
