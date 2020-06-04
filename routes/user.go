@@ -77,7 +77,7 @@ func SetGetUserRoutes(c echo.Context) error {
 	u.ID = id
 	u.GetListUser = true
 	u.GetUserTel = true
-	m.Data = user
+	m.User = user
 	controllers.GetUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -89,8 +89,6 @@ func SetEditUserRoutes(c echo.Context) error {
 
 	var u models.User
 	err := c.Bind(&u)
-	fmt.Println("se va a editar")
-	fmt.Println("se va a editar")
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego usuario ->", err)
@@ -109,7 +107,7 @@ func SetEditUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	m.Data = user
+	m.User = user
 	controllers.EditUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -126,7 +124,7 @@ func SetDeleteUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	m.Data = user
+	m.User = user
 	controllers.DeleteUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }

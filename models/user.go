@@ -3,7 +3,7 @@ package models
 //User usuario
 type User struct {
 	Model
-	Active          bool   `json:"active,omitempty"           gorm:"type:bool;not null;default:true"`
+	Actived         bool   `json:"actived,omitempty"           gorm:"type:bool;not null;default:true"`
 	NickName        string `json:"nick_name,omitempty"        gorm:"type:varchar(50);not null;default:''"`
 	Email           string `json:"email,omitempty"            gorm:"type:varchar(100);not null"`
 	Password        string `json:"password,omitempty"         gorm:"type:varchar(256);not null"`
@@ -21,6 +21,8 @@ type User struct {
 	GetListUser     bool `json:"-" gorm:"-"`
 	GetUserTel      bool `json:"-" gorm:"-"`
 	GetExpense      bool `json:"-" gorm:"-"`
+	ChangePassword  bool `json:"-" gorm:"-"`
+	ChangeActived   bool `json:"-" gorm:"-"`
 }
 
 /*

@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"crypto/sha256"
-	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -64,8 +64,8 @@ func UserCreate(user models.User, m *models.Message) {
 		m.Message = "falta email"
 		return
 	}
-	if user.Active {
-		user.Active = true
+	if user.Actived {
+		user.Actived = true
 	}
 	if user.NickName == "" {
 		user.NickName = user.Email
@@ -95,8 +95,6 @@ func UserCreate(user models.User, m *models.Message) {
 		return
 	}
 
-	user.Password = ""
-	user.ConfirmPassword = ""
 	m.Code = http.StatusOK
 	m.Message = "Usuario Creado"
 	m.Data = user
@@ -126,8 +124,12 @@ func GetUser(user models.User, m *models.Message) {
 func EditUser(user models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Save(&user)
-
+	err := updateUser(&user, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se puedo actualizar"
+		return
+	}
 	user.Password = ""
 	user.ConfirmPassword = ""
 
@@ -141,7 +143,12 @@ func DeleteUser(user models.User, m *models.Message) {
 	//se debe agregar restricciones de borrado
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Unscoped().Delete(&user)
+	err := deleteUser(&user, m, db)
+	if err != nil {
+		m.Code = http.StatusBadGateway
+		m.Message = "no se pudo Borrado Usuario"
+		return
+	}
 	m.Code = http.StatusOK
 	m.Message = "Usuario Borrado"
 	m.Data = user
@@ -149,66 +156,52 @@ func DeleteUser(user models.User, m *models.Message) {
 
 //userCreate crea usuario con una conexion ya existente
 func userCreate(u *models.User, m *models.Message, db *gorm.DB) error {
-	nameNull := sql.NullString{}
-	if u.Name == "" {
-		nameNull.Valid = false
-	} else {
-		nameNull.Valid = true
-		nameNull.String = u.Name
-	}
-	q := `insert into users (created_at,updated_at,active,nick_name,email,password,cod_document_type,document,name)values(now(),now(),true,$1,$2,$3,$4,$5,$6);`
-	stmt, err := db.DB().Prepare(q)
+	//	q := `insert into users (created_at,updated_at,actived,nick_name,email,password,cod_document_type,document,name)values(now(),now(),true,$1,$2,$3,$4,$5,$6);`
+	err := db.Create(u).Error
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprintf("error al crear el registro :%s", err)
 		return err
 	}
-	defer stmt.Close()
-	r, err := stmt.Exec(u.NickName, u.Email, u.Password, u.CodDocumentType, u.Document, nameNull.String)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprintf("error al crear el registro :%s", err)
-		return err
-	}
-	i, _ := r.RowsAffected()
-	if i > 1 {
-		if err != nil {
-			m.Code = http.StatusBadRequest
-			m.Message = fmt.Sprintf("se alteraron mas de un resgistro :%s", err)
-			return err
-		}
-	}
-	id, _ := r.LastInsertId()
-	u.ID = uint32(id)
+	u.Password = ""
+	u.ConfirmPassword = ""
 	return nil
 }
 
 //getuser trae usario con una conexion ya existente
 func getuser(u *models.User, m *models.Message, db *gorm.DB) error {
-	q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
-	updateNull := sql.NullTime{}
-	rows, err := db.DB().Query(q)
+	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
+	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(u).GetErrors()
 	if err != nil {
-		return err
+		return errors.New("no se encuentra")
 	}
-	defer rows.Close()
-	var user models.User
-	for rows.Next() {
-		err = rows.Scan(
-			&user.ID,
-			&user.CreatedAt,
-			&updateNull,
-			&user.Active,
-			&user.NickName,
-			&user.Email,
-			&user.CodDocumentType,
-			&user.Document,
-			&user.Name,
-		)
-		if err != nil {
-			return err
-		}
-		user.UpdatedAt = updateNull.Time
+	return nil
+}
+
+//deleteUser se borra el usario con una conexion ya existente
+func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
+	//q := `delete from users where id=?;`
+	//q := `update from users set delete_at = now() where id=?;`
+	//err :=db.Delete(&u).GetErrors()
+	err := db.Unscoped().Delete(u).GetErrors()
+	if err != nil {
+		return errors.New("no se encuentra")
+	}
+	return nil
+}
+
+//updateUser se borra el usario con una conexion ya existente
+func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
+	//q := `update from users set .. where id=?;`
+	omitList := []string{"id"}
+	if !u.ChangePassword || u.ConfirmPassword == u.Password {
+		omitList = append(omitList, "password")
+	}
+	if !u.ChangeActived {
+		omitList = append(omitList, "actived")
+	}
+	err := db.Model(u).Omit(omitList...).Updates(u).Error
+	if err != nil {
+		fmt.Println(err)
+		return errors.New("no se encuentra")
 	}
 	return nil
 }

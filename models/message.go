@@ -7,4 +7,5 @@ type Message struct {
 	DataString string      `json:"data_string,omitempty"`
 	Message    string      `json:"message,omitempty"`
 	NewToken   string      `json:"new_token,omitempty"`
+	User       interface{} `json:"-"`
 }
