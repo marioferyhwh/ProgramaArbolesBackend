@@ -1,7 +1,7 @@
 package models
 
-//ListUser lista de usarios
-type ListUser struct {
+//UserList lista de usarios
+type UserList struct {
 	ModelBig
 	Active        bool    `json:"active,omitempty"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	CodUser       uint32  `json:"id_user,omitempty"        gorm:"type:integer;not null"`

@@ -275,3 +275,40 @@ func updateUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 	err := db.Model(ul).Omit(omitList...).Updates(ul).Error
 	return err
 }
+
+/*······························································
+································································
+··············· lista de collection por usario
+································································
+······························································*/
+
+//createUserList crea relacion entre usuario y collection con una conexion ya existente
+func createUserList(ul *models.UserList, m *models.Message, db *gorm.DB) error {
+	err := db.Create(ul).Error
+	return err
+}
+
+//getUserList trae  relacion entre usuario y collection con una conexion ya existente
+func getUserList(ul *models.UserList, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(ul).GetErrors()
+	if err != nil {
+		return errors.New("no se encuentra")
+	}
+	return nil
+}
+
+//deleteUserList se borra el  relacion entre usuario y collection con una conexion ya existente
+func deleteUserList(ul *models.UserList, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(ul).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//updateUserList se borra el  relacion entre usuario y collection con una conexion ya existente
+func updateUserList(ul *models.UserList, m *models.Message, db *gorm.DB) error {
+	omitList := []string{"id"}
+	err := db.Model(ul).Omit(omitList...).Updates(ul).Error
+	return err
+}

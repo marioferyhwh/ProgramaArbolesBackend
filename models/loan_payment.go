@@ -1,7 +1,7 @@
 package models
 
-//Payment pagos de prestamo
-type Payment struct {
+//LoanPayment pagos de prestamo
+type LoanPayment struct {
 	ModelBig
 	CodLoan       uint64  `json:"id_loan,omitempty"       gorm:"type:BIGINT ;NOT NULL"`
 	Cash          float32 `json:"money,omitempty"         gorm:"type:numeric(6,1) ;NOT NULL"`

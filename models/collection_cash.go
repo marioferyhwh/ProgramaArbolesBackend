@@ -1,7 +1,7 @@
 package models
 
-//Cash lista de egresos e ingresoso dee cobro
-type Cash struct {
+//CollectionCash lista de egresos e ingresoso dee cobro
+type CollectionCash struct {
 	ModelBig
 	CodCollection uint32  `json:"id_collection,omitempty" gorm:"type:integer;NOT NULL"`
 	CodUser       uint32  `json:"id_user,omitempty"       gorm:"type:integer;NOT NULL"`
