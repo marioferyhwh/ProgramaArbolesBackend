@@ -12,9 +12,9 @@ type User struct {
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
 	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-"`
 
-	UserList []UserList `json:"collections,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`
-	UserTel  []UserTel  `json:"tels,omitempty"                 gorm:"foreignkey:CodUser;association_foreignkey:id"`
-	Expense  []Expense  `json:"expenses,omitempty"             gorm:"foreignkey:CodUser;association_foreignkey:id"`
+	UserCollection []UserCollection `json:"collections,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`
+	UserTel        []UserTel        `json:"tels,omitempty"                 gorm:"foreignkey:CodUser;association_foreignkey:id"`
+	Expense        []Expense        `json:"expenses,omitempty"             gorm:"foreignkey:CodUser;association_foreignkey:id"`
 
 	GetDocumentType bool `json:"-" gorm:"-"`
 	GetListUser     bool `json:"-" gorm:"-"`

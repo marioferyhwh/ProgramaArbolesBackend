@@ -10,7 +10,7 @@ type Collection struct {
 	CollectionCash []CollectionCash `json:"cashes,omitempty"    gorm:"-"`
 	Expense        []Expense        `json:"expenses,omitempty"  gorm:"-"`
 	Client         []Client         `json:"clients,omitempty"   gorm:"-"`
-	ListUser       []UserList       `json:"users,omitempty"     gorm:"-"`
+	UserCollection []UserCollection `json:"users,omitempty"     gorm:"-"`
 }
 
 /*
