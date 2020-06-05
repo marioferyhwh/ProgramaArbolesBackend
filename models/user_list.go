@@ -3,7 +3,7 @@ package models
 //UserList lista de usarios
 type UserList struct {
 	ModelBig
-	Active        bool    `json:"active,omitempty"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	Actived       bool    `json:"actived,omitempty"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	CodUser       uint32  `json:"id_user,omitempty"        gorm:"type:integer;not null"`
 	CodCollection uint32  `json:"id_collection,omitempty"  gorm:"type:integer;not null"`
 	CodUserLevel  uint8   `json:"id_user_level,omitempty"  gorm:"type:smallint;not null;default:1"`

@@ -61,7 +61,7 @@ func createExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm
 
 //getExpenseDescrip trae descripcion de gasto con una conexion ya existente
 func getExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,cod_collection,descrip").Find(ed).GetErrors()
+	err := db.Select("id,created_at,updated_at,cod_collection,descrip").First(ed).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}

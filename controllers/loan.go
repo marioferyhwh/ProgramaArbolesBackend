@@ -15,18 +15,18 @@ func createLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
 
 //getLoan trae Prestamos con una conexion ya existente
 func getLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(l).GetErrors()
+	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user").First(l).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//deleteLoan se borra el Prestamos con una conexion ya existente
-func deleteLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
-	err := db.Unscoped().Delete(l).GetErrors()
+//getLoanList trae Prestamos con una conexion ya existente
+func getLoanList(l *[]models.Loan, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client").Find(l).GetErrors()
 	if err != nil {
-		return errors.New("Error al borrar")
+		return errors.New("no se encuentra")
 	}
 	return nil
 }
@@ -36,6 +36,15 @@ func updateLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(l).Omit(omitList...).Updates(l).Error
 	return err
+}
+
+//deleteLoan se borra el Prestamos con una conexion ya existente
+func deleteLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(l).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
 }
 
 /*······························································
@@ -52,18 +61,18 @@ func createLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error
 
 //getLoanState trae estado de  prestamos con una conexion ya existente
 func getLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(ls).GetErrors()
+	err := db.Select("id,created_at,updated_at,state").First(ls).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//deleteLoanState se borra el estado de  prestamos con una conexion ya existente
-func deleteLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
-	err := db.Unscoped().Delete(ls).GetErrors()
+//getLoanStateList trae estado de  prestamos con una conexion ya existente
+func getLoanStateList(ls *[]models.LoanState, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,state").Find(ls).GetErrors()
 	if err != nil {
-		return errors.New("Error al borrar")
+		return errors.New("no se encuentra")
 	}
 	return nil
 }
@@ -73,6 +82,15 @@ func updateLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error
 	omitList := []string{"id"}
 	err := db.Model(ls).Omit(omitList...).Updates(ls).Error
 	return err
+}
+
+//deleteLoanState se borra el estado de  prestamos con una conexion ya existente
+func deleteLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(ls).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
 }
 
 /*······························································
@@ -89,18 +107,18 @@ func createLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) e
 
 //getLoanPayment trae pagos de prestamos con una conexion ya existente
 func getLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(lp).GetErrors()
+	err := db.Select("id,created_at,updated_at,cod_loan,cash,cod_user").First(lp).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//deleteLoanPayment se borra el pagos de prestamos con una conexion ya existente
-func deleteLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
-	err := db.Unscoped().Delete(lp).GetErrors()
+//getLoanPaymentList trae pagos de prestamos con una conexion ya existente
+func getLoanPaymentList(lp *[]models.LoanPayment, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,updated_at,cod_loan,cash,cod_user").Find(lp).GetErrors()
 	if err != nil {
-		return errors.New("Error al borrar")
+		return errors.New("no se encuentra")
 	}
 	return nil
 }
@@ -110,4 +128,13 @@ func updateLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) e
 	omitList := []string{"id"}
 	err := db.Model(lp).Omit(omitList...).Updates(lp).Error
 	return err
+}
+
+//deleteLoanPayment se borra el pagos de prestamos con una conexion ya existente
+func deleteLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(lp).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
 }
