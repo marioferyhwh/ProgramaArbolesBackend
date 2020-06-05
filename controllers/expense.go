@@ -15,18 +15,18 @@ func createExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
 
 //getExpense trae gasto con una conexion ya existente
 func getExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(e).GetErrors()
+	err := db.Select("id,created_at,updated_at,cash,cod_expense_descrip,cod_user,cod_collection").First(e).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//deleteExpense se borra el gasto con una conexion ya existente
-func deleteExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
-	err := db.Unscoped().Delete(e).GetErrors()
+//getExpenseList trae gasto con una conexion ya existente
+func getExpenseList(e *[]models.Expense, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,cash,cod_expense_descrip,cod_user").Find(e).GetErrors()
 	if err != nil {
-		return errors.New("Error al borrar")
+		return errors.New("no se encuentra")
 	}
 	return nil
 }
@@ -36,6 +36,15 @@ func updateExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(e).Omit(omitList...).Updates(e).Error
 	return err
+}
+
+//deleteExpense se borra el gasto con una conexion ya existente
+func deleteExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(e).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
 }
 
 /*······························································
@@ -52,18 +61,18 @@ func createExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm
 
 //getExpenseDescrip trae descripcion de gasto con una conexion ya existente
 func getExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(ed).GetErrors()
+	err := db.Select("id,created_at,updated_at,cod_collection,descrip").Find(ed).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//deleteExpenseDescrip se borra el descripcion de gasto con una conexion ya existente
-func deleteExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
-	err := db.Unscoped().Delete(ed).GetErrors()
+//getExpenseDescripList trae descripcion de gasto con una conexion ya existente
+func getExpenseDescripList(ed *[]models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,descrip").Find(ed).GetErrors()
 	if err != nil {
-		return errors.New("Error al borrar")
+		return errors.New("no se encuentra")
 	}
 	return nil
 }
@@ -73,4 +82,13 @@ func updateExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm
 	omitList := []string{"id"}
 	err := db.Model(ed).Omit(omitList...).Updates(ed).Error
 	return err
+}
+
+//deleteExpenseDescrip se borra el descripcion de gasto con una conexion ya existente
+func deleteExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(ed).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
 }
