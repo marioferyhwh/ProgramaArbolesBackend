@@ -79,7 +79,7 @@ func getCollectionCashList(cc *[]models.CollectionCash, m *models.Message, db *g
 
 //updateCollectionCash se borra el movimento de collection con una conexion ya existente
 func updateCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_user", "cod_collection"}
 	err := db.Model(cc).Omit(omitList...).Updates(cc).Error
 	return err
 }

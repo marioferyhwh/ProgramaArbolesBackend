@@ -33,7 +33,7 @@ func getLoanList(l *[]models.Loan, m *models.Message, db *gorm.DB) error {
 
 //updateLoan se borra el Prestamos con una conexion ya existente
 func updateLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "initial_value", "interest", "quota", "cod_client", "cod_collection", "cod_user"}
 	err := db.Model(l).Omit(omitList...).Updates(l).Error
 	return err
 }
@@ -125,7 +125,7 @@ func getLoanPaymentList(lp *[]models.LoanPayment, m *models.Message, db *gorm.DB
 
 //updateLoanPayment se borra el pagos de prestamos con una conexion ya existente
 func updateLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_collection", "cod_user", "cod_loan"}
 	err := db.Model(lp).Omit(omitList...).Updates(lp).Error
 	return err
 }

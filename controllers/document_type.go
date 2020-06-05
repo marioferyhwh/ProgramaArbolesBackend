@@ -33,7 +33,7 @@ func getDocumentTypeList(dt *[]models.DocumentType, m *models.Message, db *gorm.
 
 //updateDocumentType se borra el tipo de documento con una conexion ya existente
 func updateDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "name_short"}
 	err := db.Model(dt).Omit(omitList...).Updates(dt).Error
 	return err
 }

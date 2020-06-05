@@ -15,7 +15,7 @@ func createClient(c *models.Client, m *models.Message, db *gorm.DB) error {
 
 //getClient trae clientes con una conexion ya existente
 func getClient(c *models.Client, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,name,email,cod_document_type,document,Adress,loan_number,cod_collection,cod_loan_state,cod_business_type,cod_client_list_location,cod_user").Find(c).GetErrors()
+	err := db.Select("id,created_at,updated_at,name,email,cod_document_type,document,Adress,loan_number,cod_collection,cod_loan_state,cod_business_type,cod_client_list_location,cod_user").First(c).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
@@ -33,7 +33,7 @@ func getClientList(c *[]models.Client, m *models.Message, db *gorm.DB) error {
 
 //updateClient se borra el clientes con una conexion ya existente
 func updateClient(c *models.Client, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_collection", "cod_user"}
 	err := db.Model(c).Omit(omitList...).Updates(c).Error
 	return err
 }
@@ -61,7 +61,7 @@ func createClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error
 
 //getClientTel trae telefonos de clientes con una conexion ya existente
 func getClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,phone,cod_tel_descrip").Find(ct).GetErrors()
+	err := db.Select("id,created_at,updated_at,phone,cod_tel_descrip").First(ct).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
@@ -79,7 +79,7 @@ func getClientTelList(ct *models.ClientTel, m *models.Message, db *gorm.DB) erro
 
 //updateClientTel se borra el telefonos de clientes con una conexion ya existente
 func updateClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_client", "phone"}
 	err := db.Model(ct).Omit(omitList...).Updates(ct).Error
 	return err
 }
@@ -107,7 +107,7 @@ func createClientListLocation(cll *models.ClientListLocation, m *models.Message,
 
 //getClientListLocation trae ubicacion valida para clientes por collection con una conexion ya existente
 func getClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,descrip").Find(cll).GetErrors()
+	err := db.Select("id,created_at,updated_at,descrip").First(cll).GetErrors()
 	if err != nil {
 		return errors.New("no se encuentra")
 	}
@@ -125,7 +125,7 @@ func getClientListLocationList(cll *models.ClientListLocation, m *models.Message
 
 //updateClientListLocation se borra el ubicacion valida para clientes por collection con una conexion ya existente
 func updateClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_collection"}
 	err := db.Model(cll).Omit(omitList...).Updates(cll).Error
 	return err
 }

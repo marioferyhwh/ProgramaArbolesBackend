@@ -250,7 +250,7 @@ func getUserTelList(ut *[]models.UserTel, m *models.Message, db *gorm.DB) error 
 
 //updateUserTel se borra el telefono de usuario con una conexion ya existente
 func updateUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_user", "phone"}
 	err := db.Model(ut).Omit(omitList...).Updates(ut).Error
 	return err
 }
@@ -342,7 +342,7 @@ func getUserCollectionList(ul *[]models.UserCollection, m *models.Message, db *g
 
 //updateUserCollection se borra el  relacion entre usuario y collection con una conexion ya existente
 func updateUserCollection(ul *models.UserCollection, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_collection", "cod_user", ""}
 	err := db.Model(ul).Omit(omitList...).Updates(ul).Error
 	return err
 }

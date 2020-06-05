@@ -33,7 +33,7 @@ func getExpenseList(e *[]models.Expense, m *models.Message, db *gorm.DB) error {
 
 //updateExpense se borra el gasto con una conexion ya existente
 func updateExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_expense_descrip", "cod_user", "cod_collection"}
 	err := db.Model(e).Omit(omitList...).Updates(e).Error
 	return err
 }
@@ -79,7 +79,7 @@ func getExpenseDescripList(ed *[]models.ExpenseDescrip, m *models.Message, db *g
 
 //updateExpenseDescrip se borra el descripcion de gasto con una conexion ya existente
 func updateExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "cod_collection"}
 	err := db.Model(ed).Omit(omitList...).Updates(ed).Error
 	return err
 }
