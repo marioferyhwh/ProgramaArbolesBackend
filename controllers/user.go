@@ -90,7 +90,7 @@ func UserCreate(user models.User, m *models.Message) {
 	user.Password = pwd
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := userCreate(&user, m, db)
+	err := createUser(&user, m, db)
 	if err != nil {
 		return
 	}
@@ -104,7 +104,7 @@ func UserCreate(user models.User, m *models.Message) {
 func GetUser(user models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getuser(&user, m, db)
+	err := getUser(&user, m, db)
 	// db.First(&user)
 	// err := db.First(&user).Error
 	if err != nil {
@@ -154,8 +154,8 @@ func DeleteUser(user models.User, m *models.Message) {
 	m.Data = user
 }
 
-//userCreate crea usuario con una conexion ya existente
-func userCreate(u *models.User, m *models.Message, db *gorm.DB) error {
+//createUser crea usuario con una conexion ya existente
+func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//	q := `insert into users (created_at,updated_at,actived,nick_name,email,password,cod_document_type,document,name)values(now(),now(),true,$1,$2,$3,$4,$5,$6);`
 	err := db.Create(u).Error
 	if err != nil {
@@ -166,8 +166,8 @@ func userCreate(u *models.User, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//getuser trae usario con una conexion ya existente
-func getuser(u *models.User, m *models.Message, db *gorm.DB) error {
+//getUser trae usario con una conexion ya existente
+func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(u).GetErrors()
 	if err != nil {
@@ -183,7 +183,7 @@ func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//err :=db.Delete(&u).GetErrors()
 	err := db.Unscoped().Delete(u).GetErrors()
 	if err != nil {
-		return errors.New("no se encuentra")
+		return errors.New("Erro al borrar")
 	}
 	return nil
 }
@@ -199,9 +199,79 @@ func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
 		omitList = append(omitList, "actived")
 	}
 	err := db.Model(u).Omit(omitList...).Updates(u).Error
+	return err
+}
+
+/*······························································
+································································
+··············· telefono del usuario
+································································
+······························································*/
+
+//createUserTel crea telefono de usuario con una conexion ya existente
+func createUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+	err := db.Create(ut).Error
+	return err
+}
+
+//getUserTel trae telefono de usuario con una conexion ya existente
+func getUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(ut).GetErrors()
 	if err != nil {
-		fmt.Println(err)
 		return errors.New("no se encuentra")
 	}
 	return nil
+}
+
+//deleteUserTel se borra telefono de usuario con una conexion ya existente
+func deleteUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(ut).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//updateUserTel se borra el telefono de usuario con una conexion ya existente
+func updateUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+	omitList := []string{"id"}
+	err := db.Model(ut).Omit(omitList...).Updates(ut).Error
+	return err
+}
+
+/*······························································
+································································
+··············· Nivel de usuario
+································································
+······························································*/
+
+//createUserLevel crea tipo de documento con una conexion ya existente
+func createUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
+	err := db.Create(ul).Error
+	return err
+}
+
+//getUserLevel trae tipo de documento con una conexion ya existente
+func getUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").Find(ul).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//deleteUserLevel se borra el tipo de documento con una conexion ya existente
+func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
+	err := db.Unscoped().Delete(ul).GetErrors()
+	if err != nil {
+		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//updateUserLevel se borra el tipo de documento con una conexion ya existente
+func updateUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
+	omitList := []string{"id"}
+	err := db.Model(ul).Omit(omitList...).Updates(ul).Error
+	return err
 }
