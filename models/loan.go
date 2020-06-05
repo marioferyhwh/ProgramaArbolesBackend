@@ -12,11 +12,11 @@ type Loan struct {
 	CodCollection uint32  `json:"id_collection,omitempty"       gorm:"type:integer;NOT NULL"`
 	CodUser       uint32  `json:"id_user,omitempty"             gorm:"type:integer;NOT NULL"`
 
-	LoanState  LoanState     `json:"loan_state,omitempty"  gorm:"-"`
-	Payments   []LoanPayment `json:"payments,omitempty"    gorm:"-"`
-	Client     Client        `json:"client,omitempty"      gorm:"-"`
-	Collection Collection    `json:"collection,omitempty"  gorm:"-"`
-	User       User          `json:"user,omitempty"        gorm:"-"`
+	LoanState   LoanState     `json:"loan_state,omitempty"  gorm:"-"`
+	LoanPayment []LoanPayment `json:"payments,omitempty"    gorm:"-"`
+	Client      Client        `json:"client,omitempty"      gorm:"-"`
+	Collection  Collection    `json:"collection,omitempty"  gorm:"-"`
+	User        User          `json:"user,omitempty"        gorm:"-"`
 }
 
 /*

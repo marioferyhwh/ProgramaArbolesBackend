@@ -7,10 +7,10 @@ type Collection struct {
 	Active       bool    `json:"active,omitempty" gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	BalanceTotal float32 `json:"balance_total,omitempty" gorm:"type:numeric(7,1);NOT NULL;DEFAULT: 0"`
 
-	Cash     []CollectionCash `json:"cashes,omitempty"    gorm:"-"`
-	Expense  []Expense        `json:"expenses,omitempty"  gorm:"-"`
-	Client   []Client         `json:"clients,omitempty"   gorm:"-"`
-	ListUser []UserList       `json:"users,omitempty"     gorm:"-"`
+	CollectionCash []CollectionCash `json:"cashes,omitempty"    gorm:"-"`
+	Expense        []Expense        `json:"expenses,omitempty"  gorm:"-"`
+	Client         []Client         `json:"clients,omitempty"   gorm:"-"`
+	ListUser       []UserList       `json:"users,omitempty"     gorm:"-"`
 }
 
 /*
