@@ -7,6 +7,12 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+/*······························································
+································································
+··············· gasto
+································································
+······························································*/
+
 //createExpense crea gasto con una conexion ya existente
 func createExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
 	err := db.Create(e).Error

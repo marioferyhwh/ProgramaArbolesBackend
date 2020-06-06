@@ -13,11 +13,16 @@ import (
 func Migrate() {
 	db := configuration.GetConnection()
 	defer db.Close()
-	deleteTables(db)
-	createTables(db)
-	createConstrain(db)
+	// deleteTables(db)
+	// createTables(db)
+	// createConstrain(db)
 	createDataInit()
 
+	var m models.Message
+	var uc models.UserCollection
+	controllers.UserCollectionGetList(uc, &m)
+
+	fmt.Println(m)
 	// var user models.User
 	// db.Find(&user)
 	// var documents []models.DocumentType

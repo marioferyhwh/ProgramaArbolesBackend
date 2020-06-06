@@ -27,6 +27,55 @@ func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 	m.Data = bt
 }
 
+//BusinessTypeGet crea un nuevo tipo de documento
+func BusinessTypeGet(bt models.BusinessType, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getBusinessType(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encotro tipo de negocio"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de negocio creado"
+	m.Data = bt
+}
+
+//BusinessTypeGetList crea un nuevo tipo de documento
+func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
+	bts := []models.BusinessType{bt}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getBusinessTypeList(&bts, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se creo el listado de negocios"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "listado de negocios"
+	m.Data = bts
+}
+
+//BusinessTypeUpdate crea un nuevo tipo de documento
+func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := updateBusinessType(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de negocio no se actualizo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "se actualizo tipo de negocio"
+	m.Data = bt
+}
+
 //BusinessTypeDelete crea un nuevo tipo de documento
 func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 	if !validateAdmin(m) {
@@ -37,13 +86,19 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 	err := deleteBusinessType(&bt, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "tipo de negocio no se creo"
+		m.Message = "tipo de negocio no se borro"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "tipo de negocio creado"
+	m.Message = "borrado correctamente"
 	m.Data = bt
 }
+
+/*······························································
+································································
+··············· tipo de negocio
+································································
+······························································*/
 
 //createBusinessType crea tipo de negocios con una conexion ya existente
 func createBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {

@@ -34,7 +34,6 @@ func validateAdmin(m *models.Message) bool {
 //Login funcion de inicio de seccion
 func Login(user models.User, m *models.Message) {
 	pwd := encriptPasswordUser(user.Password)
-
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Where("(nick_name = ? or email = ?) and password = ?", user.Email, user.Email, pwd).First(&user)
@@ -102,13 +101,12 @@ func UserCreate(user models.User, m *models.Message) {
 	if err != nil {
 		return
 	}
-
 	m.Code = http.StatusOK
 	m.Message = "Usuario Creado"
 	m.Data = user
 }
 
-//GetUser trae un usario
+//GetUser trae un usuario
 func GetUser(user models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -122,13 +120,12 @@ func GetUser(user models.User, m *models.Message) {
 	}
 	user.Password = ""
 	user.ConfirmPassword = ""
-
 	m.Code = http.StatusOK
 	m.Message = "informacion de usuario"
 	m.Data = user
 }
 
-//EditUser trae un usario
+//EditUser trae un usuario
 func EditUser(user models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -169,7 +166,7 @@ func EditUser(user models.User, m *models.Message) {
 	m.Data = user
 }
 
-//DeleteUser trae un usario
+//DeleteUser trae un usuario
 func DeleteUser(user models.User, m *models.Message) {
 	//se debe agregar restricciones de borrado
 	db := configuration.GetConnection()
@@ -203,7 +200,7 @@ func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//getUser trae usario con una conexion ya existente
+//getUser trae usuario con una conexion ya existente
 func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").First(u).GetErrors()
@@ -213,7 +210,7 @@ func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//getUserList trae usario con una conexion ya existente
+//getUserList trae usuario con una conexion ya existente
 func getUserList(u *[]models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,actived,name").Find(u).GetErrors()
@@ -223,7 +220,7 @@ func getUserList(u *[]models.User, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//updateUser se borra el usario con una conexion ya existente
+//updateUser se borra el usuario con una conexion ya existente
 func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `update from users set .. where id=?;`
 	omitList := []string{"id"}
@@ -237,7 +234,7 @@ func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	return err
 }
 
-//deleteUser se borra el usario con una conexion ya existente
+//deleteUser se borra el usuario con una conexion ya existente
 func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `delete from users where id=?;`
 	//q := `update from users set delete_at = now() where id=?;`
@@ -301,6 +298,91 @@ func deleteUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 ································································
 ······························································*/
 
+//UserLevelCreate crea un nuevo tipo de documento
+func UserLevelCreate(bt models.UserLevel, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := createUserLevel(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de usuario no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de usuario creado"
+	m.Data = bt
+}
+
+//UserLevelGet crea un nuevo tipo de documento
+func UserLevelGet(bt models.UserLevel, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getUserLevel(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encotro tipo de usuario"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de usuario creado"
+	m.Data = bt
+}
+
+//UserLevelGetList crea un nuevo tipo de documento
+func UserLevelGetList(bt models.UserLevel, m *models.Message) {
+	bts := []models.UserLevel{bt}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getUserLevelList(&bts, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro listado de usuario"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "listado de usuario"
+	m.Data = bts
+}
+
+//UserLevelUpdate crea un nuevo tipo de documento
+func UserLevelUpdate(bt models.UserLevel, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := updateUserLevel(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de usuario no se actualizo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "se actualizo tipo de usuario"
+	m.Data = bt
+}
+
+//UserLevelDelete crea un nuevo tipo de documento
+func UserLevelDelete(bt models.UserLevel, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteUserLevel(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de usuario no se borro"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "borrado correctamente"
+	m.Data = bt
+}
+
 //createUserLevel crea tipo de documento con una conexion ya existente
 func createUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Create(ul).Error
@@ -343,9 +425,29 @@ func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 
 /*······························································
 ································································
-··············· lista de collection por usario
+··············· lista de collection por usuario
 ································································
 ······························································*/
+
+//UserCollectionGetList crea un nuevo tipo de documento
+func UserCollectionGetList(bt models.UserCollection, m *models.Message) {
+	bts := []models.UserCollection{bt}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getUserCollectionList(&bts, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se creo el listado de negocios"
+		return
+	}
+	fmt.Println(bts)
+	fmt.Println("\n ")
+	fmt.Println("\n ")
+	fmt.Println("\n ")
+	m.Code = http.StatusOK
+	m.Message = "listado de negocios"
+	m.Data = bts
+}
 
 //createUserCollection crea relacion entre usuario y collection con una conexion ya existente
 func createUserCollection(ul *models.UserCollection, m *models.Message, db *gorm.DB) error {
@@ -356,16 +458,28 @@ func createUserCollection(ul *models.UserCollection, m *models.Message, db *gorm
 //getUserCollection trae  relacion entre usuario y collection con una conexion ya existente
 func getUserCollection(ul *models.UserCollection, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name").First(ul).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
 //getUserCollectionList trae  relacion entre usuario y collection con una conexion ya existente
-func getUserCollectionList(ul *[]models.UserCollection, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ul).GetErrors()
-	if err != nil {
+func getUserCollectionList(uls *[]models.UserCollection, m *models.Message, db *gorm.DB) error {
+	var ul models.UserCollection
+	if len(*uls) == 1 {
+		ul = (*uls)[0]
+	}
+	where := ""
+	if ul.CodCollection != 0 {
+		where = fmt.Sprintf("cod_collection = %v", ul.CodCollection)
+	}
+	if ul.CodUser != 0 {
+		where = fmt.Sprintf("cod_user = %v", ul.CodUser)
+	}
+	fmt.Println("se inicia consulta")
+	err := db.Debug().Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(uls).GetErrors()
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
