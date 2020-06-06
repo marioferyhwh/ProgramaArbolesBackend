@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -77,7 +78,9 @@ func SetGetUserRoutes(c echo.Context) error {
 	u.ID = id
 	u.GetListUser = true
 	u.GetUserTel = true
-	m.User = user
+
+	bodyBytes, _ := json.Marshal(user)
+	json.Unmarshal(bodyBytes, &m.User)
 	controllers.GetUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -107,7 +110,8 @@ func SetEditUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	m.User = user
+	bodyBytes, _ := json.Marshal(user)
+	json.Unmarshal(bodyBytes, &m.User)
 	controllers.EditUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -124,7 +128,8 @@ func SetDeleteUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	m.User = user
+	bodyBytes, _ := json.Marshal(user)
+	json.Unmarshal(bodyBytes, &m.User)
 	controllers.DeleteUser(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
