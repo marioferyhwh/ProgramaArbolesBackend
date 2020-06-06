@@ -23,6 +23,14 @@ func encriptPasswordUser(password string) string {
 	return fmt.Sprintf("%x", c)
 }
 
+func validateAdmin(m *models.Message) bool {
+	if !m.User.Admin {
+		m.Code = http.StatusBadRequest
+		m.Message = "no esta autorizado"
+	}
+	return m.User.Admin
+}
+
 //Login funcion de inicio de seccion
 func Login(user models.User, m *models.Message) {
 	pwd := encriptPasswordUser(user.Password)

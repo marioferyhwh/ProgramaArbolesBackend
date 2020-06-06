@@ -11,9 +11,30 @@ import (
 
 //BusinessTypeCreate crea un nuevo tipo de documento
 func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createBusinessType(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de negocio no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de negocio creado"
+	m.Data = bt
+}
+
+//BusinessTypeDelete crea un nuevo tipo de documento
+func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteBusinessType(&bt, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de negocio no se creo"

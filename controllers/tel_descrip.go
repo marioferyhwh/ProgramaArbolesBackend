@@ -9,18 +9,57 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-//TelDescripCreate crea un nuevo tipo de documento
+//TelDescripCreate crea un nuevo tipo de telefono
 func TelDescripCreate(td models.TelDescrip, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createTelDescrip(&td, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "tipo de negocio no se creo"
+		m.Message = "descripcion del telefono no se creo"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "tipo de negocio creado"
+	m.Message = "descripcion del telefono creado"
+	m.Data = td
+}
+
+//TelDescripGetList crea un nuevo tipo de telefono
+func TelDescripGetList(td []models.TelDescrip, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getTelDescripList(&td, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion del telefono no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "descripcion del telefono borro"
+	m.Data = td
+}
+
+//TelDescripDelete crea un nuevo tipo de telefono
+func TelDescripDelete(td models.TelDescrip, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteTelDescrip(&td, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion del telefono no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "descripcion del telefono borro"
 	m.Data = td
 }
 

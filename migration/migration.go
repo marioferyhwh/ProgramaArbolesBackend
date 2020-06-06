@@ -56,6 +56,7 @@ func createDataInit() {
 			Admin:           true,
 		},
 	}
+	m.User = users[0]
 	businessTypes := []models.BusinessType{
 		{Descrip: "mercado"},
 		{Descrip: "joyeria"},

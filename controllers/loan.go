@@ -57,6 +57,9 @@ func deleteLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
 
 //LoanStateCreate crea un nuevo tipo de documento
 func LoanStateCreate(ls models.LoanState, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createLoanState(&ls, m, db)
@@ -68,6 +71,24 @@ func LoanStateCreate(ls models.LoanState, m *models.Message) {
 	m.Code = http.StatusOK
 	m.Message = "tipo de prestamo creado"
 	m.Data = ls
+}
+
+//LoanStateDelete crea un nuevo tipo de documento
+func LoanStateDelete(bt models.LoanState, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteLoanState(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "estado de prestamo no se borro"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "estado de prestamo se borro"
+	m.Data = bt
 }
 
 //createLoanState crea estado de  prestamos con una conexion ya existente

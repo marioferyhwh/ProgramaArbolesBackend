@@ -24,6 +24,24 @@ func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 	m.Data = dt
 }
 
+//DocumentTypeDelete crea un nuevo tipo de documento
+func DocumentTypeDelete(bt models.DocumentType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteDocumentType(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "documento no se borro"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "documento se borro"
+	m.Data = bt
+}
+
 /*······························································
 ································································
 ···············  tipos de documentos
