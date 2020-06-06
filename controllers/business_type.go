@@ -9,7 +9,7 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-//BusinessTypeCreate crea un nuevo tipo de documento
+//BusinessTypeCreate crea un nuevo tipo de negocio
 func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 	if !validateAdmin(m) {
 		return
@@ -27,7 +27,7 @@ func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 	m.Data = bt
 }
 
-//BusinessTypeGet crea un nuevo tipo de documento
+//BusinessTypeGet traer un nuevo tipo de negocio
 func BusinessTypeGet(bt models.BusinessType, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -42,7 +42,7 @@ func BusinessTypeGet(bt models.BusinessType, m *models.Message) {
 	m.Data = bt
 }
 
-//BusinessTypeGetList crea un nuevo tipo de documento
+//BusinessTypeGetList traer lista de tipo de negocio
 func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
 	bts := []models.BusinessType{bt}
 	db := configuration.GetConnection()
@@ -58,7 +58,7 @@ func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
 	m.Data = bts
 }
 
-//BusinessTypeUpdate crea un nuevo tipo de documento
+//BusinessTypeUpdate se edita un tipo de negocio
 func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
 	if !validateAdmin(m) {
 		return
@@ -76,7 +76,7 @@ func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
 	m.Data = bt
 }
 
-//BusinessTypeDelete crea un nuevo tipo de documento
+//BusinessTypeDelete se borra un tipo de negocio
 func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 	if !validateAdmin(m) {
 		return
@@ -100,13 +100,13 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 ································································
 ······························································*/
 
-//createBusinessType crea tipo de negocios con una conexion ya existente
+//createBusinessType crea tipo de negocio
 func createBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Create(bt).Error
 	return err
 }
 
-//getBusinessType trae tipo de negocios con una conexion ya existente
+//getBusinessType trae tipo de negocio
 func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(bt).GetErrors()
 	if len(err) != 0 {
@@ -115,7 +115,7 @@ func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) er
 	return nil
 }
 
-//getBusinessTypeList trae tipo de negocios con una conexion ya existente
+//getBusinessTypeList trae lista de tipo de negocios
 func getBusinessTypeList(bt *[]models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,descrip").Find(bt).GetErrors()
 	if len(err) != 0 {
@@ -124,14 +124,14 @@ func getBusinessTypeList(bt *[]models.BusinessType, m *models.Message, db *gorm.
 	return nil
 }
 
-//updateBusinessType se borra el tipo de negocios con una conexion ya existente
+//updateBusinessType actualizar el tipo de negocio
 func updateBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(bt).Omit(omitList...).Updates(bt).Error
 	return err
 }
 
-//deleteBusinessType se borra el tipo de negocios con una conexion ya existente
+//deleteBusinessType borras el tipo de negocio
 func deleteBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(bt).GetErrors()
 	if len(err) != 0 {

@@ -200,6 +200,16 @@ func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
+//getUserShort trae usuario con una conexion ya existente
+func getUserShort(u *models.User, m *models.Message, db *gorm.DB) error {
+	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
+	err := db.Select("id,actived,name").First(u).GetErrors()
+	if len(err) != 0 {
+		return errors.New("no se encuentra")
+	}
+	return nil
+}
+
 //getUser trae usuario con una conexion ya existente
 func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
@@ -440,10 +450,6 @@ func UserCollectionGetList(bt models.UserCollection, m *models.Message) {
 		m.Message = "no se creo el listado de negocios"
 		return
 	}
-	fmt.Println(bts)
-	fmt.Println("\n ")
-	fmt.Println("\n ")
-	fmt.Println("\n ")
 	m.Code = http.StatusOK
 	m.Message = "listado de negocios"
 	m.Data = bts

@@ -16,13 +16,23 @@ func Migrate() {
 	// deleteTables(db)
 	// createTables(db)
 	// createConstrain(db)
-	createDataInit()
+	// createDataInit()
 
 	var m models.Message
-	var uc models.UserCollection
-	controllers.UserCollectionGetList(uc, &m)
+	controllers.BusinessTypeGetList(models.BusinessType{}, &m)
 
-	fmt.Println(m)
+	switch m.Data.(type) {
+
+	case []models.BusinessType:
+		b := m.Data.([]models.BusinessType)
+		for _, d := range b {
+			fmt.Println(d)
+		}
+
+	default:
+		fmt.Println(m.Data)
+
+	}
 	// var user models.User
 	// db.Find(&user)
 	// var documents []models.DocumentType
