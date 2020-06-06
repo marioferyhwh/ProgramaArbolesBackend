@@ -9,6 +9,12 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+/*······························································
+································································
+··············· tipo de negocio
+································································
+······························································*/
+
 //BusinessTypeCreate crea un nuevo tipo de negocio
 func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 	if !validateAdmin(m) {
@@ -95,9 +101,6 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 }
 
 /*······························································
-································································
-··············· tipo de negocio
-································································
 ······························································*/
 
 //createBusinessType crea tipo de negocio

@@ -10,6 +10,12 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+/*······························································
+································································
+··············· cliente
+································································
+······························································*/
+
 //ClientCreate crea un nuevo cliente
 func ClientCreate(c models.Client, m *models.Message) {
 	db := configuration.GetConnection()
@@ -92,6 +98,9 @@ func ClientDelete(c models.Client, m *models.Message) {
 	m.Data = c
 }
 
+/*······························································
+······························································*/
+
 //createClient crea cliente
 func createClient(c *models.Client, m *models.Message, db *gorm.DB) error {
 	err := db.Create(c).Error
@@ -107,7 +116,7 @@ func getClient(c *models.Client, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//getClientList trae lista de cliente
+//getClientList trae lista de clientes
 func getClientList(cs *[]models.Client, m *models.Message, db *gorm.DB) error {
 	var c models.Client
 	if len(*cs) == 1 {
@@ -217,6 +226,9 @@ func ClientTelDelete(ct models.ClientTel, m *models.Message) {
 	m.Message = "borrado correctamente"
 	m.Data = ct
 }
+
+/*······························································
+······························································*/
 
 //createClientTel crea telefonos de clientes
 func createClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
@@ -347,6 +359,9 @@ func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) 
 	m.Message = "borrado correctamente"
 	m.Data = cll
 }
+
+/*······························································
+······························································*/
 
 //createClientListLocation crea ubicacion valida para clientes por collection
 func createClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
