@@ -109,7 +109,7 @@ func createBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB)
 //getBusinessType trae tipo de negocios con una conexion ya existente
 func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(bt).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -118,7 +118,7 @@ func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) er
 //getBusinessTypeList trae tipo de negocios con una conexion ya existente
 func getBusinessTypeList(bt *[]models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,descrip").Find(bt).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -134,7 +134,7 @@ func updateBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB)
 //deleteBusinessType se borra el tipo de negocios con una conexion ya existente
 func deleteBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(bt).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil

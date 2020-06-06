@@ -204,7 +204,7 @@ func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
 func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").First(u).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -214,7 +214,7 @@ func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 func getUserList(u *[]models.User, m *models.Message, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,actived,name").Find(u).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -240,7 +240,7 @@ func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
 	//q := `update from users set delete_at = now() where id=?;`
 	//err :=db.Delete(&u).GetErrors()
 	err := db.Unscoped().Delete(u).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Erro al borrar")
 	}
 	return nil
@@ -261,7 +261,7 @@ func createUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 //getUserTel trae telefono de usuario con una conexion ya existente
 func getUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,phone,descrip").First(ut).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -270,7 +270,7 @@ func getUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 //getUserTelList trae telefono de usuario con una conexion ya existente
 func getUserTelList(ut *[]models.UserTel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,phone,descrip").Find(ut).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
@@ -286,7 +286,7 @@ func updateUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 //deleteUserTel se borra telefono de usuario con una conexion ya existente
 func deleteUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ut).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil
@@ -392,7 +392,7 @@ func createUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 //getUserLevel trae tipo de documento con una conexion ya existente
 func getUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,level").First(ul).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil
@@ -401,7 +401,7 @@ func getUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 //getUserLevelList trae tipo de documento con una conexion ya existente
 func getUserLevelList(ul *[]models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,level").Find(ul).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil
@@ -417,7 +417,7 @@ func updateUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 //deleteUserLevel se borra el tipo de documento con una conexion ya existente
 func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ul).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil
@@ -495,7 +495,7 @@ func updateUserCollection(ul *models.UserCollection, m *models.Message, db *gorm
 //deleteUserCollection se borra el  relacion entre usuario y collection con una conexion ya existente
 func deleteUserCollection(ul *models.UserCollection, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ul).GetErrors()
-	if err != nil {
+	if len(err) != 0 {
 		return errors.New("Error al borrar")
 	}
 	return nil
