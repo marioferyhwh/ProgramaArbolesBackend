@@ -3,17 +3,20 @@ package models
 //User usuario
 type User struct {
 	Model
-	Actived         bool   `json:"actived,omitempty"           gorm:"type:bool;not null;default:true"`
+	Actived         bool   `json:"actived,omitempty"          gorm:"type:bool;not null;default:true"`
 	NickName        string `json:"nick_name,omitempty"        gorm:"type:varchar(50);not null;default:''"`
 	Email           string `json:"email,omitempty"            gorm:"type:varchar(100);not null"`
 	Password        string `json:"password,omitempty"         gorm:"type:varchar(256);not null"`
-	CodDocumentType string `json:"document_code,omitempty"  gorm:"type:varchar(3);not null;default:''"`
-	Document        string `json:"document,omitempty"  gorm:"type:numeric(11);not null"`
+	CodDocumentType string `json:"document_code,omitempty"    gorm:"type:varchar(3);not null;default:''"`
+	Document        string `json:"document,omitempty"         gorm:"type:numeric(11);not null"`
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
+	Admin           bool   `json:"admin,omitempty"            gorm:"type:bool;not null;default:false"`
 	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-"`
 
 	UserCollection []UserCollection `json:"collections,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`
 	UserTel        []UserTel        `json:"tels,omitempty"                 gorm:"foreignkey:CodUser;association_foreignkey:id"`
+	UserTelNew     []UserTel        `json:"tels_new,omitempty"             gorm:"foreignkey:CodUser;association_foreignkey:id"`
+	UserTelDelete  []UserTel        `json:"tels_delete,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`
 	Expense        []Expense        `json:"expenses,omitempty"             gorm:"foreignkey:CodUser;association_foreignkey:id"`
 
 	GetDocumentType bool `json:"-" gorm:"-"`

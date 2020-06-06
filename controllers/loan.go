@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/jinzhu/gorm"
+	"github.com/marioferyhwh/IMFBackend_forest/configuration"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
@@ -52,6 +54,21 @@ func deleteLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
 ··············· estado de prestamos
 ································································
 ······························································*/
+
+//LoanStateCreate crea un nuevo tipo de documento
+func LoanStateCreate(ls models.LoanState, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := createLoanState(&ls, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de prestamo no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de prestamo creado"
+	m.Data = ls
+}
 
 //createLoanState crea estado de  prestamos con una conexion ya existente
 func createLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {

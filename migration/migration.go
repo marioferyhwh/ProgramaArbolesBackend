@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/marioferyhwh/IMFBackend_forest/configuration"
+	"github.com/marioferyhwh/IMFBackend_forest/controllers"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
@@ -12,10 +13,10 @@ import (
 func Migrate() {
 	db := configuration.GetConnection()
 	defer db.Close()
-	// deleteTables(db)
-	// createTables(db)
-	// createConstrain(db)
-	// createDataInit()
+	deleteTables(db)
+	createTables(db)
+	createConstrain(db)
+	createDataInit()
 
 	// var user models.User
 	// db.Find(&user)
@@ -30,58 +31,67 @@ func Migrate() {
 
 func createDataInit() {
 	m := models.Message{}
-	document := models.DocumentType{
-		Descrip:   "targeta",
-		NameShort: "TI",
+	documents := []models.DocumentType{
+		{
+			Descrip:   "Targeta de iendtificacion",
+			NameShort: "TI",
+		},
+		{
+			Descrip:   "Cedula De Ciudadania",
+			NameShort: "CC",
+		},
+		{
+			Descrip:   "DNI",
+			NameShort: "DNI",
+		},
 	}
-	document1 := models.DocumentType{
-		Descrip:   "targeta",
-		NameShort: "CC",
+	users := []models.User{
+		{
+			NickName:        "forest",
+			Email:           "forest",
+			Password:        "forest",
+			CodDocumentType: "CC",
+			Document:        "1111111111",
+			Name:            "forest",
+			Admin:           true,
+		},
 	}
-	document2 := models.DocumentType{
-		Descrip:   "targeta",
-		NameShort: "CC",
+	businessTypes := []models.BusinessType{
+		{Descrip: "mercado"},
+		{Descrip: "joyeria"},
+		{Descrip: "banco"},
 	}
-	user := models.User{
-		NickName:        "forest",
-		Email:           "forest",
-		Password:        "forest",
-		CodDocumentType: "CC",
-		Document:        "1111111111",
-		Name:            "forest",
+	telDescrips := []models.TelDescrip{
+		{Descrip: "personal"},
+		{Descrip: "trabajo"},
+		{Descrip: "casa"},
+		{Descrip: "otro"},
 	}
-	user1 := models.User{
-		NickName:        "forest",
-		Email:           "forest",
-		Password:        "forest",
-		CodDocumentType: "TI",
-		Document:        "1111111112",
-		Name:            "forest",
-	}
-	user2 := models.User{
-		NickName:        "forest",
-		Email:           "forest",
-		Password:        "forest",
-		CodDocumentType: "CC",
-		Document:        "1111111113",
-		Name:            "forest",
+	loanStates := []models.LoanState{
+		{State: "personal"},
+		{State: "trabajo"},
+		{State: "casa"},
+		{State: "otro"},
 	}
 
-	db := configuration.GetConnection()
-	db.Save(&document)
-	db.Save(&document1)
-	db.Save(&document2)
-	fmt.Println(document)
-	fmt.Println(document1)
-	// user.DocumentTypeID = document1.ID
-	// user2.DocumentTypeID = document1.ID
-	db.Save(&user)
-	db.Save(&user1)
-	db.Save(&user2)
-	db.Close()
-	// controllers.UserCreate(user, &m)
-	// controllers.UserCreate(user1, &m)
-	// controllers.UserCreate(user2, &m)
+	for _, d := range documents {
+		controllers.DocumentTypeCreate(d, &m)
+	}
+
+	for _, bt := range businessTypes {
+		controllers.BusinessTypeCreate(bt, &m)
+	}
+
+	for _, td := range telDescrips {
+		controllers.TelDescripCreate(td, &m)
+	}
+
+	for _, ls := range loanStates {
+		controllers.LoanStateCreate(ls, &m)
+	}
+	for _, u := range users {
+		controllers.UserCreate(u, &m)
+	}
 	fmt.Println(m)
 }
 
@@ -126,9 +136,9 @@ func createTables(db *gorm.DB) {
 }
 
 func createConstrain(db *gorm.DB) {
-	db.Model(&models.DocumentType{}).AddUniqueIndex("document_types_name_short_key", "name_short")
+	//db.Model(&models.DocumentType{}).AddUniqueIndex("document_types_name_short_key", "name_short")
 
-	db.Model(&models.User{}).AddUniqueIndex("users_cdocumentt_document_key", "cod_document_type", "document").AddForeignKey("cod_document_type", "document_types(name_short)", "restrict", "restrict")
+	//db.Model(&models.User{}).AddUniqueIndex("users_cdocumentt_document_key", "cod_document_type", "document").AddForeignKey("cod_document_type", "document_types(name_short)", "restrict", "restrict")
 
 	// db.Model(&models.ListLocation{}).AddForeignKey("cod_collection", "collections(id)", "restrict", "restrict").AddUniqueIndex("list_locations_ccollection_descrip_key", "cod_collection", "descrip")
 	// db.Model(&models.ListUser{}).AddForeignKey("cod_user", "users(id)", "restrict", "restrict").AddForeignKey("cod_collection", "collections(id)", "restrict", "restrict").AddForeignKey("cod_user_level", "user_levels(id)", "restrict", "restrict").AddUniqueIndex("list_users_cuser_ccollection_key", "cod_user", "cod_collection").AddIndex("list_users_ccollection_cuser_key", "cod_collection", "cod_user")

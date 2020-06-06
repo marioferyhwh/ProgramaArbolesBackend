@@ -3,16 +3,16 @@ package models
 //UserCollection lista de usarios
 type UserCollection struct {
 	ModelBig
-	Actived       bool    `json:"actived,omitempty"         gorm:"type:bool;NOT NULL;DEFAULT:true"`
+	Actived       bool    `json:"actived,omitempty"        gorm:"type:bool;NOT NULL;DEFAULT:true"`
 	CodUser       uint32  `json:"id_user,omitempty"        gorm:"type:integer;not null"`
 	CodCollection uint32  `json:"id_collection,omitempty"  gorm:"type:integer;not null"`
 	CodUserLevel  uint8   `json:"id_user_level,omitempty"  gorm:"type:smallint;not null;default:1"`
 	Cash          float32 `json:"money,omitempty"          gorm:"type:numeric(6,1);not null;default: 0"`
-	Name          string  `json:"name,omitempty"          gorm:"type:varchar(20);default:'-'"`
+	Name          string  `json:"name,omitempty"           gorm:"type:varchar(20);default:'-'"`
 
-	UserLevel  UserLevel  `json:"access,omitempty"      gorm:"-"`
-	User       User       `json:"user,omitempty"        gorm:"-"`
-	Collection Collection `json:"collection,omitempty"  gorm:"-"`
+	UserLevel  UserLevel  `json:"access,omitempty"      gorm:"foreignkey:id;association_foreignkey:CodUserLevel"`
+	User       User       `json:"user,omitempty"        gorm:"foreignkey:id;association_foreignkey:CodUser"`
+	Collection Collection `json:"collection,omitempty"  gorm:"foreignkey:id;association_foreignkey:CodCollection"`
 }
 
 /*

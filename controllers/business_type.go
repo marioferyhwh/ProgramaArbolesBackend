@@ -2,10 +2,27 @@ package controllers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/jinzhu/gorm"
+	"github.com/marioferyhwh/IMFBackend_forest/configuration"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
+
+//BusinessTypeCreate crea un nuevo tipo de documento
+func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := createBusinessType(&bt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de negocio no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de negocio creado"
+	m.Data = bt
+}
 
 //createBusinessType crea tipo de negocios con una conexion ya existente
 func createBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {

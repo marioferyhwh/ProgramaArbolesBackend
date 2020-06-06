@@ -2,10 +2,33 @@ package controllers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/jinzhu/gorm"
+	"github.com/marioferyhwh/IMFBackend_forest/configuration"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
+
+//DocumentTypeCreate crea un nuevo tipo de documento
+func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := createDocumentType(&dt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "documento no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "documento creado"
+	m.Data = dt
+}
+
+/*······························································
+································································
+···············  tipos de documentos
+································································
+······························································*/
 
 //createDocumentType crea tipo de documento con una conexion ya existente
 func createDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {

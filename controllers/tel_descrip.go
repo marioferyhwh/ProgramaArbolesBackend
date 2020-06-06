@@ -2,10 +2,27 @@ package controllers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/jinzhu/gorm"
+	"github.com/marioferyhwh/IMFBackend_forest/configuration"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
+
+//TelDescripCreate crea un nuevo tipo de documento
+func TelDescripCreate(td models.TelDescrip, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := createTelDescrip(&td, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de negocio no se creo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de negocio creado"
+	m.Data = td
+}
 
 //createTelDescrip crea descripcion de los telefonos con una conexion ya existente
 func createTelDescrip(td *models.TelDescrip, m *models.Message, db *gorm.DB) error {

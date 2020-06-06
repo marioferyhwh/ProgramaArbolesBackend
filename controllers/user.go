@@ -124,15 +124,38 @@ func GetUser(user models.User, m *models.Message) {
 func EditUser(user models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.Begin()
 	err := updateUser(&user, m, db)
+	m.Code = http.StatusBadRequest
+	m.Message = "no se puedo actualizar"
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "no se puedo actualizar"
+		db.Rollback()
 		return
+	}
+	for _, tel := range user.UserTelDelete {
+		err = deleteUserTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	for _, tel := range user.UserTelNew {
+		err = createUserTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	for _, tel := range user.UserTel {
+		err = updateUserTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
 	}
 	user.Password = ""
 	user.ConfirmPassword = ""
-
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "Usuario Editado"
 	m.Data = user
