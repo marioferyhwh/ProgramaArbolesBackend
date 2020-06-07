@@ -4,12 +4,19 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
+
+/*······························································
+································································
+··············· validacion de token
+································································
+······························································*/
 
 //ValidateJWT se valida que el token que llega sea valido
 func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
@@ -74,4 +81,31 @@ func getToken(r *http.Request) (string, error) {
 		return ah[7:], nil
 	}
 	return "", errors.New("el header no contiene la palabra bearer")
+}
+
+/*······························································
+································································
+··············· validacion de tiempo
+································································
+······························································*/
+
+//validateTime se valida tiempo
+func validateTime(tv models.TimeValidator) (time.Time, time.Time) {
+	if tv.M <= 0 {
+		tv.M = 15
+	} else if tv.M > 30 {
+		tv.M = 30
+	}
+	if tv.I == (time.Time{}) {
+		t := time.Now()
+		tv.I = time.Date(t.Year(), t.Month(), t.Day(), tv.Zh, 00, 00, 00, time.UTC)
+		tv.E = tv.I.Add(time.Hour * 24)
+	}
+	diff := float32(tv.E.Sub(tv.I).Hours()) / 24
+	if diff > float32(tv.M) {
+		tv.E = tv.I.Add(time.Hour * 24 * time.Duration(int64(tv.M)))
+	} else if diff < 0 {
+		tv.E = tv.I.Add(time.Hour * 24)
+	}
+	return tv.I, tv.E
 }

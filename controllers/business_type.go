@@ -56,11 +56,11 @@ func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
 	err := getBusinessTypeList(&bts, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "no se creo el listado de negocios"
+		m.Message = "no se encontro litado de tipo de negocios"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "listado de negocios"
+	m.Message = "lista de tipo de negocios"
 	m.Data = bts
 }
 

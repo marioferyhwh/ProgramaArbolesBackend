@@ -11,6 +11,7 @@ type User struct {
 	Document        string `json:"document,omitempty"         gorm:"type:numeric(11);not null"`
 	Name            string `json:"name,omitempty"             gorm:"type:varchar(50);not null;default:''"`
 	Admin           bool   `json:"admin,omitempty"            gorm:"type:bool;not null;default:false"`
+	TimeZone        int8   `json:"time_zone,omitempty"        gorm:"type:smallint;not null;default:-5"`
 	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-"`
 
 	UserCollection []UserCollection `json:"collections,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`

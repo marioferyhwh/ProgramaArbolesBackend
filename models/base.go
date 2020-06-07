@@ -35,3 +35,10 @@ type ModelBig struct {
 	ID uint64 `json:"id,omitempty" gorm:"type:bigserial;NOT NULL;primary_key"`
 	TimeModel
 }
+
+type TimeValidator struct {
+	I  time.Time
+	E  time.Time
+	Zh int
+	M  int
+}
