@@ -23,20 +23,26 @@ func encriptPasswordUser(password string) string {
 	return fmt.Sprintf("%x", c)
 }
 
+/*······························································
+································································
+··············· usuario
+································································
+······························································*/
+
 //Login funcion de inicio de seccion
-func Login(user models.User, m *models.Message) {
-	pwd := encriptPasswordUser(user.Password)
+func Login(u models.User, m *models.Message) {
+	pwd := encriptPasswordUser(u.Password)
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Where("(nick_name = ? or email = ?) and password = ?", user.Email, user.Email, pwd).First(&user)
-	user.Password = ""
-	if user.ID <= 0 {
+	db.Where("(nick_name = ? or email = ?) and password = ?", u.Email, u.Email, pwd).First(&u)
+	u.Password = ""
+	if u.ID <= 0 {
 		m.Code = http.StatusUnauthorized
 		m.Message = "Verificar Nombre y/o clave"
 		return
 	}
-	// user.Password = ""
-	token, err := commons.GenetateJWT(user)
+	// u.Password = ""
+	token, err := commons.GenetateJWT(u)
 	if err != nil {
 		m.Code = http.StatusBadGateway
 		m.Message = "error generando token"
@@ -56,114 +62,134 @@ func Login(user models.User, m *models.Message) {
 }
 
 //UserCreate crea el usuario
-func UserCreate(user models.User, m *models.Message) {
+func UserCreate(u models.User, m *models.Message) {
 	//validacion de datos de usuario
-	if user.Email == "" {
+	if u.Email == "" {
 		m.Code = http.StatusBadRequest
 		m.Message = "falta email"
 		return
 	}
-	if user.Actived {
-		user.Actived = true
+	if u.Actived {
+		u.Actived = true
 	}
-	if user.NickName == "" {
-		user.NickName = user.Email
+	if u.NickName == "" {
+		u.NickName = u.Email
 	}
-	if user.CodDocumentType == "" {
+	if u.CodDocumentType == "" {
 		m.Code = http.StatusBadRequest
 		m.Message = "falta tipo de documento"
 		return
 	}
-	if user.Document == "" {
+	if u.Document == "" {
 		m.Code = http.StatusBadRequest
 		m.Message = "falta Documento"
 		return
 	}
-	if user.Password == "" {
+	if u.Password == "" {
 		m.Code = http.StatusBadRequest
 		m.Message = "falta clave"
 		return
 	}
 	//encriptar clave
-	pwd := encriptPasswordUser(user.Password)
-	user.Password = pwd
+	pwd := encriptPasswordUser(u.Password)
+	u.Password = pwd
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createUser(&user, m, db)
+	err := createUser(&u, m, db)
 	if err != nil {
 		return
 	}
 	m.Code = http.StatusOK
 	m.Message = "Usuario Creado"
-	m.Data = user
+	m.Data = u
 }
 
 //GetUser trae un usuario
-func GetUser(user models.User, m *models.Message) {
+func GetUser(u models.User, m *models.Message) {
+	if u.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique usuario"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUser(&user, m, db)
-	// db.First(&user)
-	// err := db.First(&user).Error
+	err := getUser(&u, m, db)
+	// db.First(&u)
+	// err := db.First(&u).Error
 	if err != nil {
-		m.Code = http.StatusUnauthorized
+		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro usuario"
 		return
 	}
-	user.Password = ""
-	user.ConfirmPassword = ""
+	u.Password = ""
+	u.ConfirmPassword = ""
 	m.Code = http.StatusOK
 	m.Message = "informacion de usuario"
-	m.Data = user
+	m.Data = u
 }
 
 //EditUser trae un usuario
-func EditUser(user models.User, m *models.Message) {
+func EditUser(u models.User, m *models.Message) {
+	if u.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique usuario"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := updateUser(&user, m, db)
+	err := updateUser(&u, m, db)
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
 	if err != nil {
 		db.Rollback()
 		return
 	}
-	for _, tel := range user.UserTelDelete {
+	for _, tel := range u.UserTelDelete {
 		err = deleteUserTel(&tel, m, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
-	for _, tel := range user.UserTelNew {
+	for _, tel := range u.UserTelNew {
 		err = createUserTel(&tel, m, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
-	for _, tel := range user.UserTel {
+	for _, tel := range u.UserTel {
 		err = updateUserTel(&tel, m, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
-	user.Password = ""
-	user.ConfirmPassword = ""
+	u.Password = ""
+	u.ConfirmPassword = ""
 	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "Usuario Editado"
-	m.Data = user
+	m.Data = u
 }
 
 //DeleteUser trae un usuario
-func DeleteUser(user models.User, m *models.Message) {
+func DeleteUser(u models.User, m *models.Message) {
 	//se debe agregar restricciones de borrado
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUser(&user, m, db)
+	db.Begin()
+	var err error
+	for _, tel := range u.UserTel {
+		err = deleteUserTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	err = deleteUser(&u, m, db)
+	db.Commit()
 	if err != nil {
 		m.Code = http.StatusBadGateway
 		m.Message = "no se pudo Borrado Usuario"
@@ -171,7 +197,7 @@ func DeleteUser(user models.User, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "Usuario Borrado"
-	m.Data = user
+	m.Data = u
 }
 
 /*······························································
@@ -254,75 +280,94 @@ func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
 ································································
 ······························································*/
 
-//UserTelCreate crea un nuevo tipo de negocio
+//UserTelCreate crea un nuevo telefono de usuario
 func UserTelCreate(ut models.UserTel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ut.CodUser == 0 {
+		m.Message = "no se especifico a que usuario"
+	}
+	if ut.Phone == "" {
+		m.Message = "introdusca numero telefonico"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createUserTel(&ut, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "tipo de negocio no se creo"
+		m.Message = "telefono de usuario no se creo"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "tipo de negocio creado"
+	m.Message = "telefono de usuario creado"
 	m.Data = ut
 }
 
-//UserTelGet traer un nuevo tipo de negocio
+//UserTelGet traer un nuevo telefono de usuario
 func UserTelGet(ut models.UserTel, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserTel(&ut, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "no se encotro tipo de negocio"
+		m.Message = "no se encotro telefono de usuario"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "tipo de negocio creado"
+	m.Message = "telefono de usuario creado"
 	m.Data = ut
 }
 
-//UserTelGetList traer lista de tipo de negocio
+//UserTelGetList traer lista de telefono de usuario
 func UserTelGetList(ut models.UserTel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ut.CodUser == 0 {
+		m.Message = "no se especifico a que usuario"
+	}
 	uts := []models.UserTel{ut}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserTelList(&uts, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "no se encontro litado de tipo de negocios"
+		m.Message = "no se encontro litado de telefono de usuarios"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "lista de tipo de negocios"
+	m.Message = "lista de telefono de usuarios"
 	m.Data = uts
 }
 
-//UserTelUpdate se edita un tipo de negocio
+//UserTelUpdate se edita un telefono de usuario
 func UserTelUpdate(ut models.UserTel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ut.ID == 0 {
+		m.Message = "especifique numero"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := updateUserTel(&ut, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "tipo de negocio no se actualizo"
+		m.Message = "telefono de usuario no se actualizo"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "se actualizo tipo de negocio"
+	m.Message = "se actualizo telefono de usuario"
 	m.Data = ut
 }
 
-//UserTelDelete se borra un tipo de negocio
+//UserTelDelete se borra un telefono de usuario
 func UserTelDelete(ut models.UserTel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ut.ID == 0 {
+		m.Message = "especifique numero"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteUserTel(&ut, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "tipo de negocio no se borro"
+		m.Message = "telefono de usuario no se borro"
 		return
 	}
 	m.Code = http.StatusOK
@@ -403,6 +448,10 @@ func UserLevelCreate(ul models.UserLevel, m *models.Message) {
 
 //UserLevelGet crea un nuevo tipo de documento
 func UserLevelGet(ul models.UserLevel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ul.ID == 0 {
+		m.Message = "especifique nivel de usuario"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserLevel(&ul, m, db)
@@ -434,6 +483,10 @@ func UserLevelGetList(ul models.UserLevel, m *models.Message) {
 
 //UserLevelUpdate crea un nuevo tipo de documento
 func UserLevelUpdate(ul models.UserLevel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ul.ID == 0 {
+		m.Message = "especifique nivel de usuario"
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -452,6 +505,10 @@ func UserLevelUpdate(ul models.UserLevel, m *models.Message) {
 
 //UserLevelDelete crea un nuevo tipo de documento
 func UserLevelDelete(ul models.UserLevel, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if ul.ID == 0 {
+		m.Message = "especifique nivel de usuario"
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -519,6 +576,13 @@ func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 
 //UserCollectionCreate crea un nuevo enlace entre usuario y cobro
 func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if uc.CodCollection == 0 {
+		m.Message = "especifique cobro"
+	}
+	if uc.CodUser == 0 {
+		m.Message = "especifique usuario"
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -537,6 +601,10 @@ func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 
 //UserCollectionGet traer un nuevo enlace entre usuario y cobro
 func UserCollectionGet(uc models.UserCollection, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if uc.ID == 0 {
+		m.Message = "especifique cobro"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserCollection(&uc, m, db)
@@ -568,6 +636,10 @@ func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 
 //UserCollectionUpdate se edita un enlace entre usuario y cobro
 func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if uc.ID == 0 {
+		m.Message = "especifique cobro"
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -586,6 +658,10 @@ func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
 
 //UserCollectionDelete se borra un enlace entre usuario y cobro
 func UserCollectionDelete(uc models.UserCollection, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if uc.ID == 0 {
+		m.Message = "especifique cobro"
+	}
 	if !validateAdmin(m) {
 		return
 	}
