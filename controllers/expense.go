@@ -18,6 +18,19 @@ import (
 
 //ExpenseCreate crea un nuevo gasto
 func ExpenseCreate(e models.Expense, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if e.CodCollection == 0 {
+		m.Message = "especifique cobro"
+		return
+	}
+	if e.CodUser == 0 {
+		m.Message = "especifique usuario"
+		return
+	}
+	if e.Cash <= 0 {
+		m.Message = "valor no valido"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createExpense(&e, m, db)
@@ -74,19 +87,27 @@ func ExpenseGetList(e models.Expense, m *models.Message) {
 
 //ExpenseUpdate se edita un gasto
 func ExpenseUpdate(e models.Expense, m *models.Message) {
+	m.Code = http.StatusBadRequest
 	if e.ID == 0 {
-		m.Code = http.StatusBadRequest
 		m.Message = "especifique gasto"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateExpense(&e, m, db)
+	db.Begin()
+	en := e
+	err := getExpense(&en, m, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "gasto no se actualizo"
+		m.Message = "no se encotro gasto"
+		db.Rollback()
 		return
 	}
+	err = modifiCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo gasto"
 	m.Data = e
@@ -171,6 +192,11 @@ func deleteExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
 
 //ExpenseDescripCreate crea un nuevo descripcion de gastos
 func ExpenseDescripCreate(ed models.ExpenseDescrip, m *models.Message) {
+	if ed.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion cobro"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createExpenseDescrip(&ed, m, db)

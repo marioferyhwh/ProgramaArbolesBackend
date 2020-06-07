@@ -596,7 +596,7 @@ func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createUserCollection(&uc, m, db)
+	err := createUserCollection(&uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "enlace entre usuario y cobro no se creo"
@@ -615,7 +615,7 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUserCollection(&uc, m, db)
+	err := getUserCollection(&uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro enlace entre usuario y cobro"
@@ -631,7 +631,7 @@ func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 	ucs := []models.UserCollection{uc}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUserCollectionList(&ucs, m, db)
+	err := getUserCollectionList(&ucs, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el listado de negocios"
@@ -653,7 +653,7 @@ func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateUserCollection(&uc, m, db)
+	err := updateUserCollection(&uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "enlace entre usuario y cobro no se actualizo"
@@ -675,7 +675,7 @@ func UserCollectionDelete(uc models.UserCollection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUserCollection(&uc, m, db)
+	err := deleteUserCollection(&uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "enlace entre usuario y cobro no se borro"
@@ -690,14 +690,18 @@ func UserCollectionDelete(uc models.UserCollection, m *models.Message) {
 ······························································*/
 
 //createUserCollection crea relacion entre usuario y collection con una conexion ya existente
-func createUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB) error {
+func createUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	err := db.Create(uc).Error
 	return err
 }
 
 //getUserCollection trae  relacion entre usuario y collection con una conexion ya existente
-func getUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name").First(uc).GetErrors()
+func getUserCollection(uc *models.UserCollection, db *gorm.DB) error {
+	where := ""
+	if uc.ID == 0 && (uc.CodCollection != 0 && uc.CodUser != 0) {
+		where = fmt.Sprintf("cod_collection = %v and cod_user =%v", uc.CodCollection, uc.CodUser)
+	}
+	err := db.Where(where).Select("id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name").First(uc).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -705,7 +709,7 @@ func getUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB
 }
 
 //getUserCollectionList trae  relacion entre usuario y collection con una conexion ya existente
-func getUserCollectionList(ucs *[]models.UserCollection, m *models.Message, db *gorm.DB) error {
+func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 	var uc models.UserCollection
 	if len(*ucs) == 1 {
 		uc = (*ucs)[0]
@@ -724,7 +728,7 @@ func getUserCollectionList(ucs *[]models.UserCollection, m *models.Message, db *
 }
 
 //updateUserCollection se borra el  relacion entre usuario y collection con una conexion ya existente
-func updateUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB) error {
+func updateUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	if uc.ID == 0 {
 		return errors.New("no es valido")
 	}
@@ -734,10 +738,28 @@ func updateUserCollection(uc *models.UserCollection, m *models.Message, db *gorm
 }
 
 //deleteUserCollection se borra el  relacion entre usuario y collection con una conexion ya existente
-func deleteUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB) error {
+func deleteUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	err := db.Unscoped().Delete(uc).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//modifiCashUserCollection se suma cash al valir actual
+func modifiCashUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB, nc float32) error {
+	err := getUserCollection(uc, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro relacion"
+		return err
+	}
+	uc.Cash = uc.Cash + nc
+	err = updateUserCollection(uc, db)
+	if err != nil {
+		m.Code = http.StatusBadGateway
+		m.Message = "no se pudo actualizar"
+		return err
 	}
 	return nil
 }
