@@ -11,6 +11,9 @@ import (
 
 //DocumentTypeCreate crea un nuevo tipo de documento
 func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createDocumentType(&dt, m, db)
@@ -26,6 +29,11 @@ func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeGet traer un nuevo tipo de documento
 func DocumentTypeGet(dt models.DocumentType, m *models.Message) {
+	if dt.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique typo de documento"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getDocumentType(&dt, m, db)
@@ -57,6 +65,11 @@ func DocumentTypeGetList(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeUpdate se edita un tipo de documento
 func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
+	if dt.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique typo de documento"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -75,6 +88,11 @@ func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeDelete crea un nuevo tipo de documento
 func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
+	if dt.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique typo de documento"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}

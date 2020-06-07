@@ -17,6 +17,11 @@ import (
 
 //TelDescripCreate crea un nuevo tipo de telefono
 func TelDescripCreate(td models.TelDescrip, m *models.Message) {
+	if td.Descrip == "" {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion no es valida"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -35,6 +40,11 @@ func TelDescripCreate(td models.TelDescrip, m *models.Message) {
 
 //TelDescripGet traer un nuevo descripcion de telefono
 func TelDescripGet(td models.TelDescrip, m *models.Message) {
+	if td.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getTelDescrip(&td, m, db)
@@ -66,6 +76,11 @@ func TelDescripGetList(td models.TelDescrip, m *models.Message) {
 
 //TelDescripUpdate se edita un descripcion de telefono
 func TelDescripUpdate(td models.TelDescrip, m *models.Message) {
+	if td.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}
@@ -84,6 +99,11 @@ func TelDescripUpdate(td models.TelDescrip, m *models.Message) {
 
 //TelDescripDelete crea un nuevo tipo de telefono
 func TelDescripDelete(td models.TelDescrip, m *models.Message) {
+	if td.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}

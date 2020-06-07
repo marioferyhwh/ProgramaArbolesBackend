@@ -99,6 +99,12 @@ func UserCreate(u models.User, m *models.Message) {
 	if err != nil {
 		return
 	}
+	for _, tel := range u.UserTel {
+		err = createUserTel(&tel, m, db)
+		if err != nil {
+			break
+		}
+	}
 	m.Code = http.StatusOK
 	m.Message = "Usuario Creado"
 	m.Data = u
