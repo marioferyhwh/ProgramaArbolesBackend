@@ -9,6 +9,12 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+/*······························································
+································································
+··············· descripcion de telefonos
+································································
+······························································*/
+
 //TelDescripCreate crea un nuevo tipo de telefono
 func TelDescripCreate(td models.TelDescrip, m *models.Message) {
 	if !validateAdmin(m) {
@@ -27,14 +33,27 @@ func TelDescripCreate(td models.TelDescrip, m *models.Message) {
 	m.Data = td
 }
 
-//TelDescripGetList crea un nuevo tipo de telefono
-func TelDescripGetList(td []models.TelDescrip, m *models.Message) {
-	if !validateAdmin(m) {
-		return
-	}
+//TelDescripGet traer un nuevo descripcion de telefono
+func TelDescripGet(td models.TelDescrip, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getTelDescripList(&td, m, db)
+	err := getTelDescrip(&td, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encotro descripcion de telefono"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "descripcion de telefono creado"
+	m.Data = td
+}
+
+//TelDescripGetList crea un nuevo tipo de telefono
+func TelDescripGetList(td models.TelDescrip, m *models.Message) {
+	tds := []models.TelDescrip{td}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getTelDescripList(&tds, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion del telefono no se creo"
@@ -42,6 +61,24 @@ func TelDescripGetList(td []models.TelDescrip, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "descripcion del telefono borro"
+	m.Data = tds
+}
+
+//TelDescripUpdate se edita un descripcion de telefono
+func TelDescripUpdate(td models.TelDescrip, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := updateTelDescrip(&td, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion de telefono no se actualizo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "se actualizo descripcion de telefono"
 	m.Data = td
 }
 
@@ -63,6 +100,9 @@ func TelDescripDelete(td models.TelDescrip, m *models.Message) {
 	m.Data = td
 }
 
+/*······························································
+······························································*/
+
 //createTelDescrip crea descripcion de los telefonos con una conexion ya existente
 func createTelDescrip(td *models.TelDescrip, m *models.Message, db *gorm.DB) error {
 	err := db.Create(td).Error
@@ -79,8 +119,8 @@ func getTelDescrip(td *models.TelDescrip, m *models.Message, db *gorm.DB) error 
 }
 
 //getTelDescripList trae descripcion de los telefonos con una conexion ya existente
-func getTelDescripList(td *[]models.TelDescrip, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,descrip").Find(td).GetErrors()
+func getTelDescripList(tds *[]models.TelDescrip, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,descrip").Find(tds).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
