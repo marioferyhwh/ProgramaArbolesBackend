@@ -22,7 +22,7 @@ func CollectionCreate(c models.Collection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createCollection(&c, m, db)
+	err := createCollection(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se creo"
@@ -42,7 +42,7 @@ func CollectionGet(c models.Collection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollection(&c, m, db)
+	err := getCollection(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro cobro"
@@ -58,7 +58,7 @@ func CollectionGetList(c models.Collection, m *models.Message) {
 	cs := []models.Collection{c}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionList(&cs, m, db)
+	err := getCollectionList(&cs, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de cobros"
@@ -81,7 +81,7 @@ func CollectionUpdate(c models.Collection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateCollection(&c, m, db)
+	err := updateCollection(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se actualizo"
@@ -104,7 +104,7 @@ func CollectionDelete(c models.Collection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteCollection(&c, m, db)
+	err := deleteCollection(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se borro"
@@ -119,13 +119,13 @@ func CollectionDelete(c models.Collection, m *models.Message) {
 ······························································*/
 
 //createCollection crea cobro
-func createCollection(c *models.Collection, m *models.Message, db *gorm.DB) error {
+func createCollection(c *models.Collection, db *gorm.DB) error {
 	err := db.Create(c).Error
 	return err
 }
 
 //getCollection trae cobro
-func getCollection(c *models.Collection, m *models.Message, db *gorm.DB) error {
+func getCollection(c *models.Collection, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip,actived,balance_total").First(c).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -134,7 +134,7 @@ func getCollection(c *models.Collection, m *models.Message, db *gorm.DB) error {
 }
 
 //getCollectionList trae cobro
-func getCollectionList(cs *[]models.Collection, m *models.Message, db *gorm.DB) error {
+func getCollectionList(cs *[]models.Collection, db *gorm.DB) error {
 	// var c models.Collection
 	// if len(*cs )==0{
 	//   c= (*cs)[0]
@@ -147,14 +147,14 @@ func getCollectionList(cs *[]models.Collection, m *models.Message, db *gorm.DB) 
 }
 
 //updateCollection se borra el cobro
-func updateCollection(c *models.Collection, m *models.Message, db *gorm.DB) error {
+func updateCollection(c *models.Collection, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(c).Omit(omitList...).Updates(c).Error
 	return err
 }
 
 //deleteCollection se borra el cobro
-func deleteCollection(c *models.Collection, m *models.Message, db *gorm.DB) error {
+func deleteCollection(c *models.Collection, db *gorm.DB) error {
 	err := db.Unscoped().Delete(c).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -172,7 +172,7 @@ func deleteCollection(c *models.Collection, m *models.Message, db *gorm.DB) erro
 func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createCollectionCash(&cc, m, db)
+	err := createCollectionCash(&cc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se creo"
@@ -192,7 +192,7 @@ func CollectionCashGet(cc models.CollectionCash, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionCash(&cc, m, db)
+	err := getCollectionCash(&cc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro movimento de cobro"
@@ -213,7 +213,7 @@ func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
 	ccs := []models.CollectionCash{cc}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionCashList(&ccs, m, db)
+	err := getCollectionCashList(&ccs, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no encontro listado el movimento de cobros"
@@ -233,7 +233,7 @@ func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateCollectionCash(&cc, m, db)
+	err := updateCollectionCash(&cc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se actualizo"
@@ -253,7 +253,7 @@ func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteCollectionCash(&cc, m, db)
+	err := deleteCollectionCash(&cc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se borro"
@@ -268,13 +268,13 @@ func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
 ······························································*/
 
 //createCollectionCash crea movimento de cobro
-func createCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB) error {
+func createCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	err := db.Create(cc).Error
 	return err
 }
 
 //getCollectionCash trae movimento de cobro
-func getCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB) error {
+func getCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	//.Where("cod_collection == ?", cc.CodCollection)
 	err := db.Select("id,created_at,updated_at,cod_user,cod_collection,cash").First(cc).GetErrors()
 	if len(err) != 0 {
@@ -284,7 +284,7 @@ func getCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB
 }
 
 //getCollectionCashList trae lista pagos de cobro
-func getCollectionCashList(ccs *[]models.CollectionCash, m *models.Message, db *gorm.DB) error {
+func getCollectionCashList(ccs *[]models.CollectionCash, db *gorm.DB) error {
 	var cc models.CollectionCash
 	if len(*ccs) == 1 {
 		cc = (*ccs)[0]
@@ -298,14 +298,14 @@ func getCollectionCashList(ccs *[]models.CollectionCash, m *models.Message, db *
 }
 
 //updateCollectionCash se borra el movimento de cobro
-func updateCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB) error {
+func updateCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	omitList := []string{"id", "cod_user", "cod_collection"}
 	err := db.Model(cc).Omit(omitList...).Updates(cc).Error
 	return err
 }
 
 //deleteCollectionCash se borra el movimento de cobro
-func deleteCollectionCash(cc *models.CollectionCash, m *models.Message, db *gorm.DB) error {
+func deleteCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	err := db.Unscoped().Delete(cc).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

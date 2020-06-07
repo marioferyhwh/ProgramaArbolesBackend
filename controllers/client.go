@@ -40,14 +40,14 @@ func ClientCreate(c models.Client, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createClient(&c, m, db)
+	err := createClient(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cliente no se creo"
 		return
 	}
 	for _, tel := range c.ClientTel {
-		err = createClientTel(&tel, m, db)
+		err = createClientTel(&tel, db)
 		if err != nil {
 			break
 		}
@@ -66,18 +66,18 @@ func ClientGet(c models.Client, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClient(&c, m, db)
+	err := getClient(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro cliente"
 		return
 	}
 	c.ClientTel = []models.ClientTel{{CodClient: c.ID}}
-	err = getClientTelList(&c.ClientTel, m, db)
+	err = getClientTelList(&c.ClientTel, db)
 	c.Loan = []models.Loan{{CodCollection: c.CodCollection, CodClient: c.ID}}
-	err = getLoanList(&c.Loan, m, db)
+	err = getLoanList(&c.Loan, db)
 	c.User.ID = c.CodUser
-	err = getUserShort(&c.User, m, db)
+	err = getUserShort(&c.User, db)
 	m.Code = http.StatusOK
 	m.Message = "cliente creado"
 	m.Data = c
@@ -93,7 +93,7 @@ func ClientGetList(c models.Client, m *models.Message) {
 	cs := []models.Client{c}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientList(&cs, m, db)
+	err := getClientList(&cs, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el listado de negocios"
@@ -114,7 +114,7 @@ func ClientUpdate(c models.Client, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := updateClient(&c, m, db)
+	err := updateClient(&c, db)
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
 	if err != nil {
@@ -122,21 +122,21 @@ func ClientUpdate(c models.Client, m *models.Message) {
 		return
 	}
 	for _, tel := range c.ClientTelDelete {
-		err = deleteClientTel(&tel, m, db)
+		err = deleteClientTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
 	for _, tel := range c.ClientTelNew {
-		err = createClientTel(&tel, m, db)
+		err = createClientTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
 	for _, tel := range c.ClientTel {
-		err = updateClientTel(&tel, m, db)
+		err = updateClientTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
@@ -157,7 +157,7 @@ func ClientDelete(c models.Client, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClient(&c, m, db)
+	err := deleteClient(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cliente no se borro"
@@ -172,13 +172,13 @@ func ClientDelete(c models.Client, m *models.Message) {
 ······························································*/
 
 //createClient crea cliente
-func createClient(c *models.Client, m *models.Message, db *gorm.DB) error {
+func createClient(c *models.Client, db *gorm.DB) error {
 	err := db.Create(c).Error
 	return err
 }
 
 //getClient trae cliente
-func getClient(c *models.Client, m *models.Message, db *gorm.DB) error {
+func getClient(c *models.Client, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,name,email,cod_document_type,document,Adress,loan_number,cod_collection,cod_loan_state,cod_business_type,cod_client_list_location,cod_user").First(c).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -187,7 +187,7 @@ func getClient(c *models.Client, m *models.Message, db *gorm.DB) error {
 }
 
 //getClientList trae lista de clientes
-func getClientList(cs *[]models.Client, m *models.Message, db *gorm.DB) error {
+func getClientList(cs *[]models.Client, db *gorm.DB) error {
 	var c models.Client
 	if len(*cs) == 1 {
 		c = (*cs)[0]
@@ -200,14 +200,14 @@ func getClientList(cs *[]models.Client, m *models.Message, db *gorm.DB) error {
 }
 
 //updateClient se actualiza el cliente
-func updateClient(c *models.Client, m *models.Message, db *gorm.DB) error {
+func updateClient(c *models.Client, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection", "cod_user"}
 	err := db.Model(c).Omit(omitList...).Updates(c).Error
 	return err
 }
 
 //deleteClient se borra el cliente
-func deleteClient(c *models.Client, m *models.Message, db *gorm.DB) error {
+func deleteClient(c *models.Client, db *gorm.DB) error {
 	err := db.Unscoped().Delete(c).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -230,7 +230,7 @@ func ClientTelCreate(ct models.ClientTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createClientTel(&ct, m, db)
+	err := createClientTel(&ct, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de cliente no se creo"
@@ -250,7 +250,7 @@ func ClientTelGet(ct models.ClientTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientTel(&ct, m, db)
+	err := getClientTel(&ct, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro telefono de cliente"
@@ -271,7 +271,7 @@ func ClientTelGetList(ct models.ClientTel, m *models.Message) {
 	cts := []models.ClientTel{ct}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientTelList(&cts, m, db)
+	err := getClientTelList(&cts, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el telefonos"
@@ -291,7 +291,7 @@ func ClientTelUpdate(ct models.ClientTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateClientTel(&ct, m, db)
+	err := updateClientTel(&ct, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de cliente no se actualizo"
@@ -311,7 +311,7 @@ func ClientTelDelete(ct models.ClientTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClientTel(&ct, m, db)
+	err := deleteClientTel(&ct, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de cliente no se borro"
@@ -326,13 +326,13 @@ func ClientTelDelete(ct models.ClientTel, m *models.Message) {
 ······························································*/
 
 //createClientTel crea telefonos de clientes
-func createClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
+func createClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	err := db.Create(ct).Error
 	return err
 }
 
 //getClientTel trae telefono de cliente
-func getClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
+func getClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,phone,cod_tel_descrip").First(ct).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -341,7 +341,7 @@ func getClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
 }
 
 //getClientTelList trae telefonos de cliente
-func getClientTelList(cts *[]models.ClientTel, m *models.Message, db *gorm.DB) error {
+func getClientTelList(cts *[]models.ClientTel, db *gorm.DB) error {
 	var ct models.ClientTel
 	where := ""
 	if len(*cts) == 1 {
@@ -358,14 +358,14 @@ func getClientTelList(cts *[]models.ClientTel, m *models.Message, db *gorm.DB) e
 }
 
 //updateClientTel actualiza telefono de cliente
-func updateClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
+func updateClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	omitList := []string{"id", "cod_client", "phone"}
 	err := db.Model(ct).Omit(omitList...).Updates(ct).Error
 	return err
 }
 
 //deleteClientTel se borra el telefono de cliente
-func deleteClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error {
+func deleteClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ct).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -388,7 +388,7 @@ func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createClientListLocation(&cll, m, db)
+	err := createClientListLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se creo"
@@ -408,7 +408,7 @@ func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientListLocation(&cll, m, db)
+	err := getClientListLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro descripcion de ubicacion"
@@ -429,7 +429,7 @@ func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message)
 	clls := []models.ClientListLocation{cll}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientListLocationList(&clls, m, db)
+	err := getClientListLocationList(&clls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el listado de negocios"
@@ -449,7 +449,7 @@ func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateClientListLocation(&cll, m, db)
+	err := updateClientListLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se actualizo"
@@ -469,7 +469,7 @@ func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClientListLocation(&cll, m, db)
+	err := deleteClientListLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se borro"
@@ -484,13 +484,13 @@ func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) 
 ······························································*/
 
 //createClientListLocation crea ubicacion valida para clientes por collection
-func createClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
+func createClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Create(cll).Error
 	return err
 }
 
 //getClientListLocation trae ubicacion valida para clientes por collection
-func getClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
+func getClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(cll).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -499,7 +499,7 @@ func getClientListLocation(cll *models.ClientListLocation, m *models.Message, db
 }
 
 //getClientListLocationList trae lista de ubicacion valida para clientes por collection
-func getClientListLocationList(clls *[]models.ClientListLocation, m *models.Message, db *gorm.DB) error {
+func getClientListLocationList(clls *[]models.ClientListLocation, db *gorm.DB) error {
 	var cll models.ClientListLocation
 	if len(*clls) == 1 {
 		cll = (*clls)[0]
@@ -512,14 +512,14 @@ func getClientListLocationList(clls *[]models.ClientListLocation, m *models.Mess
 }
 
 //updateClientListLocation actualizar el ubicacion valida para clientes por collection
-func updateClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
+func updateClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection"}
 	err := db.Model(cll).Omit(omitList...).Updates(cll).Error
 	return err
 }
 
 //deleteClientListLocation borra el ubicacion valida para clientes por collection
-func deleteClientListLocation(cll *models.ClientListLocation, m *models.Message, db *gorm.DB) error {
+func deleteClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Unscoped().Delete(cll).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

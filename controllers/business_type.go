@@ -22,7 +22,7 @@ func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createBusinessType(&bt, m, db)
+	err := createBusinessType(&bt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de negocio no se creo"
@@ -42,7 +42,7 @@ func BusinessTypeGet(bt models.BusinessType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getBusinessType(&bt, m, db)
+	err := getBusinessType(&bt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro tipo de negocio"
@@ -58,7 +58,7 @@ func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
 	bts := []models.BusinessType{bt}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getBusinessTypeList(&bts, m, db)
+	err := getBusinessTypeList(&bts, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de tipo de negocios"
@@ -81,7 +81,7 @@ func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateBusinessType(&bt, m, db)
+	err := updateBusinessType(&bt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de negocio no se actualizo"
@@ -104,7 +104,7 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteBusinessType(&bt, m, db)
+	err := deleteBusinessType(&bt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de negocio no se borro"
@@ -119,13 +119,13 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 ······························································*/
 
 //createBusinessType crea tipo de negocio
-func createBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
+func createBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	err := db.Create(bt).Error
 	return err
 }
 
 //getBusinessType trae tipo de negocio
-func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
+func getBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(bt).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -134,7 +134,7 @@ func getBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) er
 }
 
 //getBusinessTypeList trae lista de tipo de negocios
-func getBusinessTypeList(bt *[]models.BusinessType, m *models.Message, db *gorm.DB) error {
+func getBusinessTypeList(bt *[]models.BusinessType, db *gorm.DB) error {
 	err := db.Select("id,descrip").Find(bt).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -143,14 +143,14 @@ func getBusinessTypeList(bt *[]models.BusinessType, m *models.Message, db *gorm.
 }
 
 //updateBusinessType actualizar el tipo de negocio
-func updateBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
+func updateBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(bt).Omit(omitList...).Updates(bt).Error
 	return err
 }
 
 //deleteBusinessType borras el tipo de negocio
-func deleteBusinessType(bt *models.BusinessType, m *models.Message, db *gorm.DB) error {
+func deleteBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	err := db.Unscoped().Delete(bt).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

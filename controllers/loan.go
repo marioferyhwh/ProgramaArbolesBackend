@@ -20,7 +20,7 @@ import (
 func LoanCreate(l models.Loan, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createLoan(&l, m, db)
+	err := createLoan(&l, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se creo"
@@ -35,7 +35,7 @@ func LoanCreate(l models.Loan, m *models.Message) {
 func LoanGet(l models.Loan, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoan(&l, m, db)
+	err := getLoan(&l, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro prestamo"
@@ -51,7 +51,7 @@ func LoanGetList(l models.Loan, m *models.Message) {
 	ls := []models.Loan{l}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoanList(&ls, m, db)
+	err := getLoanList(&ls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de prestamos"
@@ -66,7 +66,7 @@ func LoanGetList(l models.Loan, m *models.Message) {
 func LoanUpdate(l models.Loan, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateLoan(&l, m, db)
+	err := updateLoan(&l, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se actualizo"
@@ -81,7 +81,7 @@ func LoanUpdate(l models.Loan, m *models.Message) {
 func LoanDelete(l models.Loan, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteLoan(&l, m, db)
+	err := deleteLoan(&l, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se borro"
@@ -96,13 +96,13 @@ func LoanDelete(l models.Loan, m *models.Message) {
 ······························································*/
 
 //createLoan crea Prestamos
-func createLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
+func createLoan(l *models.Loan, db *gorm.DB) error {
 	err := db.Create(l).Error
 	return err
 }
 
 //getLoan trae Prestamos
-func getLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
+func getLoan(l *models.Loan, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user").First(l).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -111,7 +111,7 @@ func getLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
 }
 
 //getLoanList trae Prestamos
-func getLoanList(ls *[]models.Loan, m *models.Message, db *gorm.DB) error {
+func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	var l models.Loan
 	if len(*ls) == 1 {
 		l = (*ls)[0]
@@ -133,14 +133,14 @@ func getLoanList(ls *[]models.Loan, m *models.Message, db *gorm.DB) error {
 }
 
 //updateLoan se borra el Prestamos
-func updateLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
+func updateLoan(l *models.Loan, db *gorm.DB) error {
 	omitList := []string{"id", "initial_value", "interest", "quota", "cod_client", "cod_collection", "cod_user"}
 	err := db.Model(l).Omit(omitList...).Updates(l).Error
 	return err
 }
 
 //deleteLoan se borra el Prestamos
-func deleteLoan(l *models.Loan, m *models.Message, db *gorm.DB) error {
+func deleteLoan(l *models.Loan, db *gorm.DB) error {
 	err := db.Unscoped().Delete(l).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -161,7 +161,7 @@ func LoanStateCreate(ls models.LoanState, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createLoanState(&ls, m, db)
+	err := createLoanState(&ls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de prestamo no se creo"
@@ -176,7 +176,7 @@ func LoanStateCreate(ls models.LoanState, m *models.Message) {
 func LoanStateGet(ls models.LoanState, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoanState(&ls, m, db)
+	err := getLoanState(&ls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro estado de prestamo"
@@ -192,7 +192,7 @@ func LoanStateGetList(ls models.LoanState, m *models.Message) {
 	lss := []models.LoanState{ls}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoanStateList(&lss, m, db)
+	err := getLoanStateList(&lss, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de estado de prestamos"
@@ -210,7 +210,7 @@ func LoanStateUpdate(ls models.LoanState, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateLoanState(&ls, m, db)
+	err := updateLoanState(&ls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de prestamo no se actualizo"
@@ -228,7 +228,7 @@ func LoanStateDelete(lp models.LoanState, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteLoanState(&lp, m, db)
+	err := deleteLoanState(&lp, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "estado de prestamo no se borro"
@@ -243,13 +243,13 @@ func LoanStateDelete(lp models.LoanState, m *models.Message) {
 ······························································*/
 
 //createLoanState crea estado de  prestamos
-func createLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
+func createLoanState(ls *models.LoanState, db *gorm.DB) error {
 	err := db.Create(ls).Error
 	return err
 }
 
 //getLoanState trae estado de  prestamos
-func getLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
+func getLoanState(ls *models.LoanState, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,state").First(ls).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -258,7 +258,7 @@ func getLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
 }
 
 //getLoanStateList trae estado de  prestamos
-func getLoanStateList(lss *[]models.LoanState, m *models.Message, db *gorm.DB) error {
+func getLoanStateList(lss *[]models.LoanState, db *gorm.DB) error {
 	err := db.Select("id,state").Find(lss).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -267,14 +267,14 @@ func getLoanStateList(lss *[]models.LoanState, m *models.Message, db *gorm.DB) e
 }
 
 //updateLoanState se borra el estado de  prestamos
-func updateLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
+func updateLoanState(ls *models.LoanState, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(ls).Omit(omitList...).Updates(ls).Error
 	return err
 }
 
 //deleteLoanState se borra el estado de  prestamos
-func deleteLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error {
+func deleteLoanState(ls *models.LoanState, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ls).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -292,7 +292,7 @@ func deleteLoanState(ls *models.LoanState, m *models.Message, db *gorm.DB) error
 func LoanPaymentCreate(lp models.LoanPayment, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createLoanPayment(&lp, m, db)
+	err := createLoanPayment(&lp, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "pago a prestamo no se creo"
@@ -307,7 +307,7 @@ func LoanPaymentCreate(lp models.LoanPayment, m *models.Message) {
 func LoanPaymentGet(lp models.LoanPayment, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoanPayment(&lp, m, db)
+	err := getLoanPayment(&lp, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro pago a prestamo"
@@ -323,7 +323,7 @@ func LoanPaymentGetList(lp models.LoanPayment, m *models.Message) {
 	lps := []models.LoanPayment{lp}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getLoanPaymentList(&lps, m, db)
+	err := getLoanPaymentList(&lps, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de pago a prestamos"
@@ -338,7 +338,7 @@ func LoanPaymentGetList(lp models.LoanPayment, m *models.Message) {
 func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateLoanPayment(&lp, m, db)
+	err := updateLoanPayment(&lp, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "pago a prestamo no se actualizo"
@@ -353,7 +353,7 @@ func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
 func LoanPaymentDelete(lp models.LoanPayment, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteLoanPayment(&lp, m, db)
+	err := deleteLoanPayment(&lp, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "pago a prestamo no se borro"
@@ -368,13 +368,13 @@ func LoanPaymentDelete(lp models.LoanPayment, m *models.Message) {
 ······························································*/
 
 //createLoanPayment crea pagos de prestamos
-func createLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
+func createLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	err := db.Create(lp).Error
 	return err
 }
 
 //getLoanPayment trae pagos de prestamos
-func getLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
+func getLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cod_loan,cash,cod_user").First(lp).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -383,7 +383,7 @@ func getLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) erro
 }
 
 //getLoanPaymentList trae pagos de prestamos
-func getLoanPaymentList(lps *[]models.LoanPayment, m *models.Message, db *gorm.DB) error {
+func getLoanPaymentList(lps *[]models.LoanPayment, db *gorm.DB) error {
 	var lp models.LoanPayment
 	if len(*lps) == 1 {
 		lp = (*lps)[0]
@@ -402,14 +402,14 @@ func getLoanPaymentList(lps *[]models.LoanPayment, m *models.Message, db *gorm.D
 }
 
 //updateLoanPayment se borra el pagos de prestamos
-func updateLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
+func updateLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection", "cod_user", "cod_loan"}
 	err := db.Model(lp).Omit(omitList...).Updates(lp).Error
 	return err
 }
 
 //deleteLoanPayment se borra el pagos de prestamos
-func deleteLoanPayment(lp *models.LoanPayment, m *models.Message, db *gorm.DB) error {
+func deleteLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	err := db.Unscoped().Delete(lp).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

@@ -95,14 +95,14 @@ func UserCreate(u models.User, m *models.Message) {
 	u.Password = pwd
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createUser(&u, m, db)
+	err := createUser(&u, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "user no se creo"
 		return
 	}
 	for _, tel := range u.UserTel {
-		err = createUserTel(&tel, m, db)
+		err = createUserTel(&tel, db)
 		if err != nil {
 			break
 		}
@@ -121,7 +121,7 @@ func UserGet(u models.User, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUser(&u, m, db)
+	err := getUser(&u, db)
 	// db.First(&u)
 	// err := db.First(&u).Error
 	if err != nil {
@@ -146,7 +146,7 @@ func UserUpdate(u models.User, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := updateUser(&u, m, db)
+	err := updateUser(&u, db)
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
 	if err != nil {
@@ -154,21 +154,21 @@ func UserUpdate(u models.User, m *models.Message) {
 		return
 	}
 	for _, tel := range u.UserTelDelete {
-		err = deleteUserTel(&tel, m, db)
+		err = deleteUserTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
 	for _, tel := range u.UserTelNew {
-		err = createUserTel(&tel, m, db)
+		err = createUserTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
 	for _, tel := range u.UserTel {
-		err = updateUserTel(&tel, m, db)
+		err = updateUserTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
@@ -190,13 +190,13 @@ func UserDelete(u models.User, m *models.Message) {
 	db.Begin()
 	var err error
 	for _, tel := range u.UserTel {
-		err = deleteUserTel(&tel, m, db)
+		err = deleteUserTel(&tel, db)
 		if err != nil {
 			db.Rollback()
 			return
 		}
 	}
-	err = deleteUser(&u, m, db)
+	err = deleteUser(&u, db)
 	db.Commit()
 	if err != nil {
 		m.Code = http.StatusBadGateway
@@ -215,7 +215,7 @@ func UserDelete(u models.User, m *models.Message) {
 ······························································*/
 
 //createUser crea usuario con una conexion ya existente
-func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
+func createUser(u *models.User, db *gorm.DB) error {
 	//	q := `insert into users (created_at,updated_at,actived,nick_name,email,password,cod_document_type,document,name)values(now(),now(),true,$1,$2,$3,$4,$5,$6);`
 	err := db.Create(u).Error
 	if err != nil {
@@ -227,7 +227,7 @@ func createUser(u *models.User, m *models.Message, db *gorm.DB) error {
 }
 
 //getUserShort trae usuario con una conexion ya existente
-func getUserShort(u *models.User, m *models.Message, db *gorm.DB) error {
+func getUserShort(u *models.User, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,actived,name").First(u).GetErrors()
 	if len(err) != 0 {
@@ -237,7 +237,7 @@ func getUserShort(u *models.User, m *models.Message, db *gorm.DB) error {
 }
 
 //getUser trae usuario con una conexion ya existente
-func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
+func getUser(u *models.User, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").First(u).GetErrors()
 	if len(err) != 0 {
@@ -247,7 +247,7 @@ func getUser(u *models.User, m *models.Message, db *gorm.DB) error {
 }
 
 //getUserList trae usuario con una conexion ya existente
-func getUserList(u *[]models.User, m *models.Message, db *gorm.DB) error {
+func getUserList(u *[]models.User, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
 	err := db.Select("id,actived,name").Find(u).GetErrors()
 	if len(err) != 0 {
@@ -257,7 +257,7 @@ func getUserList(u *[]models.User, m *models.Message, db *gorm.DB) error {
 }
 
 //updateUser se borra el usuario con una conexion ya existente
-func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
+func updateUser(u *models.User, db *gorm.DB) error {
 	//q := `update from users set .. where id=?;`
 	omitList := []string{"id"}
 	if !u.ChangePassword || u.ConfirmPassword == u.Password {
@@ -271,7 +271,7 @@ func updateUser(u *models.User, m *models.Message, db *gorm.DB) error {
 }
 
 //deleteUser se borra el usuario con una conexion ya existente
-func deleteUser(u *models.User, m *models.Message, db *gorm.DB) error {
+func deleteUser(u *models.User, db *gorm.DB) error {
 	//q := `delete from users where id=?;`
 	//q := `update from users set delete_at = now() where id=?;`
 	//err :=db.Delete(&u).GetErrors()
@@ -299,7 +299,7 @@ func UserTelCreate(ut models.UserTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createUserTel(&ut, m, db)
+	err := createUserTel(&ut, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de usuario no se creo"
@@ -314,7 +314,7 @@ func UserTelCreate(ut models.UserTel, m *models.Message) {
 func UserTelGet(ut models.UserTel, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUserTel(&ut, m, db)
+	err := getUserTel(&ut, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro telefono de usuario"
@@ -334,7 +334,7 @@ func UserTelGetList(ut models.UserTel, m *models.Message) {
 	uts := []models.UserTel{ut}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getUserTelList(&uts, m, db)
+	err := getUserTelList(&uts, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de telefono de usuarios"
@@ -353,7 +353,7 @@ func UserTelUpdate(ut models.UserTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateUserTel(&ut, m, db)
+	err := updateUserTel(&ut, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de usuario no se actualizo"
@@ -372,7 +372,7 @@ func UserTelDelete(ut models.UserTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUserTel(&ut, m, db)
+	err := deleteUserTel(&ut, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de usuario no se borro"
@@ -387,13 +387,13 @@ func UserTelDelete(ut models.UserTel, m *models.Message) {
 ······························································*/
 
 //createUserTel crea telefono de usuario con una conexion ya existente
-func createUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+func createUserTel(ut *models.UserTel, db *gorm.DB) error {
 	err := db.Create(ut).Error
 	return err
 }
 
 //getUserTel trae telefono de usuario con una conexion ya existente
-func getUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+func getUserTel(ut *models.UserTel, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,phone,descrip").First(ut).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -402,7 +402,7 @@ func getUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
 }
 
 //getUserTelList trae telefono de usuario con una conexion ya existente
-func getUserTelList(uts *[]models.UserTel, m *models.Message, db *gorm.DB) error {
+func getUserTelList(uts *[]models.UserTel, db *gorm.DB) error {
 	var ut models.UserTel
 	if len(*uts) == 1 {
 		ut = (*uts)[0]
@@ -415,14 +415,14 @@ func getUserTelList(uts *[]models.UserTel, m *models.Message, db *gorm.DB) error
 }
 
 //updateUserTel se borra el telefono de usuario con una conexion ya existente
-func updateUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+func updateUserTel(ut *models.UserTel, db *gorm.DB) error {
 	omitList := []string{"id", "cod_user", "phone"}
 	err := db.Model(ut).Omit(omitList...).Updates(ut).Error
 	return err
 }
 
 //deleteUserTel se borra telefono de usuario con una conexion ya existente
-func deleteUserTel(ut *models.UserTel, m *models.Message, db *gorm.DB) error {
+func deleteUserTel(ut *models.UserTel, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ut).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

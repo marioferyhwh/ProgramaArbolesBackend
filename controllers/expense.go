@@ -33,7 +33,7 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createExpense(&e, m, db)
+	err := createExpense(&e, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "gasto no se creo"
@@ -53,7 +53,7 @@ func ExpenseGet(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getExpense(&e, m, db)
+	err := getExpense(&e, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro gasto"
@@ -74,7 +74,7 @@ func ExpenseGetList(e models.Expense, m *models.Message) {
 	es := []models.Expense{e}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getExpenseList(&es, m, db)
+	err := getExpenseList(&es, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de gastos"
@@ -96,12 +96,13 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 	defer db.Close()
 	db.Begin()
 	en := e
-	err := getExpense(&en, m, db)
+	err := getExpense(&en, db)
 	if err != nil {
 		m.Message = "no se encotro gasto"
 		db.Rollback()
 		return
 	}
+
 	err = modifiCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
 	if err != nil {
 		db.Rollback()
@@ -122,7 +123,7 @@ func ExpenseDelete(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteExpense(&e, m, db)
+	err := deleteExpense(&e, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "gasto no se borro"
@@ -137,13 +138,13 @@ func ExpenseDelete(e models.Expense, m *models.Message) {
 ······························································*/
 
 //createExpense crea gasto
-func createExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
+func createExpense(e *models.Expense, db *gorm.DB) error {
 	err := db.Create(e).Error
 	return err
 }
 
 //getExpense trae gasto
-func getExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
+func getExpense(e *models.Expense, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cash,cod_expense_descrip,cod_user,cod_collection").First(e).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -152,7 +153,7 @@ func getExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
 }
 
 //getExpenseList trae gasto
-func getExpenseList(es *[]models.Expense, m *models.Message, db *gorm.DB) error {
+func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 	var e models.Expense
 	if len(*es) == 0 {
 		e = (*es)[0]
@@ -169,14 +170,14 @@ func getExpenseList(es *[]models.Expense, m *models.Message, db *gorm.DB) error 
 }
 
 //updateExpense actualizar el gasto
-func updateExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
+func updateExpense(e *models.Expense, db *gorm.DB) error {
 	omitList := []string{"id", "cod_expense_descrip", "cod_user", "cod_collection"}
 	err := db.Model(e).Omit(omitList...).Updates(e).Error
 	return err
 }
 
 //deleteExpense se borra el gasto
-func deleteExpense(e *models.Expense, m *models.Message, db *gorm.DB) error {
+func deleteExpense(e *models.Expense, db *gorm.DB) error {
 	err := db.Unscoped().Delete(e).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
@@ -199,7 +200,7 @@ func ExpenseDescripCreate(ed models.ExpenseDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createExpenseDescrip(&ed, m, db)
+	err := createExpenseDescrip(&ed, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de gastos no se creo"
@@ -219,7 +220,7 @@ func ExpenseDescripGet(ed models.ExpenseDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getExpenseDescrip(&ed, m, db)
+	err := getExpenseDescrip(&ed, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro descripcion de gastos"
@@ -240,7 +241,7 @@ func ExpenseDescripGetList(ed models.ExpenseDescrip, m *models.Message) {
 	eds := []models.ExpenseDescrip{ed}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getExpenseDescripList(&eds, m, db)
+	err := getExpenseDescripList(&eds, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de descripcion de gastoss"
@@ -260,7 +261,7 @@ func ExpenseDescripUpdate(ed models.ExpenseDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateExpenseDescrip(&ed, m, db)
+	err := updateExpenseDescrip(&ed, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de gastos no se actualizo"
@@ -280,7 +281,7 @@ func ExpenseDescripDelete(ed models.ExpenseDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteExpenseDescrip(&ed, m, db)
+	err := deleteExpenseDescrip(&ed, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de gastos no se borro"
@@ -295,13 +296,13 @@ func ExpenseDescripDelete(ed models.ExpenseDescrip, m *models.Message) {
 ······························································*/
 
 //createExpenseDescrip crea descripcion de gasto
-func createExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+func createExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	err := db.Create(ed).Error
 	return err
 }
 
 //getExpenseDescrip trae descripcion de gasto
-func getExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+func getExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cod_collection,descrip").First(ed).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -310,7 +311,7 @@ func getExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB
 }
 
 //getExpenseDescripList trae descripcion de gasto
-func getExpenseDescripList(eds *[]models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+func getExpenseDescripList(eds *[]models.ExpenseDescrip, db *gorm.DB) error {
 	var ed models.ExpenseDescrip
 	if len(*eds) == 1 {
 		ed = (*eds)[0]
@@ -323,14 +324,14 @@ func getExpenseDescripList(eds *[]models.ExpenseDescrip, m *models.Message, db *
 }
 
 //updateExpenseDescrip se borra el descripcion de gasto
-func updateExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+func updateExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection"}
 	err := db.Model(ed).Omit(omitList...).Updates(ed).Error
 	return err
 }
 
 //deleteExpenseDescrip se borra el descripcion de gasto
-func deleteExpenseDescrip(ed *models.ExpenseDescrip, m *models.Message, db *gorm.DB) error {
+func deleteExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ed).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

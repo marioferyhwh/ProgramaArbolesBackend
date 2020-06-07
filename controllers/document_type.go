@@ -16,7 +16,7 @@ func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createDocumentType(&dt, m, db)
+	err := createDocumentType(&dt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "documento no se creo"
@@ -36,7 +36,7 @@ func DocumentTypeGet(dt models.DocumentType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getDocumentType(&dt, m, db)
+	err := getDocumentType(&dt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro tipo de documento"
@@ -52,7 +52,7 @@ func DocumentTypeGetList(dt models.DocumentType, m *models.Message) {
 	dts := []models.DocumentType{dt}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getDocumentTypeList(&dts, m, db)
+	err := getDocumentTypeList(&dts, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de tipo de documentos"
@@ -75,7 +75,7 @@ func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateDocumentType(&dt, m, db)
+	err := updateDocumentType(&dt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de documento no se actualizo"
@@ -98,7 +98,7 @@ func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteDocumentType(&dt, m, db)
+	err := deleteDocumentType(&dt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "documento no se borro"
@@ -116,13 +116,13 @@ func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
 ······························································*/
 
 //createDocumentType crea tipo de documento con una conexion ya existente
-func createDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {
+func createDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Create(dt).Error
 	return err
 }
 
 //getDocumentType trae tipo de documento con una conexion ya existente
-func getDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {
+func getDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,name_short,descrip").First(dt).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -131,7 +131,7 @@ func getDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) er
 }
 
 //getDocumentTypeList trae tipo de documento con una conexion ya existente
-func getDocumentTypeList(dts *[]models.DocumentType, m *models.Message, db *gorm.DB) error {
+func getDocumentTypeList(dts *[]models.DocumentType, db *gorm.DB) error {
 	err := db.Select("id,name_short,descrip").Find(dts).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -140,14 +140,14 @@ func getDocumentTypeList(dts *[]models.DocumentType, m *models.Message, db *gorm
 }
 
 //updateDocumentType se borra el tipo de documento con una conexion ya existente
-func updateDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {
+func updateDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	omitList := []string{"id", "name_short"}
 	err := db.Model(dt).Omit(omitList...).Updates(dt).Error
 	return err
 }
 
 //deleteDocumentType se borra el tipo de documento con una conexion ya existente
-func deleteDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) error {
+func deleteDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Unscoped().Delete(dt).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
