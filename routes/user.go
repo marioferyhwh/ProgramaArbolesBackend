@@ -28,6 +28,12 @@ func getid32(c echo.Context) (uint32, error) {
 	return uint32(i64), nil
 }
 
+func getUserInterface(c echo.Context, u *models.User) {
+	user := c.Get(commons.User)
+	bodyBytes, _ := json.Marshal(user)
+	json.Unmarshal(bodyBytes, u)
+}
+
 //SetLoginRoutes inicio de seccion
 func SetLoginRoutes(c echo.Context) error {
 	var user models.User
@@ -46,6 +52,7 @@ func SetLoginRoutes(c echo.Context) error {
 func SetUserCreateRoutes(c echo.Context) error {
 	user := models.User{}
 	m := models.Message{}
+	getUserInterface(c, &m.User)
 	err := c.Bind(&user)
 
 	if err != nil {
@@ -63,11 +70,10 @@ func SetUserCreateRoutes(c echo.Context) error {
 
 }
 
-//SetGetUserRoutes Creacion de usuario
-func SetGetUserRoutes(c echo.Context) error {
-	user := c.Get(commons.User)
+//SetUserGetRoutes Creacion de usuario
+func SetUserGetRoutes(c echo.Context) error {
 	m := models.Message{}
-
+	getUserInterface(c, &m.User)
 	var u models.User
 	id, err := getid32(c)
 	if err != nil {
@@ -78,17 +84,15 @@ func SetGetUserRoutes(c echo.Context) error {
 	u.ID = id
 	u.GetListUser = true
 	u.GetUserTel = true
-
-	bodyBytes, _ := json.Marshal(user)
-	json.Unmarshal(bodyBytes, &m.User)
 	controllers.UserGet(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetEditUserRoutes Creacion de usuario
-func SetEditUserRoutes(c echo.Context) error {
-	user := c.Get(commons.User)
+//SetUserEditRoutes Creacion de usuario
+func SetUserEditRoutes(c echo.Context) error {
+
 	m := models.Message{}
+	getUserInterface(c, &m.User)
 
 	var u models.User
 	err := c.Bind(&u)
@@ -97,7 +101,6 @@ func SetEditUserRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
@@ -110,16 +113,14 @@ func SetEditUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	bodyBytes, _ := json.Marshal(user)
-	json.Unmarshal(bodyBytes, &m.User)
 	controllers.UserUpdate(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetDeleteUserRoutes Creacion de usuario
-func SetDeleteUserRoutes(c echo.Context) error {
-	user := c.Get(commons.User)
+//SetUserDeleteRoutes Creacion de usuario
+func SetUserDeleteRoutes(c echo.Context) error {
 	m := models.Message{}
+	getUserInterface(c, &m.User)
 	var u models.User
 	id, err := getid32(c)
 	if err != nil {
@@ -128,8 +129,6 @@ func SetDeleteUserRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	u.ID = id
-	bodyBytes, _ := json.Marshal(user)
-	json.Unmarshal(bodyBytes, &m.User)
 	controllers.UserDelete(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
