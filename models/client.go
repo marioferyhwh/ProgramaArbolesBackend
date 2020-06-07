@@ -19,6 +19,8 @@ type Client struct {
 	BusinessTypes      BusinessType       `json:"bussiness,omitempty"            gorm:"-"`
 	ClientListLocation ClientListLocation `json:"location,omitempty"             gorm:"-"`
 	User               User               `json:"user_create,omitempty"          gorm:"-"`
+	ClientTelDelete    []ClientTel        `json:"tels_delete,omitempty"                 gorm:"-"`
+	ClientTelNew       []ClientTel        `json:"tels_new,omitempty"                 gorm:"-"`
 	ClientTel          []ClientTel        `json:"tels,omitempty"                 gorm:"-"`
 	Loan               []Loan             `json:"loans,omitempty"                gorm:"-"`
 }

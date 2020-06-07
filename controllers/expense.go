@@ -33,6 +33,11 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 
 //ExpenseGet traer un nuevo gasto
 func ExpenseGet(e models.Expense, m *models.Message) {
+	if e.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getExpense(&e, m, db)
@@ -48,6 +53,11 @@ func ExpenseGet(e models.Expense, m *models.Message) {
 
 //ExpenseGetList traer lista de gasto
 func ExpenseGetList(e models.Expense, m *models.Message) {
+	if e.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	es := []models.Expense{e}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -64,6 +74,11 @@ func ExpenseGetList(e models.Expense, m *models.Message) {
 
 //ExpenseUpdate se edita un gasto
 func ExpenseUpdate(e models.Expense, m *models.Message) {
+	if e.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := updateExpense(&e, m, db)
@@ -79,6 +94,11 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 
 //ExpenseDelete se borra un gasto
 func ExpenseDelete(e models.Expense, m *models.Message) {
+	if e.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteExpense(&e, m, db)
@@ -166,6 +186,11 @@ func ExpenseDescripCreate(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripGet traer un nuevo descripcion de gastos
 func ExpenseDescripGet(ed models.ExpenseDescrip, m *models.Message) {
+	if ed.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getExpenseDescrip(&ed, m, db)
@@ -181,6 +206,11 @@ func ExpenseDescripGet(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripGetList traer lista de descripcion de gastos
 func ExpenseDescripGetList(ed models.ExpenseDescrip, m *models.Message) {
+	if ed.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	eds := []models.ExpenseDescrip{ed}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -197,6 +227,11 @@ func ExpenseDescripGetList(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripUpdate se edita un descripcion de gastos
 func ExpenseDescripUpdate(ed models.ExpenseDescrip, m *models.Message) {
+	if ed.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := updateExpenseDescrip(&ed, m, db)
@@ -212,6 +247,11 @@ func ExpenseDescripUpdate(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripDelete se borra un descripcion de gastos
 func ExpenseDescripDelete(ed models.ExpenseDescrip, m *models.Message) {
+	if ed.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique descripcion gasto"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteExpenseDescrip(&ed, m, db)

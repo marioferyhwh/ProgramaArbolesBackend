@@ -81,7 +81,7 @@ func SetGetUserRoutes(c echo.Context) error {
 
 	bodyBytes, _ := json.Marshal(user)
 	json.Unmarshal(bodyBytes, &m.User)
-	controllers.GetUser(u, &m)
+	controllers.UserGet(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -112,7 +112,7 @@ func SetEditUserRoutes(c echo.Context) error {
 	u.ID = id
 	bodyBytes, _ := json.Marshal(user)
 	json.Unmarshal(bodyBytes, &m.User)
-	controllers.EditUser(u, &m)
+	controllers.UserUpdate(u, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -130,6 +130,6 @@ func SetDeleteUserRoutes(c echo.Context) error {
 	u.ID = id
 	bodyBytes, _ := json.Marshal(user)
 	json.Unmarshal(bodyBytes, &m.User)
-	controllers.DeleteUser(u, &m)
+	controllers.UserDelete(u, &m)
 	return commons.DisplayMessage(c, &m)
 }

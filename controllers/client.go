@@ -18,6 +18,26 @@ import (
 
 //ClientCreate crea un nuevo cliente
 func ClientCreate(c models.Client, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if c.Name == "" {
+		m.Message = "falta nombre cliente"
+		return
+	}
+	if c.Adress == "" || c.CodClientListLocation == 0 {
+		m.Message = "falta direccion cliente"
+		return
+	}
+	if c.CodCollection == 0 {
+		m.Message = "falta cobro al que pertenece cliente"
+		return
+	}
+	if c.CodUser == 0 {
+		c.CodUser = m.User.ID
+	}
+	if c.CodBusinessType == 0 {
+		m.Message = "falta tipo de negocio"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createClient(&c, m, db)
@@ -26,6 +46,12 @@ func ClientCreate(c models.Client, m *models.Message) {
 		m.Message = "cliente no se creo"
 		return
 	}
+	for _, tel := range c.ClientTel {
+		err = createClientTel(&tel, m, db)
+		if err != nil {
+			break
+		}
+	}
 	m.Code = http.StatusOK
 	m.Message = "cliente creado"
 	m.Data = c
@@ -33,6 +59,11 @@ func ClientCreate(c models.Client, m *models.Message) {
 
 //ClientGet traer un nuevo cliente
 func ClientGet(c models.Client, m *models.Message) {
+	if c.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getClient(&c, m, db)
@@ -54,6 +85,11 @@ func ClientGet(c models.Client, m *models.Message) {
 
 //ClientGetList traer lista de cliente
 func ClientGetList(c models.Client, m *models.Message) {
+	if c.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	cs := []models.Client{c}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -70,14 +106,43 @@ func ClientGetList(c models.Client, m *models.Message) {
 
 //ClientUpdate se edita un cliente
 func ClientUpdate(c models.Client, m *models.Message) {
-	db := configuration.GetConnection()
-	defer db.Close()
-	err := updateClient(&c, m, db)
-	if err != nil {
+	if c.ID == 0 {
 		m.Code = http.StatusBadRequest
-		m.Message = "cliente no se actualizo"
+		m.Message = "especifique cliente"
 		return
 	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	db.Begin()
+	err := updateClient(&c, m, db)
+	m.Code = http.StatusBadRequest
+	m.Message = "no se puedo actualizar"
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	for _, tel := range c.ClientTelDelete {
+		err = deleteClientTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	for _, tel := range c.ClientTelNew {
+		err = createClientTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	for _, tel := range c.ClientTel {
+		err = updateClientTel(&tel, m, db)
+		if err != nil {
+			db.Rollback()
+			return
+		}
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo cliente"
 	m.Data = c
@@ -85,6 +150,11 @@ func ClientUpdate(c models.Client, m *models.Message) {
 
 //ClientDelete se borra un cliente
 func ClientDelete(c models.Client, m *models.Message) {
+	if c.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteClient(&c, m, db)
@@ -153,6 +223,11 @@ func deleteClient(c *models.Client, m *models.Message, db *gorm.DB) error {
 
 //ClientTelCreate crea un nuevo telefono de cliente
 func ClientTelCreate(ct models.ClientTel, m *models.Message) {
+	if ct.CodClient == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createClientTel(&ct, m, db)
@@ -168,6 +243,11 @@ func ClientTelCreate(ct models.ClientTel, m *models.Message) {
 
 //ClientTelGet traer telefono de cliente
 func ClientTelGet(ct models.ClientTel, m *models.Message) {
+	if ct.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique telefono de cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getClientTel(&ct, m, db)
@@ -183,6 +263,11 @@ func ClientTelGet(ct models.ClientTel, m *models.Message) {
 
 //ClientTelGetList traer lista de telefonos de cliente
 func ClientTelGetList(ct models.ClientTel, m *models.Message) {
+	if ct.CodClient == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cliente"
+		return
+	}
 	cts := []models.ClientTel{ct}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -199,6 +284,11 @@ func ClientTelGetList(ct models.ClientTel, m *models.Message) {
 
 //ClientTelUpdate actualiza telefono de cliente
 func ClientTelUpdate(ct models.ClientTel, m *models.Message) {
+	if ct.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique telefono de cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := updateClientTel(&ct, m, db)
@@ -214,6 +304,11 @@ func ClientTelUpdate(ct models.ClientTel, m *models.Message) {
 
 //ClientTelDelete borra telefono de cliente
 func ClientTelDelete(ct models.ClientTel, m *models.Message) {
+	if ct.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique telefono de cliente"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteClientTel(&ct, m, db)
@@ -286,6 +381,11 @@ func deleteClientTel(ct *models.ClientTel, m *models.Message, db *gorm.DB) error
 
 //ClientListLocationCreate crea un nuevo descripcion de ubicacion
 func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) {
+	if cll.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createClientListLocation(&cll, m, db)
@@ -301,6 +401,11 @@ func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) 
 
 //ClientListLocationGet crea un nuevo descripcion de ubicacion
 func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
+	if cll.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique localizacion"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getClientListLocation(&cll, m, db)
@@ -316,6 +421,11 @@ func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
 
 //ClientListLocationGetList crea un nuevo descripcion de ubicacion
 func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message) {
+	if cll.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	clls := []models.ClientListLocation{cll}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -332,6 +442,11 @@ func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message)
 
 //ClientListLocationUpdate crea un nuevo descripcion de ubicacion
 func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) {
+	if cll.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique localizacion"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := updateClientListLocation(&cll, m, db)
@@ -347,6 +462,11 @@ func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) 
 
 //ClientListLocationDelete crea un nuevo descripcion de ubicacion
 func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) {
+	if cll.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique localizacion"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := deleteClientListLocation(&cll, m, db)

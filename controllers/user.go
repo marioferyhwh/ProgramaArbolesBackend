@@ -97,6 +97,8 @@ func UserCreate(u models.User, m *models.Message) {
 	defer db.Close()
 	err := createUser(&u, m, db)
 	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "user no se creo"
 		return
 	}
 	for _, tel := range u.UserTel {
@@ -110,8 +112,8 @@ func UserCreate(u models.User, m *models.Message) {
 	m.Data = u
 }
 
-//GetUser trae un usuario
-func GetUser(u models.User, m *models.Message) {
+//UserGet trae un usuario
+func UserGet(u models.User, m *models.Message) {
 	if u.ID == 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique usuario"
@@ -134,8 +136,8 @@ func GetUser(u models.User, m *models.Message) {
 	m.Data = u
 }
 
-//EditUser trae un usuario
-func EditUser(u models.User, m *models.Message) {
+//UserUpdate trae un usuario
+func UserUpdate(u models.User, m *models.Message) {
 	if u.ID == 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique usuario"
@@ -180,8 +182,8 @@ func EditUser(u models.User, m *models.Message) {
 	m.Data = u
 }
 
-//DeleteUser trae un usuario
-func DeleteUser(u models.User, m *models.Message) {
+//UserDelete trae un usuario
+func UserDelete(u models.User, m *models.Message) {
 	//se debe agregar restricciones de borrado
 	db := configuration.GetConnection()
 	defer db.Close()

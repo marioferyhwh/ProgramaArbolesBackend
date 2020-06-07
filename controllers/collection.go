@@ -16,13 +16,13 @@ import (
 ······························································*/
 
 //CollectionCreate crea un nuevo cobro
-func CollectionCreate(bt models.Collection, m *models.Message) {
+func CollectionCreate(c models.Collection, m *models.Message) {
 	if !validateAdmin(m) {
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createCollection(&bt, m, db)
+	err := createCollection(&c, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se creo"
@@ -30,14 +30,19 @@ func CollectionCreate(bt models.Collection, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "cobro creado"
-	m.Data = bt
+	m.Data = c
 }
 
 //CollectionGet traer un nuevo cobro
-func CollectionGet(bt models.Collection, m *models.Message) {
+func CollectionGet(c models.Collection, m *models.Message) {
+	if c.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollection(&bt, m, db)
+	err := getCollection(&c, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro cobro"
@@ -45,15 +50,15 @@ func CollectionGet(bt models.Collection, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "cobro creado"
-	m.Data = bt
+	m.Data = c
 }
 
 //CollectionGetList traer lista de cobro
-func CollectionGetList(bt models.Collection, m *models.Message) {
-	bts := []models.Collection{bt}
+func CollectionGetList(c models.Collection, m *models.Message) {
+	cs := []models.Collection{c}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionList(&bts, m, db)
+	err := getCollectionList(&cs, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encontro litado de cobros"
@@ -61,17 +66,22 @@ func CollectionGetList(bt models.Collection, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "lista de cobros"
-	m.Data = bts
+	m.Data = cs
 }
 
 //CollectionUpdate se edita un cobro
-func CollectionUpdate(bt models.Collection, m *models.Message) {
+func CollectionUpdate(c models.Collection, m *models.Message) {
+	if c.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateCollection(&bt, m, db)
+	err := updateCollection(&c, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se actualizo"
@@ -79,17 +89,22 @@ func CollectionUpdate(bt models.Collection, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "se actualizo cobro"
-	m.Data = bt
+	m.Data = c
 }
 
 //CollectionDelete se borra un cobro
-func CollectionDelete(bt models.Collection, m *models.Message) {
+func CollectionDelete(c models.Collection, m *models.Message) {
+	if c.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
 	if !validateAdmin(m) {
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteCollection(&bt, m, db)
+	err := deleteCollection(&c, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cobro no se borro"
@@ -97,7 +112,7 @@ func CollectionDelete(bt models.Collection, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
-	m.Data = bt
+	m.Data = c
 }
 
 /*······························································
@@ -154,10 +169,10 @@ func deleteCollection(c *models.Collection, m *models.Message, db *gorm.DB) erro
 ······························································*/
 
 //CollectionCashCreate crea un nuevo movimento de cobro
-func CollectionCashCreate(bt models.CollectionCash, m *models.Message) {
+func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createCollectionCash(&bt, m, db)
+	err := createCollectionCash(&cc, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se creo"
@@ -165,14 +180,19 @@ func CollectionCashCreate(bt models.CollectionCash, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "movimento de cobro creado"
-	m.Data = bt
+	m.Data = cc
 }
 
 //CollectionCashGet traer un nuevo movimento de cobro
-func CollectionCashGet(bt models.CollectionCash, m *models.Message) {
+func CollectionCashGet(cc models.CollectionCash, m *models.Message) {
+	if cc.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique movimento"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionCash(&bt, m, db)
+	err := getCollectionCash(&cc, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro movimento de cobro"
@@ -180,15 +200,20 @@ func CollectionCashGet(bt models.CollectionCash, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "movimento de cobro creado"
-	m.Data = bt
+	m.Data = cc
 }
 
 //CollectionCashGetList traer lista de movimento de cobro
-func CollectionCashGetList(bt models.CollectionCash, m *models.Message) {
-	bts := []models.CollectionCash{bt}
+func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
+	if cc.CodCollection == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique cobro"
+		return
+	}
+	ccs := []models.CollectionCash{cc}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getCollectionCashList(&bts, m, db)
+	err := getCollectionCashList(&ccs, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no encontro listado el movimento de cobros"
@@ -196,14 +221,19 @@ func CollectionCashGetList(bt models.CollectionCash, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "movimento de cobros"
-	m.Data = bts
+	m.Data = ccs
 }
 
 //CollectionCashUpdate se edita un movimento de cobro
-func CollectionCashUpdate(bt models.CollectionCash, m *models.Message) {
+func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
+	if cc.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique movimento"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateCollectionCash(&bt, m, db)
+	err := updateCollectionCash(&cc, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se actualizo"
@@ -211,14 +241,19 @@ func CollectionCashUpdate(bt models.CollectionCash, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "se actualizo movimento de cobro"
-	m.Data = bt
+	m.Data = cc
 }
 
 //CollectionCashDelete se borra un movimento de cobro
-func CollectionCashDelete(bt models.CollectionCash, m *models.Message) {
+func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
+	if cc.ID == 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique movimento"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteCollectionCash(&bt, m, db)
+	err := deleteCollectionCash(&cc, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se borro"
@@ -226,7 +261,7 @@ func CollectionCashDelete(bt models.CollectionCash, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
-	m.Data = bt
+	m.Data = cc
 }
 
 /*······························································
