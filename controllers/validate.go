@@ -109,3 +109,17 @@ func validateTime(tv models.TimeValidator) (time.Time, time.Time) {
 	}
 	return tv.I, tv.E
 }
+
+/*······························································
+································································
+··············· validacion de administrador
+································································
+······························································*/
+
+func validateAdmin(m *models.Message) bool {
+	if !m.User.Admin {
+		m.Code = http.StatusBadRequest
+		m.Message = "no esta autorizado"
+	}
+	return m.User.Admin
+}
