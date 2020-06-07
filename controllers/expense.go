@@ -33,12 +33,19 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.Begin()
 	err := createExpense(&e, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "gasto no se creo"
+		db.Rollback()
 		return
 	}
+	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, -e.Cash)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "gasto creado"
 	m.Data = e
@@ -102,7 +109,6 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 		db.Rollback()
 		return
 	}
-
 	err = sumCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
 	if err != nil {
 		db.Rollback()
@@ -116,19 +122,26 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 
 //ExpenseDelete se borra un gasto
 func ExpenseDelete(e models.Expense, m *models.Message) {
+	m.Code = http.StatusBadRequest
 	if e.ID == 0 {
-		m.Code = http.StatusBadRequest
 		m.Message = "especifique gasto"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.Begin()
 	err := deleteExpense(&e, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "gasto no se borro"
+		db.Rollback()
 		return
 	}
+	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, e.Cash)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = e

@@ -21,18 +21,23 @@ func LoanCreate(l models.Loan, m *models.Message) {
 	m.Code = http.StatusBadRequest
 	if l.InitialValue <= 0 {
 		m.Message = "especifique valor inicial"
+		return
 	}
 	if l.Client.ID <= 0 {
 		m.Message = "especifique cliente"
+		return
 	}
 	if l.CodCollection <= 0 {
 		m.Message = "especifique cobro"
+		return
 	}
 	if l.CodUser <= 0 {
-		l.CodUser = m.User.ID
+		m.Message = "especifique usuario"
+		return
 	}
 	if l.Interest < 1 {
 		m.Message = "especifique el interes"
+		return
 	}
 	if l.Quota <= 0 {
 		l.Quota = 30
@@ -43,7 +48,14 @@ func LoanCreate(l models.Loan, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, -l.InitialValue)
+	err := createLoan(&l, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "prestamo no se creo"
+		db.Rollback()
+		return
+	}
+	err = sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, -l.InitialValue)
 	if err != nil {
 		db.Rollback()
 		return
@@ -52,13 +64,6 @@ func LoanCreate(l models.Loan, m *models.Message) {
 	uc.ID = l.CodCollection
 	err = sumBalanceCollection(&uc, m, db, l.Balance)
 	if err != nil {
-		db.Rollback()
-		return
-	}
-	err = createLoan(&l, db)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "prestamo no se creo"
 		db.Rollback()
 		return
 	}
@@ -108,6 +113,7 @@ func LoanUpdate(l models.Loan, m *models.Message) {
 	m.Code = http.StatusBadRequest
 	if l.ID == 0 {
 		m.Message = "especifique prestamo"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -136,6 +142,7 @@ func LoanDelete(l models.Loan, m *models.Message) {
 	m.Code = http.StatusBadRequest
 	if l.ID == 0 {
 		m.Message = "especifique prestamo"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -395,14 +402,40 @@ func deleteLoanState(ls *models.LoanState, db *gorm.DB) error {
 
 //LoanPaymentCreate crea un nuevo pago a prestamo
 func LoanPaymentCreate(lp models.LoanPayment, m *models.Message) {
-	db := configuration.GetConnection()
-	defer db.Close()
-	err := createLoanPayment(&lp, db)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "pago a prestamo no se creo"
+	m.Code = http.StatusBadRequest
+	if lp.CodLoan <= 0 {
+		m.Message = "falta prestamo"
 		return
 	}
+	if lp.CodCollection <= 0 {
+		m.Message = "falta cobro"
+		return
+	}
+	if lp.Cash <= 0 {
+		m.Message = "valor no valido"
+		return
+	}
+	if lp.CodUser <= 0 {
+		lp.CodUser = m.User.ID
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	db.Begin()
+	err := createLoanPayment(&lp, db)
+	if err != nil {
+		m.Message = "pago a prestamo no se creo"
+		db.Rollback()
+		return
+	}
+	var l models.Loan
+	l.ID = lp.CodLoan
+	err = sumCashloan(&l, m, db, -lp.Cash)
+	if err != nil {
+		m.Message = "prestamo no se actualizo"
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "pago a prestamo creado"
 	m.Data = lp
@@ -410,6 +443,11 @@ func LoanPaymentCreate(lp models.LoanPayment, m *models.Message) {
 
 //LoanPaymentGet traer un nuevo pago a prestamo
 func LoanPaymentGet(lp models.LoanPayment, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if lp.ID <= 0 {
+		m.Message = "falta prestamo"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getLoanPayment(&lp, db)
@@ -441,14 +479,36 @@ func LoanPaymentGetList(lp models.LoanPayment, m *models.Message) {
 
 //LoanPaymentUpdate se edita un pago a prestamo
 func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
-	db := configuration.GetConnection()
-	defer db.Close()
-	err := updateLoanPayment(&lp, db)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "pago a prestamo no se actualizo"
+	m.Code = http.StatusBadRequest
+	if lp.ID <= 0 {
+		m.Message = "falta prestamo"
 		return
 	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	lpn := lp
+	err := getLoanPayment(&lpn, db)
+	if err != nil {
+		m.Message = "pago a prestamo no se encotro"
+		db.Rollback()
+		return
+	}
+	db.Begin()
+	err = updateLoanPayment(&lp, db)
+	if err != nil {
+		m.Message = "pago a prestamo no se actualizo"
+		db.Rollback()
+		return
+	}
+	var l models.Loan
+	l.ID = lp.CodLoan
+	err = sumCashloan(&l, m, db, lpn.Cash-lp.Cash)
+	if err != nil {
+		m.Message = "prestamo no se actualizo"
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo pago a prestamo"
 	m.Data = lp
@@ -456,14 +516,29 @@ func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
 
 //LoanPaymentDelete se borra un pago a prestamo
 func LoanPaymentDelete(lp models.LoanPayment, m *models.Message) {
-	db := configuration.GetConnection()
-	defer db.Close()
-	err := deleteLoanPayment(&lp, db)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "pago a prestamo no se borro"
+	m.Code = http.StatusBadRequest
+	if lp.ID <= 0 {
+		m.Message = "falta prestamo"
 		return
 	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	db.Begin()
+	err := deleteLoanPayment(&lp, db)
+	if err != nil {
+		m.Message = "pago a prestamo no se borro"
+		db.Rollback()
+		return
+	}
+	var l models.Loan
+	l.ID = lp.CodLoan
+	err = sumCashloan(&l, m, db, lp.Cash)
+	if err != nil {
+		m.Message = "prestamo no se actualizo"
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = lp

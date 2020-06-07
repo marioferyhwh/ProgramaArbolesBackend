@@ -34,7 +34,7 @@ func Login(u models.User, m *models.Message) {
 	pwd := encriptPasswordUser(u.Password)
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Where("(nick_name = ? or email = ?) and password = ?", u.Email, u.Email, pwd).First(&u)
+	db.Where("(nick_name = ? or email = ?) and password = ? and actived = 1", u.Email, u.Email, pwd).First(&u)
 	u.Password = ""
 	if u.ID <= 0 {
 		m.Code = http.StatusUnauthorized
@@ -64,9 +64,21 @@ func Login(u models.User, m *models.Message) {
 //UserCreate crea el usuario
 func UserCreate(u models.User, m *models.Message) {
 	//validacion de datos de usuario
+	m.Code = http.StatusBadRequest
 	if u.Email == "" {
-		m.Code = http.StatusBadRequest
 		m.Message = "falta email"
+		return
+	}
+	if u.CodDocumentType == "" {
+		m.Message = "falta tipo de documento"
+		return
+	}
+	if u.Document == "" {
+		m.Message = "falta Documento"
+		return
+	}
+	if u.Password == "" {
+		m.Message = "falta clave"
 		return
 	}
 	if u.Actived {
@@ -74,21 +86,6 @@ func UserCreate(u models.User, m *models.Message) {
 	}
 	if u.NickName == "" {
 		u.NickName = u.Email
-	}
-	if u.CodDocumentType == "" {
-		m.Code = http.StatusBadRequest
-		m.Message = "falta tipo de documento"
-		return
-	}
-	if u.Document == "" {
-		m.Code = http.StatusBadRequest
-		m.Message = "falta Documento"
-		return
-	}
-	if u.Password == "" {
-		m.Code = http.StatusBadRequest
-		m.Message = "falta clave"
-		return
 	}
 	//encriptar clave
 	pwd := encriptPasswordUser(u.Password)
@@ -293,9 +290,11 @@ func UserTelCreate(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ut.CodUser == 0 {
 		m.Message = "no se especifico a que usuario"
+		return
 	}
 	if ut.Phone == "" {
 		m.Message = "introdusca numero telefonico"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -330,6 +329,7 @@ func UserTelGetList(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ut.CodUser == 0 {
 		m.Message = "no se especifico a que usuario"
+		return
 	}
 	uts := []models.UserTel{ut}
 	db := configuration.GetConnection()
@@ -350,6 +350,7 @@ func UserTelUpdate(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ut.ID == 0 {
 		m.Message = "especifique numero"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -369,6 +370,7 @@ func UserTelDelete(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ut.ID == 0 {
 		m.Message = "especifique numero"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -459,6 +461,7 @@ func UserLevelGet(ul models.UserLevel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ul.ID == 0 {
 		m.Message = "especifique nivel de usuario"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -494,6 +497,7 @@ func UserLevelUpdate(ul models.UserLevel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ul.ID == 0 {
 		m.Message = "especifique nivel de usuario"
+		return
 	}
 	if !validateAdmin(m) {
 		return
@@ -516,6 +520,7 @@ func UserLevelDelete(ul models.UserLevel, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if ul.ID == 0 {
 		m.Message = "especifique nivel de usuario"
+		return
 	}
 	if !validateAdmin(m) {
 		return
@@ -587,9 +592,11 @@ func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if uc.CodCollection == 0 {
 		m.Message = "especifique cobro"
+		return
 	}
 	if uc.CodUser == 0 {
 		m.Message = "especifique usuario"
+		return
 	}
 	if !validateAdmin(m) {
 		return
@@ -612,6 +619,7 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if uc.ID == 0 {
 		m.Message = "especifique cobro"
+		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -647,6 +655,7 @@ func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
 	if uc.ID == 0 {
 		m.Message = "especifique cobro"
+		return
 	}
 	if !validateAdmin(m) {
 		return

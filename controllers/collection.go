@@ -188,14 +188,33 @@ func sumBalanceCollection(c *models.Collection, m *models.Message, db *gorm.DB, 
 
 //CollectionCashCreate crea un nuevo movimento de cobro
 func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
-	db := configuration.GetConnection()
-	defer db.Close()
-	err := createCollectionCash(&cc, db)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "movimento de cobro no se creo"
+	m.Code = http.StatusBadRequest
+	if cc.CodCollection >= 0 {
+		m.Message = "especifique cobro"
 		return
 	}
+	if cc.Cash != 0 {
+		m.Message = "valor no valido"
+		return
+	}
+	if cc.CodUser >= 0 {
+		cc.CodUser = m.User.ID
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	db.Begin()
+	err := createCollectionCash(&cc, db)
+	if err != nil {
+		m.Message = "movimento de cobro no se creo"
+		db.Rollback()
+		return
+	}
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, cc.Cash)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "movimento de cobro creado"
 	m.Data = cc
@@ -244,19 +263,32 @@ func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
 
 //CollectionCashUpdate se edita un movimento de cobro
 func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
+	m.Code = http.StatusBadRequest
 	if cc.ID == 0 {
-		m.Code = http.StatusBadRequest
 		m.Message = "especifique movimento"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateCollectionCash(&cc, db)
+	ccn := cc
+	err := getCollectionCash(&ccn, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "movimento de cobro no se actualizo"
+		m.Message = "no se encontro movimiento"
 		return
 	}
+	db.Begin()
+	err = updateCollectionCash(&cc, db)
+	if err != nil {
+		m.Message = "movimento de cobro no se actualizo"
+		db.Rollback()
+		return
+	}
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, (ccn.Cash - cc.Cash))
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo movimento de cobro"
 	m.Data = cc
@@ -264,19 +296,26 @@ func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 
 //CollectionCashDelete se borra un movimento de cobro
 func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
+	m.Code = http.StatusBadRequest
 	if cc.ID == 0 {
-		m.Code = http.StatusBadRequest
 		m.Message = "especifique movimento"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.Begin()
 	err := deleteCollectionCash(&cc, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "movimento de cobro no se borro"
+		db.Rollback()
 		return
 	}
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, -cc.Cash)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = cc
