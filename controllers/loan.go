@@ -18,14 +18,51 @@ import (
 
 //LoanCreate crea un nuevo prestamo
 func LoanCreate(l models.Loan, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if l.InitialValue <= 0 {
+		m.Message = "especifique valor inicial"
+	}
+	if l.Client.ID <= 0 {
+		m.Message = "especifique cliente"
+	}
+	if l.CodCollection <= 0 {
+		m.Message = "especifique cobro"
+	}
+	if l.CodUser <= 0 {
+		l.CodUser = m.User.ID
+	}
+	if l.Interest < 1 {
+		m.Message = "especifique el interes"
+	}
+	if l.Quota <= 0 {
+		l.Quota = 30
+	}
+	if l.Balance != l.InitialValue*float32(l.Interest) {
+		l.Balance = l.InitialValue * float32(l.Interest)
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createLoan(&l, db)
+	db.Begin()
+	err := sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, -l.InitialValue)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	var uc models.Collection
+	uc.ID = l.CodCollection
+	err = sumBalanceCollection(&uc, m, db, l.Balance)
+	if err != nil {
+		db.Rollback()
+		return
+	}
+	err = createLoan(&l, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se creo"
+		db.Rollback()
 		return
 	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "prestamo creado"
 	m.Data = l
@@ -33,6 +70,10 @@ func LoanCreate(l models.Loan, m *models.Message) {
 
 //LoanGet traer un nuevo prestamo
 func LoanGet(l models.Loan, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if l.ID == 0 {
+		m.Message = "especifique prestamo"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getLoan(&l, db)
@@ -64,14 +105,27 @@ func LoanGetList(l models.Loan, m *models.Message) {
 
 //LoanUpdate se edita un prestamo
 func LoanUpdate(l models.Loan, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if l.ID == 0 {
+		m.Message = "especifique prestamo"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateLoan(&l, db)
+	ln := l
+	err := getLoan(&ln, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "prestamo no se actualizo"
+		m.Message = "no se encotro prestamo"
 		return
 	}
+	db.Begin()
+	nv := ln.Balance - l.Balance
+	err = sumCashloan(&l, m, db, nv)
+	if err != nil {
+		m.Message = "prestamo no se actualizo"
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo prestamo"
 	m.Data = l
@@ -79,14 +133,34 @@ func LoanUpdate(l models.Loan, m *models.Message) {
 
 //LoanDelete se borra un prestamo
 func LoanDelete(l models.Loan, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if l.ID == 0 {
+		m.Message = "especifique prestamo"
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	db.Begin()
 	err := deleteLoan(&l, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se borro"
+		db.Rollback()
 		return
 	}
+	err = sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, l.InitialValue)
+	if err != nil {
+		m.Message = "prestamo no se borro"
+		db.Rollback()
+		return
+	}
+	var c models.Collection
+	c.ID = l.CodCollection
+	err = sumBalanceCollection(&c, m, db, -l.Balance)
+	if err != nil {
+		m.Message = "prestamo no se borro"
+		db.Rollback()
+		return
+	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = l
@@ -144,6 +218,37 @@ func deleteLoan(l *models.Loan, db *gorm.DB) error {
 	err := db.Unscoped().Delete(l).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")
+	}
+	return nil
+}
+
+//sumCashloan se suma ingresa o se retira un pago
+func sumCashloan(l *models.Loan, m *models.Message, db *gorm.DB, nc float32) error {
+	var uc models.UserCollection
+	uc.CodUser = l.CodUser
+	err := getLoan(l, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro Prestamo"
+		return err
+	}
+	l.Balance += nc
+	err = updateLoan(l, db)
+	if err != nil {
+		m.Code = http.StatusBadGateway
+		m.Message = "no se pudo actualizar"
+		return err
+	}
+	var c models.Collection
+	c.ID = l.CodCollection
+	err = sumBalanceCollection(&c, m, db, nc)
+	if err != nil {
+		return err
+	}
+	uc.CodCollection = l.CodCollection
+	err = sumCashUserCollection(&uc, m, db, -nc)
+	if err != nil {
+		return err
 	}
 	return nil
 }

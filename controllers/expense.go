@@ -103,7 +103,7 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 		return
 	}
 
-	err = modifiCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
+	err = sumCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
 	if err != nil {
 		db.Rollback()
 		return

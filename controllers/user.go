@@ -747,7 +747,7 @@ func deleteUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 }
 
 //modifiCashUserCollection se suma cash al valir actual
-func modifiCashUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB, nc float32) error {
+func sumCashUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB, nc float32) error {
 	err := getUserCollection(uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest

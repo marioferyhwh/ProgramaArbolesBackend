@@ -162,6 +162,24 @@ func deleteCollection(c *models.Collection, db *gorm.DB) error {
 	return nil
 }
 
+//modifiBalanceCollection se suma cash al valir actual
+func sumBalanceCollection(c *models.Collection, m *models.Message, db *gorm.DB, nc float32) error {
+	err := getCollection(c, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro Prestamo"
+		return err
+	}
+	c.BalanceTotal += nc
+	err = updateCollection(c, db)
+	if err != nil {
+		m.Code = http.StatusBadGateway
+		m.Message = "no se pudo actualizar"
+		return err
+	}
+	return nil
+}
+
 /*······························································
 ································································
 ··············· lista de movimentos en cobro
