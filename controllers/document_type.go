@@ -24,14 +24,63 @@ func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 	m.Data = dt
 }
 
-//DocumentTypeDelete crea un nuevo tipo de documento
-func DocumentTypeDelete(bt models.DocumentType, m *models.Message) {
+//DocumentTypeGet traer un nuevo tipo de documento
+func DocumentTypeGet(dt models.DocumentType, m *models.Message) {
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getDocumentType(&dt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encotro tipo de documento"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "tipo de documento creado"
+	m.Data = dt
+}
+
+//DocumentTypeGetList traer lista de tipo de documento
+func DocumentTypeGetList(dt models.DocumentType, m *models.Message) {
+	dts := []models.DocumentType{dt}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getDocumentTypeList(&dts, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro litado de tipo de documentos"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "lista de tipo de documentos"
+	m.Data = dts
+}
+
+//DocumentTypeUpdate se edita un tipo de documento
+func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
 	if !validateAdmin(m) {
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteDocumentType(&bt, m, db)
+	err := updateDocumentType(&dt, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de documento no se actualizo"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "se actualizo tipo de documento"
+	m.Data = dt
+}
+
+//DocumentTypeDelete crea un nuevo tipo de documento
+func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := deleteDocumentType(&dt, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "documento no se borro"
@@ -39,7 +88,7 @@ func DocumentTypeDelete(bt models.DocumentType, m *models.Message) {
 	}
 	m.Code = http.StatusOK
 	m.Message = "documento se borro"
-	m.Data = bt
+	m.Data = dt
 }
 
 /*······························································
@@ -64,8 +113,8 @@ func getDocumentType(dt *models.DocumentType, m *models.Message, db *gorm.DB) er
 }
 
 //getDocumentTypeList trae tipo de documento con una conexion ya existente
-func getDocumentTypeList(dt *[]models.DocumentType, m *models.Message, db *gorm.DB) error {
-	err := db.Select("id,name_short,descrip").Find(dt).GetErrors()
+func getDocumentTypeList(dts *[]models.DocumentType, m *models.Message, db *gorm.DB) error {
+	err := db.Select("id,name_short,descrip").Find(dts).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
