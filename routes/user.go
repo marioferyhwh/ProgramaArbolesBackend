@@ -70,7 +70,7 @@ func SetUserCreateRoutes(c echo.Context) error {
 
 }
 
-//SetUserGetRoutes Creacion de usuario
+//SetUserGetRoutes trae de usuario
 func SetUserGetRoutes(c echo.Context) error {
 	m := models.Message{}
 	getUserInterface(c, &m.User)
@@ -88,7 +88,7 @@ func SetUserGetRoutes(c echo.Context) error {
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetUserEditRoutes Creacion de usuario
+//SetUserEditRoutes editar de usuario
 func SetUserEditRoutes(c echo.Context) error {
 
 	m := models.Message{}
@@ -117,7 +117,7 @@ func SetUserEditRoutes(c echo.Context) error {
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetUserDeleteRoutes Creacion de usuario
+//SetUserDeleteRoutes borarr usuario
 func SetUserDeleteRoutes(c echo.Context) error {
 	m := models.Message{}
 	getUserInterface(c, &m.User)
@@ -130,5 +130,271 @@ func SetUserDeleteRoutes(c echo.Context) error {
 	}
 	u.ID = id
 	controllers.UserDelete(u, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+/*······························································
+································································
+··············· telefono de usuario
+································································
+······························································*/
+
+//SetUserTelCreateRoutes Creacion de telefono de usuario
+func SetUserTelCreateRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var ut models.UserTel
+	err := c.Bind(&ut)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego telefono de usuario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.UserTelCreate(ut, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserTelGetRoutes traer telefono de usuario
+func SetUserTelGetRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var ut models.UserTel
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de telefono de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	ut.ID = id
+	controllers.UserTelGet(ut, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserTelGetListRoutes listado de ubicaiones
+func SetUserTelGetListRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var ut models.UserTel
+	id, err := getid32(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de telefono de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	ut.CodUser = uint16(id)
+	controllers.UserTelGetList(ut, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserTelEditRoutes actualizar telefono de usuario
+func SetUserTelEditRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var ut models.UserTel
+	err := c.Bind(&ut)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego telefono de usuario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de telefono de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	ut.ID = id
+	controllers.UserTelUpdate(ut, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserTelDeleteRoutes borrar telefono de usuario
+func SetUserTelDeleteRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var ut models.UserTel
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de telefono de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	ut.ID = id
+	controllers.UserTelDelete(ut, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+/*······························································
+································································
+··············· nivel de usuario
+································································
+······························································*/
+
+//SetUserLevelCreateRoutes Creacion de nivel de usuario
+func SetUserLevelCreateRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserLevel
+	err := c.Bind(&uc)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego nivel de usuario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.UserLevelCreate(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserLevelGetRoutes traer nivel de usuario
+func SetUserLevelGetRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserLevel
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de nivel de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = uint8(id)
+	controllers.UserLevelGet(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserLevelGetListRoutes listado de ubicaiones
+func SetUserLevelGetListRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserLevel
+	controllers.UserLevelGetList(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserLevelEditRoutes actualizar nivel de usuario
+func SetUserLevelEditRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserLevel
+	err := c.Bind(&uc)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego nivel de usuario ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de nivel de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = uint8(id)
+	controllers.UserLevelUpdate(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserLevelDeleteRoutes borrar nivel de usuario
+func SetUserLevelDeleteRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserLevel
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de nivel de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = uint8(id)
+	controllers.UserLevelDelete(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+/*······························································
+································································
+··············· usuario en cobro
+································································
+······························································*/
+
+//SetUserCollectionCreateRoutes Creacion de asignacion de usuario a cobro
+func SetUserCollectionCreateRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	err := c.Bind(&uc)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego asignacion de usuario a cobro ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	controllers.UserCollectionCreate(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserCollectionGetRoutes traer asignacion de usuario a cobro
+func SetUserCollectionGetRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de asignacion de usuario a cobro no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = id
+	controllers.UserCollectionGet(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserCollectionGetListRoutes listado de ubicaiones
+func SetUserCollectionGetListRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	id, err := getid32(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de asignacion de usuario a cobro no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.CodCollection = id
+	controllers.UserCollectionGetList(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserCollectionEditRoutes actualizar asignacion de usuario a cobro
+func SetUserCollectionEditRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	err := c.Bind(&uc)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = fmt.Sprint("no llego asignacion de usuario a cobro ->", err)
+		return commons.DisplayMessage(c, &m)
+	}
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de asignacion de usuario a cobro no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = id
+	controllers.UserCollectionUpdate(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserCollectionDeleteRoutes borrar asignacion de usuario a cobro
+func SetUserCollectionDeleteRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	id, err := getid(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de asignacion de usuario a cobro no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = id
+	controllers.UserCollectionDelete(uc, &m)
 	return commons.DisplayMessage(c, &m)
 }

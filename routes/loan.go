@@ -10,269 +10,262 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-//SetClientCreateRoutes Creacion de usuario
-func SetClientCreateRoutes(c echo.Context) error {
+//SetLoanCreateRoutes Creacion de prestamo
+func SetLoanCreateRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var client models.Client
-	err := c.Bind(&client)
+	var l models.Loan
+	err := c.Bind(&l)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego cliente ->", err)
+		m.Message = fmt.Sprint("no llego prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.ClientCreate(client, &m)
+	controllers.LoanCreate(l, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientGetRoutes Creacion de usuario
-func SetClientGetRoutes(c echo.Context) error {
+//SetLoanGetRoutes traer prestamo
+func SetLoanGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cl models.Client
+	var l models.Loan
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de cliente no valido"
+		m.Message = "identificador de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cl.ID = id
-	controllers.ClientGet(cl, &m)
+	l.ID = id
+	controllers.LoanGet(l, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientGetListRoutes traer tipo de negocio
-func SetClientGetListRoutes(c echo.Context) error {
+//SetLoanGetListRoutes listado de ubicaiones
+func SetLoanGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var td models.Client
+	var l models.Loan
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de tipo de negocio no valido"
+		m.Message = "identificador de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	td.CodCollection = id
-	controllers.ClientGetList(td, &m)
+	l.CodCollection = id
+	controllers.LoanGetList(l, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientEditRoutes Creacion de usuario
-func SetClientEditRoutes(c echo.Context) error {
+//SetLoanEditRoutes actualizar prestamo
+func SetLoanEditRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cl models.Client
-	err := c.Bind(&cl)
+	var l models.Loan
+	err := c.Bind(&l)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego usuario ->", err)
+		m.Message = fmt.Sprint("no llego prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de cliente no valido"
+		m.Message = "identificador de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cl.ID = id
-	controllers.ClientUpdate(cl, &m)
+	l.ID = id
+	controllers.LoanUpdate(l, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientDeleteRoutes Creacion de usuario
-func SetClientDeleteRoutes(c echo.Context) error {
+//SetLoanDeleteRoutes borrar prestamo
+func SetLoanDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cl models.Client
+	var l models.Loan
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de usuario no valido"
+		m.Message = "identificador de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cl.ID = id
-	controllers.ClientDelete(cl, &m)
+	l.ID = id
+	controllers.LoanDelete(l, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
 /*······························································
 ································································
-··············· telefono
+··············· estados de prestamos
 ································································
 ······························································*/
 
-//SetClientTelCreateRoutes Creacion de telefono cliente
-func SetClientTelCreateRoutes(c echo.Context) error {
+//SetLoanStateCreateRoutes Creacion de estado de prestamo
+func SetLoanStateCreateRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var ct models.ClientTel
-	err := c.Bind(&ct)
+	var ls models.LoanState
+	err := c.Bind(&ls)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego telefono cliente ->", err)
+		m.Message = fmt.Sprint("no llego estado de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.ClientTelCreate(ct, &m)
+	controllers.LoanStateCreate(ls, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientTelGetRoutes traer telefono cliente
-func SetClientTelGetRoutes(c echo.Context) error {
+//SetLoanStateGetRoutes traer estado de prestamo
+func SetLoanStateGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var ct models.ClientTel
+	var ls models.LoanState
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de telefono cliente no valido"
+		m.Message = "identificador de estado de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	ct.ID = id
-	controllers.ClientTelGet(ct, &m)
+	ls.ID = uint8(id)
+	controllers.LoanStateGet(ls, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientTelGetListRoutes listado de telefono cliente
-func SetClientTelGetListRoutes(c echo.Context) error {
+//SetLoanStateGetListRoutes listado de ubicaiones
+func SetLoanStateGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var ct models.ClientTel
-	id, err := getid(c)
-	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "identificador de telefono cliente no valido"
-		return commons.DisplayMessage(c, &m)
-	}
-	ct.CodClient = id
-	controllers.ClientTelGetList(ct, &m)
+	var ls models.LoanState
+	controllers.LoanStateGetList(ls, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientTelEditRoutes actualizar telefono cliente
-func SetClientTelEditRoutes(c echo.Context) error {
+//SetLoanStateEditRoutes actualizar estado de prestamo
+func SetLoanStateEditRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var ct models.ClientTel
-	err := c.Bind(&ct)
+	var ls models.LoanState
+	err := c.Bind(&ls)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego telefono cliente ->", err)
+		m.Message = fmt.Sprint("no llego estado de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de telefono cliente no valido"
+		m.Message = "identificador de estado de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	ct.ID = id
-	controllers.ClientTelUpdate(ct, &m)
+	ls.ID = uint8(id)
+	controllers.LoanStateUpdate(ls, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientTelDeleteRoutes borrar telefono cliente
-func SetClientTelDeleteRoutes(c echo.Context) error {
+//SetLoanStateDeleteRoutes borrar estado de prestamo
+func SetLoanStateDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var ct models.ClientTel
+	var ls models.LoanState
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de telefono cliente no valido"
+		m.Message = "identificador de estado de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	ct.ID = id
-	controllers.ClientTelDelete(ct, &m)
+	ls.ID = uint8(id)
+	controllers.LoanStateDelete(ls, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
 /*······························································
 ································································
-··············· ubicaciones
+··············· pago de prestamo
 ································································
 ······························································*/
 
-//SetClientListLocationCreateRoutes Creacion de Ubicacion
-func SetClientListLocationCreateRoutes(c echo.Context) error {
+//SetLoanPaymentCreateRoutes Creacion de pago de prestamo
+func SetLoanPaymentCreateRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cll models.ClientListLocation
-	err := c.Bind(&cll)
+	var lp models.LoanPayment
+	err := c.Bind(&lp)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego Ubicacion ->", err)
+		m.Message = fmt.Sprint("no llego pago de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.ClientListLocationCreate(cll, &m)
+	controllers.LoanPaymentCreate(lp, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientListLocationGetRoutes traer Ubicacion
-func SetClientListLocationGetRoutes(c echo.Context) error {
+//SetLoanPaymentGetRoutes traer pago de prestamo
+func SetLoanPaymentGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cll models.ClientListLocation
+	var lp models.LoanPayment
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de Ubicacion no valido"
+		m.Message = "identificador de pago de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cll.ID = id
-	controllers.ClientListLocationGet(cll, &m)
+	lp.ID = id
+	controllers.LoanPaymentGet(lp, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientListLocationGetListRoutes listado de ubicaiones
-func SetClientListLocationGetListRoutes(c echo.Context) error {
+//SetLoanPaymentGetListRoutes listado de ubicaiones
+func SetLoanPaymentGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cll models.ClientListLocation
-	id, err := getid32(c)
+	var lp models.LoanPayment
+	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de ubicacion no valido"
+		m.Message = "identificador de pago de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cll.CodCollection = id
-	controllers.ClientListLocationGetList(cll, &m)
+	lp.CodLoan = id
+	controllers.LoanPaymentGetList(lp, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientListLocationEditRoutes actualizar Ubicacion
-func SetClientListLocationEditRoutes(c echo.Context) error {
+//SetLoanPaymentEditRoutes actualizar pago de prestamo
+func SetLoanPaymentEditRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cll models.ClientListLocation
-	err := c.Bind(&cll)
+	var lp models.LoanPayment
+	err := c.Bind(&lp)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = fmt.Sprint("no llego Ubicacion ->", err)
+		m.Message = fmt.Sprint("no llego pago de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de Ubicacion no valido"
+		m.Message = "identificador de pago de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cll.ID = id
-	controllers.ClientListLocationUpdate(cll, &m)
+	lp.ID = id
+	controllers.LoanPaymentUpdate(lp, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetClientListLocationDeleteRoutes borrar Ubicacion
-func SetClientListLocationDeleteRoutes(c echo.Context) error {
+//SetLoanPaymentDeleteRoutes borrar pago de prestamo
+func SetLoanPaymentDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var cll models.ClientListLocation
+	var lp models.LoanPayment
 	id, err := getid(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "identificador de Ubicacion no valido"
+		m.Message = "identificador de pago de prestamo no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	cll.ID = id
-	controllers.ClientListLocationDelete(cll, &m)
+	lp.ID = id
+	controllers.LoanPaymentDelete(lp, &m)
 	return commons.DisplayMessage(c, &m)
 }

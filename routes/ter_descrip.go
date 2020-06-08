@@ -10,52 +10,59 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-//SetBusinessTypeCreateRoutes Creacion de tipo de negocio
-func SetBusinessTypeCreateRoutes(c echo.Context) error {
+//SetTelDescripCreateRoutes Creacion de tipo de negocio
+func SetTelDescripCreateRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	err := c.Bind(&bt)
+	var td models.TelDescrip
+	err := c.Bind(&td)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.BusinessTypeCreate(bt, &m)
+	controllers.TelDescripCreate(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeGetRoutes traer tipo de negocio
-func SetBusinessTypeGetRoutes(c echo.Context) error {
+//SetTelDescripGetRoutes traer tipo de negocio
+func SetTelDescripGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
+	var td models.TelDescrip
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeGet(bt, &m)
+	td.ID = uint8(id)
+	controllers.TelDescripGet(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeGetListRoutes traer tipo de negocio
-func SetBusinessTypeGetListRoutes(c echo.Context) error {
+//SetTelDescripGetListRoutes traer tipo de negocio
+func SetTelDescripGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	controllers.BusinessTypeGetList(bt, &m)
+	var td models.TelDescrip
+	id, err := getid32(c)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de tipo de negocio no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	td.ID = uint8(id)
+	controllers.TelDescripGetList(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeEditRoutes actualizar tipo de negocio
-func SetBusinessTypeEditRoutes(c echo.Context) error {
+//SetTelDescripEditRoutes actualizar tipo de negocio
+func SetTelDescripEditRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	err := c.Bind(&bt)
+	var td models.TelDescrip
+	err := c.Bind(&td)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
@@ -67,23 +74,23 @@ func SetBusinessTypeEditRoutes(c echo.Context) error {
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeUpdate(bt, &m)
+	td.ID = uint8(id)
+	controllers.TelDescripUpdate(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeDeleteRoutes borrar tipo de negocio
-func SetBusinessTypeDeleteRoutes(c echo.Context) error {
+//SetTelDescripDeleteRoutes borrar tipo de negocio
+func SetTelDescripDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
+	var td models.TelDescrip
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeDelete(bt, &m)
+	td.ID = uint8(id)
+	controllers.TelDescripDelete(td, &m)
 	return commons.DisplayMessage(c, &m)
 }

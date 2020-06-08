@@ -10,52 +10,52 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-//SetBusinessTypeCreateRoutes Creacion de tipo de negocio
-func SetBusinessTypeCreateRoutes(c echo.Context) error {
+//SetDocumentTypeCreateRoutes Creacion de tipo de negocio
+func SetDocumentTypeCreateRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	err := c.Bind(&bt)
+	var dt models.DocumentType
+	err := c.Bind(&dt)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.BusinessTypeCreate(bt, &m)
+	controllers.DocumentTypeCreate(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeGetRoutes traer tipo de negocio
-func SetBusinessTypeGetRoutes(c echo.Context) error {
+//SetDocumentTypeGetRoutes traer tipo de negocio
+func SetDocumentTypeGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
+	var dt models.DocumentType
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeGet(bt, &m)
+	dt.ID = uint8(id)
+	controllers.DocumentTypeGet(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeGetListRoutes traer tipo de negocio
-func SetBusinessTypeGetListRoutes(c echo.Context) error {
+//SetDocumentTypeGetListRoutes traer tipo de negocio
+func SetDocumentTypeGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	controllers.BusinessTypeGetList(bt, &m)
+	var dt models.DocumentType
+	controllers.DocumentTypeGetList(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeEditRoutes actualizar tipo de negocio
-func SetBusinessTypeEditRoutes(c echo.Context) error {
+//SetDocumentTypeEditRoutes actualizar tipo de negocio
+func SetDocumentTypeEditRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
-	err := c.Bind(&bt)
+	var dt models.DocumentType
+	err := c.Bind(&dt)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
@@ -67,23 +67,23 @@ func SetBusinessTypeEditRoutes(c echo.Context) error {
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeUpdate(bt, &m)
+	dt.ID = uint8(id)
+	controllers.DocumentTypeUpdate(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
-//SetBusinessTypeDeleteRoutes borrar tipo de negocio
-func SetBusinessTypeDeleteRoutes(c echo.Context) error {
+//SetDocumentTypeDeleteRoutes borrar tipo de negocio
+func SetDocumentTypeDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
-	var bt models.BusinessType
+	var dt models.DocumentType
 	id, err := getid32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
-	controllers.BusinessTypeDelete(bt, &m)
+	dt.ID = uint8(id)
+	controllers.DocumentTypeDelete(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
