@@ -12,12 +12,17 @@ import (
 //InitRoutes en rutamiento de la API
 func InitRoutes(e *echo.Echo) {
 	const prefixAPI = "/api/v1/"
+
+	const prefixGeneralValuesGet = prefixAPI + "general"
+	e.POST(prefixGeneralValuesGet, SetGeneralValuesGetRoutes, controllers.ValidateJWT)
+
 	const prefixBusinessType = prefixAPI + "busindess"
 	e.POST(prefixBusinessType, SetBusinessTypeCreateRoutes, controllers.ValidateJWT)
 	e.GET(prefixBusinessType+"/:id", SetBusinessTypeGetRoutes, controllers.ValidateJWT)
 	e.GET(prefixBusinessType+"/:id", SetBusinessTypeGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixBusinessType+"/:id", SetBusinessTypeEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixBusinessType+"/:id", SetBusinessTypeDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixClient = prefixAPI + "client"
 	const prefixClientTel = prefixClient + "tel"
 	e.POST(prefixClientTel, SetClientTelCreateRoutes, controllers.ValidateJWT)
@@ -36,6 +41,7 @@ func InitRoutes(e *echo.Echo) {
 	e.GET(prefixClient+"/:id", SetClientGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixClient+"/:id", SetClientEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixClient+"/:id", SetClientDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixCollection = prefixAPI + "collection"
 	const prefixCollectionCash = prefixCollection + "cash"
 	e.POST(prefixCollectionCash, SetCollectionCashCreateRoutes, controllers.ValidateJWT)
@@ -48,12 +54,14 @@ func InitRoutes(e *echo.Echo) {
 	e.GET(prefixCollection+"/:id", SetCollectionGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixCollection+"/:id", SetCollectionEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixCollection+"/:id", SetCollectionDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixDocumentType = prefixAPI + "document"
 	e.POST(prefixDocumentType, SetDocumentTypeCreateRoutes, controllers.ValidateJWT)
 	e.GET(prefixDocumentType+"/:id", SetDocumentTypeGetRoutes, controllers.ValidateJWT)
 	e.GET(prefixDocumentType+"/:id", SetDocumentTypeGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixDocumentType+"/:id", SetDocumentTypeEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixDocumentType+"/:id", SetDocumentTypeDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixExpense = prefixAPI + "expense"
 	const prefixExpenseDescrip = prefixExpense + "descrip"
 	e.POST(prefixExpenseDescrip, SetExpenseDescripCreateRoutes, controllers.ValidateJWT)
@@ -66,6 +74,7 @@ func InitRoutes(e *echo.Echo) {
 	e.GET(prefixExpense+"/:id", SetExpenseGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixExpense+"/:id", SetExpenseEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixExpense+"/:id", SetExpenseDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixLoan = prefixAPI + "loan"
 	const prefixLoanState = prefixLoan + "loan_state"
 	e.POST(prefixLoanState, SetLoanStateCreateRoutes, controllers.ValidateJWT)
@@ -84,12 +93,14 @@ func InitRoutes(e *echo.Echo) {
 	e.GET(prefixLoan+"/:id", SetLoanGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixLoan+"/:id", SetLoanEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixLoan+"/:id", SetLoanDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixTelDescription = prefixAPI + "tel"
 	e.POST(prefixTelDescription, SetTelDescripCreateRoutes, controllers.ValidateJWT)
 	e.GET(prefixTelDescription+"/:id", SetTelDescripGetRoutes, controllers.ValidateJWT)
 	e.GET(prefixTelDescription+"/:id", SetTelDescripGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixTelDescription+"/:id", SetTelDescripEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixTelDescription+"/:id", SetTelDescripDeleteRoutes, controllers.ValidateJWT)
+
 	const prefixUser = prefixAPI + "user"
 	const prefixUserTel = prefixUser + "tel"
 	e.POST(prefixUserTel, SetUserTelCreateRoutes, controllers.ValidateJWT)
@@ -118,16 +129,12 @@ func InitRoutes(e *echo.Echo) {
 	e.POST("/*", SetDefaultRoutes)
 	e.DELETE("/*", SetDefaultRoutes)
 	e.PUT("/*", SetDefaultRoutes)
-
 }
 
 //SetDefaultRoutes Creacion de usuario
 func SetDefaultRoutes(c echo.Context) error {
-
 	m := models.Message{}
-
 	m.Code = http.StatusBadRequest
 	m.Message = "no existe esa pagina"
-
 	return commons.DisplayMessage(c, &m)
 }
