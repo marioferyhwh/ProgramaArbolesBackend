@@ -35,7 +35,7 @@ func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeGet traer un nuevo tipo de documento
 func DocumentTypeGet(dt models.DocumentType, m *models.Message) {
-	if dt.ID == 0 {
+	if dt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique typo de documento"
 		return
@@ -71,7 +71,7 @@ func DocumentTypeGetList(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeUpdate se edita un tipo de documento
 func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
-	if dt.ID == 0 {
+	if dt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique typo de documento"
 		return
@@ -94,7 +94,7 @@ func DocumentTypeUpdate(dt models.DocumentType, m *models.Message) {
 
 //DocumentTypeDelete crea un nuevo tipo de documento
 func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
-	if dt.ID == 0 {
+	if dt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique typo de documento"
 		return

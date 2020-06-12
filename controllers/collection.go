@@ -35,7 +35,7 @@ func CollectionCreate(c models.Collection, m *models.Message) {
 
 //CollectionGet traer un nuevo cobro
 func CollectionGet(c models.Collection, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -55,6 +55,9 @@ func CollectionGet(c models.Collection, m *models.Message) {
 
 //CollectionGetList traer lista de cobro
 func CollectionGetList(c models.Collection, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	cs := []models.Collection{c}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -71,7 +74,7 @@ func CollectionGetList(c models.Collection, m *models.Message) {
 
 //CollectionUpdate se edita un cobro
 func CollectionUpdate(c models.Collection, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -94,7 +97,7 @@ func CollectionUpdate(c models.Collection, m *models.Message) {
 
 //CollectionDelete se borra un cobro
 func CollectionDelete(c models.Collection, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -135,10 +138,6 @@ func getCollection(c *models.Collection, db *gorm.DB) error {
 
 //getCollectionList trae cobro (id,descrip,actived,balance_total)
 func getCollectionList(cs *[]models.Collection, db *gorm.DB) error {
-	// var c models.Collection
-	// if len(*cs )==0{
-	//   c= (*cs)[0]
-	// }
 	err := db.Select("id,descrip,actived,balance_total").Find(cs).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -162,7 +161,7 @@ func deleteCollection(c *models.Collection, db *gorm.DB) error {
 	return nil
 }
 
-//modifiBalanceCollection se suma cash al valir actual
+//modifiBalanceCollection se suma cash al valor actual
 func sumBalanceCollection(c *models.Collection, m *models.Message, db *gorm.DB, nc float32) error {
 	err := getCollection(c, db)
 	if err != nil {
@@ -203,14 +202,14 @@ func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := createCollectionCash(&cc, db)
+	err := sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, cc.Cash)
 	if err != nil {
-		m.Message = "movimento de cobro no se creo"
 		db.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, cc.Cash)
+	err = createCollectionCash(&cc, db)
 	if err != nil {
+		m.Message = "movimento de cobro no se creo"
 		db.Rollback()
 		return
 	}
@@ -222,7 +221,7 @@ func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 
 //CollectionCashGet traer un nuevo movimento de cobro
 func CollectionCashGet(cc models.CollectionCash, m *models.Message) {
-	if cc.ID == 0 {
+	if cc.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique movimento"
 		return
@@ -242,7 +241,7 @@ func CollectionCashGet(cc models.CollectionCash, m *models.Message) {
 
 //CollectionCashGetList traer lista de movimento de cobro
 func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
-	if cc.CodCollection == 0 {
+	if cc.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -264,7 +263,7 @@ func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
 //CollectionCashUpdate se edita un movimento de cobro
 func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if cc.ID == 0 {
+	if cc.ID <= 0 {
 		m.Message = "especifique movimento"
 		return
 	}
@@ -297,7 +296,7 @@ func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 //CollectionCashDelete se borra un movimento de cobro
 func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if cc.ID == 0 {
+	if cc.ID <= 0 {
 		m.Message = "especifique movimento"
 		return
 	}
