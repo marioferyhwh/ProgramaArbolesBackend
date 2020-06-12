@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -27,14 +26,14 @@ func ClientCreate(c models.Client, m *models.Message) {
 		m.Message = "falta direccion cliente"
 		return
 	}
-	if c.CodCollection == 0 {
+	if c.CodCollection <= 0 {
 		m.Message = "falta cobro al que pertenece cliente"
 		return
 	}
-	if c.CodUser == 0 {
+	if c.CodUser <= 0 {
 		c.CodUser = m.User.ID
 	}
-	if c.CodBusinessType == 0 {
+	if c.CodBusinessType <= 0 {
 		m.Message = "falta tipo de negocio"
 		return
 	}
@@ -60,7 +59,7 @@ func ClientCreate(c models.Client, m *models.Message) {
 
 //ClientGet traer un nuevo cliente
 func ClientGet(c models.Client, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cliente"
 		return
@@ -86,7 +85,7 @@ func ClientGet(c models.Client, m *models.Message) {
 
 //ClientGetList traer lista de cliente
 func ClientGetList(c models.Client, m *models.Message) {
-	if c.CodCollection == 0 {
+	if c.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -107,7 +106,7 @@ func ClientGetList(c models.Client, m *models.Message) {
 
 //ClientUpdate se edita un cliente
 func ClientUpdate(c models.Client, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cliente"
 		return
@@ -151,7 +150,7 @@ func ClientUpdate(c models.Client, m *models.Message) {
 
 //ClientDelete se borra un cliente
 func ClientDelete(c models.Client, m *models.Message) {
-	if c.ID == 0 {
+	if c.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cliente"
 		return
@@ -224,7 +223,7 @@ func deleteClient(c *models.Client, db *gorm.DB) error {
 
 //ClientTelCreate crea un nuevo telefono de cliente
 func ClientTelCreate(ct models.ClientTel, m *models.Message) {
-	if ct.CodClient == 0 {
+	if ct.CodClient <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cliente"
 		return
@@ -244,7 +243,7 @@ func ClientTelCreate(ct models.ClientTel, m *models.Message) {
 
 //ClientTelGet traer telefono de cliente
 func ClientTelGet(ct models.ClientTel, m *models.Message) {
-	if ct.ID == 0 {
+	if ct.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique telefono de cliente"
 		return
@@ -264,7 +263,7 @@ func ClientTelGet(ct models.ClientTel, m *models.Message) {
 
 //ClientTelGetList traer lista de telefonos de cliente
 func ClientTelGetList(ct models.ClientTel, m *models.Message) {
-	if ct.CodClient == 0 {
+	if ct.CodClient <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cliente"
 		return
@@ -285,7 +284,7 @@ func ClientTelGetList(ct models.ClientTel, m *models.Message) {
 
 //ClientTelUpdate actualiza telefono de cliente
 func ClientTelUpdate(ct models.ClientTel, m *models.Message) {
-	if ct.ID == 0 {
+	if ct.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique telefono de cliente"
 		return
@@ -305,7 +304,7 @@ func ClientTelUpdate(ct models.ClientTel, m *models.Message) {
 
 //ClientTelDelete borra telefono de cliente
 func ClientTelDelete(ct models.ClientTel, m *models.Message) {
-	if ct.ID == 0 {
+	if ct.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique telefono de cliente"
 		return
@@ -344,14 +343,10 @@ func getClientTel(ct *models.ClientTel, db *gorm.DB) error {
 //getClientTelList trae telefonos de cliente (id,phone,cod_tel_descrip)
 func getClientTelList(cts *[]models.ClientTel, db *gorm.DB) error {
 	var ct models.ClientTel
-	where := ""
 	if len(*cts) == 1 {
 		ct = (*cts)[0]
 	}
-	if ct.CodClient != 0 {
-		where = fmt.Sprintf("cod_client = %v", ct.CodClient)
-	}
-	err := db.Where(where).Select("id,phone,cod_tel_descrip").Find(cts).Limit(100).GetErrors()
+	err := db.Where("cod_client = ?", ct.CodClient).Select("id,phone,cod_tel_descrip").Find(cts).Limit(100).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -360,7 +355,7 @@ func getClientTelList(cts *[]models.ClientTel, db *gorm.DB) error {
 
 //updateClientTel actualiza telefono de cliente
 func updateClientTel(ct *models.ClientTel, db *gorm.DB) error {
-	omitList := []string{"id", "cod_client", "phone"}
+	omitList := []string{"id", "cod_client"}
 	err := db.Model(ct).Omit(omitList...).Updates(ct).Error
 	return err
 }
@@ -382,7 +377,7 @@ func deleteClientTel(ct *models.ClientTel, db *gorm.DB) error {
 
 //ClientListLocationCreate crea un nuevo descripcion de ubicacion
 func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) {
-	if cll.CodCollection == 0 {
+	if cll.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -402,7 +397,7 @@ func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) 
 
 //ClientListLocationGet crea un nuevo descripcion de ubicacion
 func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
-	if cll.ID == 0 {
+	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
 		return
@@ -422,7 +417,7 @@ func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
 
 //ClientListLocationGetList crea un nuevo descripcion de ubicacion
 func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message) {
-	if cll.CodCollection == 0 {
+	if cll.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -443,7 +438,7 @@ func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message)
 
 //ClientListLocationUpdate crea un nuevo descripcion de ubicacion
 func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) {
-	if cll.ID == 0 {
+	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
 		return
@@ -463,7 +458,7 @@ func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) 
 
 //ClientListLocationDelete crea un nuevo descripcion de ubicacion
 func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) {
-	if cll.ID == 0 {
+	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
 		return
