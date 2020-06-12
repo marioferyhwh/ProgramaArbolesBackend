@@ -30,7 +30,7 @@ func SetTelDescripGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -46,7 +46,7 @@ func SetTelDescripGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -68,7 +68,7 @@ func SetTelDescripEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -84,7 +84,7 @@ func SetTelDescripDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"

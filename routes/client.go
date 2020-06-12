@@ -30,7 +30,7 @@ func SetClientGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var cl models.Client
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de cliente no valido"
@@ -46,7 +46,7 @@ func SetClientGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.Client
-	id, err := getParams32(c)
+	id, err := getParams32(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -68,7 +68,7 @@ func SetClientEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de cliente no valido"
@@ -84,7 +84,7 @@ func SetClientDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var cl models.Client
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de usuario no valido"
@@ -121,7 +121,7 @@ func SetClientTelGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ct models.ClientTel
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono cliente no valido"
@@ -137,7 +137,7 @@ func SetClientTelGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ct models.ClientTel
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono cliente no valido"
@@ -159,7 +159,7 @@ func SetClientTelEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego telefono cliente ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono cliente no valido"
@@ -175,7 +175,7 @@ func SetClientTelDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ct models.ClientTel
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono cliente no valido"
@@ -212,7 +212,7 @@ func SetClientListLocationGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var cll models.ClientListLocation
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Ubicacion no valido"
@@ -228,7 +228,7 @@ func SetClientListLocationGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var cll models.ClientListLocation
-	id, err := getParams32(c)
+	id, err := getParams32(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de ubicacion no valido"
@@ -250,7 +250,7 @@ func SetClientListLocationEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego Ubicacion ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Ubicacion no valido"
@@ -266,7 +266,7 @@ func SetClientListLocationDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var cll models.ClientListLocation
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Ubicacion no valido"

@@ -30,7 +30,7 @@ func SetLoanGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var l models.Loan
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de prestamo no valido"
@@ -46,7 +46,7 @@ func SetLoanGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var l models.Loan
-	id, err := getParams32(c)
+	id, err := getParams32(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de prestamo no valido"
@@ -68,7 +68,7 @@ func SetLoanEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de prestamo no valido"
@@ -84,7 +84,7 @@ func SetLoanDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var l models.Loan
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de prestamo no valido"
@@ -121,7 +121,7 @@ func SetLoanStateGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ls models.LoanState
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de estado de prestamo no valido"
@@ -152,7 +152,7 @@ func SetLoanStateEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego estado de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de estado de prestamo no valido"
@@ -168,7 +168,7 @@ func SetLoanStateDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ls models.LoanState
-	id, err := getParams8(c)
+	id, err := getParams8(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de estado de prestamo no valido"
@@ -205,7 +205,7 @@ func SetLoanPaymentGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var lp models.LoanPayment
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de pago de prestamo no valido"
@@ -221,7 +221,7 @@ func SetLoanPaymentGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var lp models.LoanPayment
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de pago de prestamo no valido"
@@ -243,7 +243,7 @@ func SetLoanPaymentEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego pago de prestamo ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de pago de prestamo no valido"
@@ -259,7 +259,7 @@ func SetLoanPaymentDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var lp models.LoanPayment
-	id, err := getParams64(c)
+	id, err := getParams64(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de pago de prestamo no valido"
