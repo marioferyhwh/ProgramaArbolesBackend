@@ -19,11 +19,11 @@ import (
 //ExpenseCreate crea un nuevo gasto
 func ExpenseCreate(e models.Expense, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if e.CodCollection == 0 {
+	if e.CodCollection <= 0 {
 		m.Message = "especifique cobro"
 		return
 	}
-	if e.CodUser == 0 {
+	if e.CodUser <= 0 {
 		m.Message = "especifique usuario"
 		return
 	}
@@ -31,17 +31,21 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 		m.Message = "valor no valido"
 		return
 	}
+	if e.CodExpenseDescrip <= 0 {
+		m.Message = "descripcion no valida"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
-	err := createExpense(&e, db)
+	err := sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, -e.Cash)
 	if err != nil {
-		m.Message = "gasto no se creo"
 		db.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, -e.Cash)
+	err = createExpense(&e, db)
 	if err != nil {
+		m.Message = "gasto no se creo"
 		db.Rollback()
 		return
 	}
@@ -53,7 +57,7 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 
 //ExpenseGet traer un nuevo gasto
 func ExpenseGet(e models.Expense, m *models.Message) {
-	if e.ID == 0 {
+	if e.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique gasto"
 		return
@@ -73,7 +77,7 @@ func ExpenseGet(e models.Expense, m *models.Message) {
 
 //ExpenseGetList traer lista de gasto
 func ExpenseGetList(e models.Expense, m *models.Message) {
-	if e.CodCollection == 0 {
+	if e.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -95,22 +99,27 @@ func ExpenseGetList(e models.Expense, m *models.Message) {
 //ExpenseUpdate se edita un gasto
 func ExpenseUpdate(e models.Expense, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if e.ID == 0 {
+	if e.ID <= 0 {
 		m.Message = "especifique gasto"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
 	en := e
 	err := getExpense(&en, db)
 	if err != nil {
 		m.Message = "no se encotro gasto"
+		return
+	}
+	db.Begin()
+	err = sumCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (en.Cash - e.Cash))
+	if err != nil {
 		db.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodCollection: e.CodCollection, CodUser: e.CodUser}, m, db, (e.Cash - en.Cash))
+	err = updateExpense(&e, db)
 	if err != nil {
+		m.Message = "no se actualizo"
 		db.Rollback()
 		return
 	}
@@ -123,7 +132,7 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 //ExpenseDelete se borra un gasto
 func ExpenseDelete(e models.Expense, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if e.ID == 0 {
+	if e.ID <= 0 {
 		m.Message = "especifique gasto"
 		return
 	}
@@ -173,7 +182,7 @@ func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 	}
 	where := fmt.Sprintf("cod_collection = %v", e.CodCollection)
 	if e.CodUser != 0 {
-		where += fmt.Sprintf("cod_user = %v", e.CodUser)
+		where += fmt.Sprintf(" and cod_user = %v", e.CodUser)
 	}
 	err := db.Where(where).Select("id,cash,cod_expense_descrip,cod_user").Find(es).GetErrors()
 	if len(err) != 0 {
@@ -184,7 +193,7 @@ func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 
 //updateExpense actualizar el gasto
 func updateExpense(e *models.Expense, db *gorm.DB) error {
-	omitList := []string{"id", "cod_expense_descrip", "cod_user", "cod_collection"}
+	omitList := []string{"id", "cod_user", "cod_collection"}
 	err := db.Model(e).Omit(omitList...).Updates(e).Error
 	return err
 }
@@ -206,7 +215,7 @@ func deleteExpense(e *models.Expense, db *gorm.DB) error {
 
 //ExpenseDescripCreate crea un nuevo descripcion de gastos
 func ExpenseDescripCreate(ed models.ExpenseDescrip, m *models.Message) {
-	if ed.CodCollection == 0 {
+	if ed.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique descripcion cobro"
 		return
@@ -226,7 +235,7 @@ func ExpenseDescripCreate(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripGet traer un nuevo descripcion de gastos
 func ExpenseDescripGet(ed models.ExpenseDescrip, m *models.Message) {
-	if ed.ID == 0 {
+	if ed.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique descripcion gasto"
 		return
@@ -246,7 +255,7 @@ func ExpenseDescripGet(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripGetList traer lista de descripcion de gastos
 func ExpenseDescripGetList(ed models.ExpenseDescrip, m *models.Message) {
-	if ed.CodCollection == 0 {
+	if ed.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
 		return
@@ -261,13 +270,13 @@ func ExpenseDescripGetList(ed models.ExpenseDescrip, m *models.Message) {
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "lista de descripcion de gastoss"
+	m.Message = "lista de descripcion de gastos"
 	m.Data = eds
 }
 
 //ExpenseDescripUpdate se edita un descripcion de gastos
 func ExpenseDescripUpdate(ed models.ExpenseDescrip, m *models.Message) {
-	if ed.ID == 0 {
+	if ed.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique descripcion gasto"
 		return
