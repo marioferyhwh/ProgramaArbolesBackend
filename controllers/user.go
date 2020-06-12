@@ -63,7 +63,6 @@ func Login(u models.User, m *models.Message) {
 
 //UserCreate crea el usuario
 func UserCreate(u models.User, m *models.Message) {
-	//validacion de datos de usuario
 	m.Code = http.StatusBadRequest
 	if u.Email == "" {
 		m.Message = "falta email"
@@ -111,7 +110,7 @@ func UserCreate(u models.User, m *models.Message) {
 
 //UserGet trae un usuario
 func UserGet(u models.User, m *models.Message) {
-	if u.ID == 0 {
+	if u.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique usuario"
 		return
@@ -133,23 +132,24 @@ func UserGet(u models.User, m *models.Message) {
 	m.Data = u
 }
 
+//UserGetList pendiente por desarrollar
+func UserGetList(u models.User, m *models.Message) {
+
+}
+
 //UserUpdate trae un usuario
 func UserUpdate(u models.User, m *models.Message) {
-	if u.ID == 0 {
+	if u.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique usuario"
 		return
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := updateUser(&u, db)
+	var err error
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
-	if err != nil {
-		db.Rollback()
-		return
-	}
+	db.Begin()
 	for _, tel := range u.UserTelDelete {
 		err = deleteUserTel(&tel, db)
 		if err != nil {
@@ -171,6 +171,11 @@ func UserUpdate(u models.User, m *models.Message) {
 			return
 		}
 	}
+	err = updateUser(&u, db)
+	if err != nil {
+		db.Rollback()
+		return
+	}
 	u.Password = ""
 	u.ConfirmPassword = ""
 	db.Commit()
@@ -181,11 +186,16 @@ func UserUpdate(u models.User, m *models.Message) {
 
 //UserDelete trae un usuario
 func UserDelete(u models.User, m *models.Message) {
-	//se debe agregar restricciones de borrado
+	m.Code = http.StatusBadRequest
+	if u.ID <= 0 {
+		m.Message = "especifique usuario"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	db.Begin()
 	var err error
+	m.Message = "no se pudo Borrado Usuario"
 	for _, tel := range u.UserTel {
 		err = deleteUserTel(&tel, db)
 		if err != nil {
@@ -194,12 +204,11 @@ func UserDelete(u models.User, m *models.Message) {
 		}
 	}
 	err = deleteUser(&u, db)
-	db.Commit()
 	if err != nil {
-		m.Code = http.StatusBadGateway
-		m.Message = "no se pudo Borrado Usuario"
+		db.Rollback()
 		return
 	}
+	db.Commit()
 	m.Code = http.StatusOK
 	m.Message = "Usuario Borrado"
 	m.Data = u
@@ -253,7 +262,7 @@ func getUserList(u *[]models.User, db *gorm.DB) error {
 //updateUser se borra el usuario
 func updateUser(u *models.User, db *gorm.DB) error {
 	//q := `update from users set .. where id=?;`
-	omitList := []string{"id"}
+	omitList := []string{"id"} //"CodDocumentType", "Document"
 	if !u.ChangePassword || u.ConfirmPassword == u.Password {
 		omitList = append(omitList, "password")
 	}
@@ -285,7 +294,7 @@ func deleteUser(u *models.User, db *gorm.DB) error {
 //UserTelCreate crea un nuevo telefono de usuario
 func UserTelCreate(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ut.CodUser == 0 {
+	if ut.CodUser <= 0 {
 		m.Message = "no se especifico a que usuario"
 		return
 	}
@@ -297,7 +306,6 @@ func UserTelCreate(ut models.UserTel, m *models.Message) {
 	defer db.Close()
 	err := createUserTel(&ut, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "telefono de usuario no se creo"
 		return
 	}
@@ -308,6 +316,11 @@ func UserTelCreate(ut models.UserTel, m *models.Message) {
 
 //UserTelGet traer un nuevo telefono de usuario
 func UserTelGet(ut models.UserTel, m *models.Message) {
+	m.Code = http.StatusBadRequest
+	if ut.ID <= 0 {
+		m.Message = "especifique telefono"
+		return
+	}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserTel(&ut, db)
@@ -324,7 +337,7 @@ func UserTelGet(ut models.UserTel, m *models.Message) {
 //UserTelGetList traer lista de telefono de usuario
 func UserTelGetList(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ut.CodUser == 0 {
+	if ut.CodUser <= 0 {
 		m.Message = "no se especifico a que usuario"
 		return
 	}
@@ -345,7 +358,7 @@ func UserTelGetList(ut models.UserTel, m *models.Message) {
 //UserTelUpdate se edita un telefono de usuario
 func UserTelUpdate(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ut.ID == 0 {
+	if ut.ID <= 0 {
 		m.Message = "especifique numero"
 		return
 	}
@@ -365,7 +378,7 @@ func UserTelUpdate(ut models.UserTel, m *models.Message) {
 //UserTelDelete se borra un telefono de usuario
 func UserTelDelete(ut models.UserTel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ut.ID == 0 {
+	if ut.ID <= 0 {
 		m.Message = "especifique numero"
 		return
 	}
@@ -415,7 +428,7 @@ func getUserTelList(uts *[]models.UserTel, db *gorm.DB) error {
 
 //updateUserTel se borra el telefono de usuario
 func updateUserTel(ut *models.UserTel, db *gorm.DB) error {
-	omitList := []string{"id", "cod_user", "phone"}
+	omitList := []string{"id", "cod_user"}
 	err := db.Model(ut).Omit(omitList...).Updates(ut).Error
 	return err
 }
@@ -455,8 +468,11 @@ func UserLevelCreate(ul models.UserLevel, m *models.Message) {
 
 //UserLevelGet crea un nuevo tipo de documento
 func UserLevelGet(ul models.UserLevel, m *models.Message) {
+	if !validateAdmin(m) {
+		return
+	}
 	m.Code = http.StatusBadGateway
-	if ul.ID == 0 {
+	if ul.ID <= 0 {
 		m.Message = "especifique nivel de usuario"
 		return
 	}
@@ -492,7 +508,7 @@ func UserLevelGetList(ul models.UserLevel, m *models.Message) {
 //UserLevelUpdate crea un nuevo tipo de documento
 func UserLevelUpdate(ul models.UserLevel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ul.ID == 0 {
+	if ul.ID <= 0 {
 		m.Message = "especifique nivel de usuario"
 		return
 	}
@@ -515,7 +531,7 @@ func UserLevelUpdate(ul models.UserLevel, m *models.Message) {
 //UserLevelDelete crea un nuevo tipo de documento
 func UserLevelDelete(ul models.UserLevel, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if ul.ID == 0 {
+	if ul.ID <= 0 {
 		m.Message = "especifique nivel de usuario"
 		return
 	}
@@ -538,13 +554,13 @@ func UserLevelDelete(ul models.UserLevel, m *models.Message) {
 /*······························································
 ······························································*/
 
-//createUserLevel crea tipo de documento
+//createUserLevel crea nivel de usuario
 func createUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Create(ul).Error
 	return err
 }
 
-//getUserLevel trae tipo de documento (id,created_at,updated_at,level)
+//getUserLevel trae nivel de usuario (id,created_at,updated_at,level)
 func getUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,level").First(ul).GetErrors()
 	if len(err) != 0 {
@@ -553,7 +569,7 @@ func getUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	return nil
 }
 
-//getUserLevelList trae tipo de documento (id,level)
+//getUserLevelList trae nivel de usuario (id,level)
 func getUserLevelList(ul *[]models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Select("id,level").Find(ul).GetErrors()
 	if len(err) != 0 {
@@ -562,14 +578,14 @@ func getUserLevelList(ul *[]models.UserLevel, m *models.Message, db *gorm.DB) er
 	return nil
 }
 
-//updateUserLevel se borra el tipo de documento
+//updateUserLevel se borra el nivel de usuario
 func updateUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(ul).Omit(omitList...).Updates(ul).Error
 	return err
 }
 
-//deleteUserLevel se borra el tipo de documento
+//deleteUserLevel se borra el nivel de usuario
 func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
 	err := db.Unscoped().Delete(ul).GetErrors()
 	if len(err) != 0 {
@@ -587,11 +603,11 @@ func deleteUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error
 //UserCollectionCreate crea un nuevo enlace entre usuario y cobro
 func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if uc.CodCollection == 0 {
+	if uc.CodCollection <= 0 {
 		m.Message = "especifique cobro"
 		return
 	}
-	if uc.CodUser == 0 {
+	if uc.CodUser <= 0 {
 		m.Message = "especifique usuario"
 		return
 	}
@@ -614,7 +630,7 @@ func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 //UserCollectionGet traer un nuevo enlace entre usuario y cobro
 func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if uc.ID == 0 {
+	if uc.ID <= 0 && (uc.CodCollection <= 0 || uc.CodUser <= 0) {
 		m.Message = "especifique cobro"
 		return
 	}
@@ -633,12 +649,16 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 
 //UserCollectionGetList crea un nuevo tipo de documento
 func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
+	m.Code = http.StatusBadGateway
+	if uc.CodCollection <= 0 && uc.CodUser <= 0 {
+		m.Message = "especifique cobro y/o usuario"
+		return
+	}
 	ucs := []models.UserCollection{uc}
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserCollectionList(&ucs, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el listado de negocios"
 		return
 	}
@@ -650,7 +670,7 @@ func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 //UserCollectionUpdate se edita un enlace entre usuario y cobro
 func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if uc.ID == 0 {
+	if uc.ID <= 0 {
 		m.Message = "especifique cobro"
 		return
 	}
@@ -673,7 +693,7 @@ func UserCollectionUpdate(uc models.UserCollection, m *models.Message) {
 //UserCollectionDelete se borra un enlace entre usuario y cobro
 func UserCollectionDelete(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if uc.ID == 0 {
+	if uc.ID <= 0 {
 		m.Message = "especifique cobro"
 	}
 	if !validateAdmin(m) {
@@ -704,7 +724,7 @@ func createUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 //getUserCollection trae  relacion entre usuario y collection (id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name)
 func getUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	where := ""
-	if uc.ID == 0 && (uc.CodCollection != 0 && uc.CodUser != 0) {
+	if uc.ID <= 0 && (uc.CodCollection != 0 && uc.CodUser != 0) {
 		where = fmt.Sprintf("cod_collection = %v and cod_user =%v", uc.CodCollection, uc.CodUser)
 	}
 	err := db.Where(where).Select("id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name").First(uc).GetErrors()
@@ -725,8 +745,7 @@ func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 	if uc.CodUser != 0 {
 		where = fmt.Sprintf("cod_user = %v", uc.CodUser)
 	}
-	fmt.Println("se inicia consulta")
-	err := db.Debug().Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
+	err := db.Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -735,9 +754,6 @@ func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 
 //updateUserCollection se borra el  relacion entre usuario y collection
 func updateUserCollection(uc *models.UserCollection, db *gorm.DB) error {
-	if uc.ID == 0 {
-		return errors.New("no es valido")
-	}
 	omitList := []string{"id", "cod_collection", "cod_user", ""}
 	err := db.Model(uc).Omit(omitList...).Updates(uc).Error
 	return err
