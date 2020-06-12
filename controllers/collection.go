@@ -124,7 +124,7 @@ func createCollection(c *models.Collection, db *gorm.DB) error {
 	return err
 }
 
-//getCollection trae cobro
+//getCollection trae cobro (id,created_at,updated_at,descrip,actived,balance_total)
 func getCollection(c *models.Collection, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip,actived,balance_total").First(c).GetErrors()
 	if len(err) != 0 {
@@ -133,7 +133,7 @@ func getCollection(c *models.Collection, db *gorm.DB) error {
 	return nil
 }
 
-//getCollectionList trae cobro
+//getCollectionList trae cobro (id,descrip,actived,balance_total)
 func getCollectionList(cs *[]models.Collection, db *gorm.DB) error {
 	// var c models.Collection
 	// if len(*cs )==0{
@@ -330,7 +330,7 @@ func createCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	return err
 }
 
-//getCollectionCash trae movimento de cobro
+//getCollectionCash trae movimento de cobro (id,created_at,updated_at,cod_user,cod_collection,cash)
 func getCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	//.Where("cod_collection == ?", cc.CodCollection)
 	err := db.Select("id,created_at,updated_at,cod_user,cod_collection,cash").First(cc).GetErrors()
@@ -340,7 +340,7 @@ func getCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 	return nil
 }
 
-//getCollectionCashList trae lista pagos de cobro
+//getCollectionCashList trae lista pagos de cobro (id,cod_user,cod_collection,cash)
 func getCollectionCashList(ccs *[]models.CollectionCash, db *gorm.DB) error {
 	var cc models.CollectionCash
 	if len(*ccs) == 1 {

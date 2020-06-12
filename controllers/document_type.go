@@ -9,6 +9,12 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
+/*······························································
+································································
+···············  tipos de documentos
+································································
+······························································*/
+
 //DocumentTypeCreate crea un nuevo tipo de documento
 func DocumentTypeCreate(dt models.DocumentType, m *models.Message) {
 	if !validateAdmin(m) {
@@ -110,18 +116,15 @@ func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
 }
 
 /*······························································
-································································
-···············  tipos de documentos
-································································
 ······························································*/
 
-//createDocumentType crea tipo de documento con una conexion ya existente
+//createDocumentType crea tipo de documento
 func createDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Create(dt).Error
 	return err
 }
 
-//getDocumentType trae tipo de documento con una conexion ya existente
+//getDocumentType trae tipo de documento (id,created_at,updated_at,name_short,descrip)
 func getDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,name_short,descrip").First(dt).GetErrors()
 	if len(err) != 0 {
@@ -130,7 +133,7 @@ func getDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	return nil
 }
 
-//getDocumentTypeList trae tipo de documento con una conexion ya existente
+//getDocumentTypeList trae tipo de documento (id,name_short,descrip)
 func getDocumentTypeList(dts *[]models.DocumentType, db *gorm.DB) error {
 	err := db.Select("id,name_short,descrip").Find(dts).GetErrors()
 	if len(err) != 0 {
@@ -139,14 +142,14 @@ func getDocumentTypeList(dts *[]models.DocumentType, db *gorm.DB) error {
 	return nil
 }
 
-//updateDocumentType se borra el tipo de documento con una conexion ya existente
+//updateDocumentType se borra el tipo de documento
 func updateDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	omitList := []string{"id", "name_short"}
 	err := db.Model(dt).Omit(omitList...).Updates(dt).Error
 	return err
 }
 
-//deleteDocumentType se borra el tipo de documento con una conexion ya existente
+//deleteDocumentType se borra el tipo de documento
 func deleteDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	err := db.Unscoped().Delete(dt).GetErrors()
 	if len(err) != 0 {

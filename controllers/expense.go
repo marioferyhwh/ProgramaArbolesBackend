@@ -156,7 +156,7 @@ func createExpense(e *models.Expense, db *gorm.DB) error {
 	return err
 }
 
-//getExpense trae gasto
+//getExpense trae gasto (id,created_at,updated_at,cash,cod_expense_descrip,cod_user,cod_collection)
 func getExpense(e *models.Expense, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cash,cod_expense_descrip,cod_user,cod_collection").First(e).GetErrors()
 	if len(err) != 0 {
@@ -165,7 +165,7 @@ func getExpense(e *models.Expense, db *gorm.DB) error {
 	return nil
 }
 
-//getExpenseList trae gasto
+//getExpenseList trae gasto (id,cash,cod_expense_descrip,cod_user)
 func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 	var e models.Expense
 	if len(*es) == 0 {
@@ -314,7 +314,7 @@ func createExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	return err
 }
 
-//getExpenseDescrip trae descripcion de gasto
+//getExpenseDescrip trae descripcion de gasto (id,created_at,updated_at,cod_collection,descrip)
 func getExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cod_collection,descrip").First(ed).GetErrors()
 	if len(err) != 0 {
@@ -323,7 +323,7 @@ func getExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
 	return nil
 }
 
-//getExpenseDescripList trae descripcion de gasto
+//getExpenseDescripList trae descripcion de gasto (id,descrip)
 func getExpenseDescripList(eds *[]models.ExpenseDescrip, db *gorm.DB) error {
 	var ed models.ExpenseDescrip
 	if len(*eds) == 1 {

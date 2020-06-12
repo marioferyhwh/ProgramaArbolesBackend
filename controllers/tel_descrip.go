@@ -123,13 +123,13 @@ func TelDescripDelete(td models.TelDescrip, m *models.Message) {
 /*······························································
 ······························································*/
 
-//createTelDescrip crea descripcion de los telefonos con una conexion ya existente
+//createTelDescrip crea descripcion de los telefonos
 func createTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
 	err := db.Create(td).Error
 	return err
 }
 
-//getTelDescrip trae descripcion de los telefonos con una conexion ya existente
+//getTelDescrip trae descripcion de los telefonos (id,created_at,updated_at,descrip)
 func getTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(td).GetErrors()
 	if len(err) != 0 {
@@ -138,7 +138,7 @@ func getTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
 	return nil
 }
 
-//getTelDescripList trae descripcion de los telefonos con una conexion ya existente
+//getTelDescripList trae descripcion de los telefonos (id,descrip)
 func getTelDescripList(tds *[]models.TelDescrip, db *gorm.DB) error {
 	err := db.Select("id,descrip").Find(tds).GetErrors()
 	if len(err) != 0 {
@@ -147,14 +147,14 @@ func getTelDescripList(tds *[]models.TelDescrip, db *gorm.DB) error {
 	return nil
 }
 
-//updateTelDescrip se borra el descripcion de los telefonos con una conexion ya existente
+//updateTelDescrip se borra el descripcion de los telefonos
 func updateTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
 	omitList := []string{"id"}
 	err := db.Model(td).Omit(omitList...).Updates(td).Error
 	return err
 }
 
-//deleteTelDescrip se borra el descripcion de los telefonos con una conexion ya existente
+//deleteTelDescrip se borra el descripcion de los telefonos
 func deleteTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
 	err := db.Unscoped().Delete(td).GetErrors()
 	if len(err) != 0 {

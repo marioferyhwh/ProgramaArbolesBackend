@@ -124,7 +124,7 @@ func createBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	return err
 }
 
-//getBusinessType trae tipo de negocio
+//getBusinessType trae tipo de negocio (id,created_at,updated_at,descrip)
 func getBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(bt).GetErrors()
 	if len(err) != 0 {
@@ -133,7 +133,7 @@ func getBusinessType(bt *models.BusinessType, db *gorm.DB) error {
 	return nil
 }
 
-//getBusinessTypeList trae lista de tipo de negocios
+//getBusinessTypeList trae lista de tipo de negocios (id,descrip)
 func getBusinessTypeList(bt *[]models.BusinessType, db *gorm.DB) error {
 	err := db.Select("id,descrip").Find(bt).GetErrors()
 	if len(err) != 0 {

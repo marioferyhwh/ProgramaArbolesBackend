@@ -41,14 +41,15 @@ func ClientCreate(c models.Client, m *models.Message) {
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := createClient(&c, db)
+	m.Code = http.StatusBadRequest
 	if err != nil {
-		m.Code = http.StatusBadRequest
 		m.Message = "cliente no se creo"
 		return
 	}
 	for _, tel := range c.ClientTel {
 		err = createClientTel(&tel, db)
 		if err != nil {
+			m.Message = "error agregando los telefonos"
 			break
 		}
 	}
@@ -177,7 +178,7 @@ func createClient(c *models.Client, db *gorm.DB) error {
 	return err
 }
 
-//getClient trae cliente
+//getClient trae cliente (id,created_at,updated_at,name,email,cod_document_type,document,Adress,loan_number,cod_collection,cod_loan_state,cod_business_type,cod_client_list_location,cod_user)
 func getClient(c *models.Client, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,name,email,cod_document_type,document,Adress,loan_number,cod_collection,cod_loan_state,cod_business_type,cod_client_list_location,cod_user").First(c).GetErrors()
 	if len(err) != 0 {
@@ -186,7 +187,7 @@ func getClient(c *models.Client, db *gorm.DB) error {
 	return nil
 }
 
-//getClientList trae lista de clientes
+//getClientList trae lista de clientes (id,name,loan_number,cod_loan_state)
 func getClientList(cs *[]models.Client, db *gorm.DB) error {
 	var c models.Client
 	if len(*cs) == 1 {
@@ -331,7 +332,7 @@ func createClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	return err
 }
 
-//getClientTel trae telefono de cliente
+//getClientTel trae telefono de cliente (id,created_at,updated_at,phone,cod_tel_descrip)
 func getClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,phone,cod_tel_descrip").First(ct).GetErrors()
 	if len(err) != 0 {
@@ -340,7 +341,7 @@ func getClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	return nil
 }
 
-//getClientTelList trae telefonos de cliente
+//getClientTelList trae telefonos de cliente (id,phone,cod_tel_descrip)
 func getClientTelList(cts *[]models.ClientTel, db *gorm.DB) error {
 	var ct models.ClientTel
 	where := ""
@@ -489,7 +490,7 @@ func createClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error
 	return err
 }
 
-//getClientListLocation trae ubicacion valida para clientes por collection
+//getClientListLocation trae ubicacion valida para clientes por collection (id,created_at,updated_at,descrip)
 func getClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,descrip").First(cll).GetErrors()
 	if len(err) != 0 {
@@ -498,7 +499,7 @@ func getClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	return nil
 }
 
-//getClientListLocationList trae lista de ubicacion valida para clientes por collection
+//getClientListLocationList trae lista de ubicacion valida para clientes por collection (id,descrip)
 func getClientListLocationList(clls *[]models.ClientListLocation, db *gorm.DB) error {
 	var cll models.ClientListLocation
 	if len(*clls) == 1 {

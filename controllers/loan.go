@@ -182,7 +182,7 @@ func createLoan(l *models.Loan, db *gorm.DB) error {
 	return err
 }
 
-//getLoan trae Prestamos
+//getLoan trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user)
 func getLoan(l *models.Loan, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user").First(l).GetErrors()
 	if len(err) != 0 {
@@ -191,7 +191,7 @@ func getLoan(l *models.Loan, db *gorm.DB) error {
 	return nil
 }
 
-//getLoanList trae Prestamos
+//getLoanList trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client)
 func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	var l models.Loan
 	if len(*ls) == 1 {
@@ -360,7 +360,7 @@ func createLoanState(ls *models.LoanState, db *gorm.DB) error {
 	return err
 }
 
-//getLoanState trae estado de  prestamos
+//getLoanState trae estado de  prestamos (id,created_at,updated_at,state)
 func getLoanState(ls *models.LoanState, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,state").First(ls).GetErrors()
 	if len(err) != 0 {
@@ -369,7 +369,7 @@ func getLoanState(ls *models.LoanState, db *gorm.DB) error {
 	return nil
 }
 
-//getLoanStateList trae estado de  prestamos
+//getLoanStateList trae estado de  prestamos (id,state)
 func getLoanStateList(lss *[]models.LoanState, db *gorm.DB) error {
 	err := db.Select("id,state").Find(lss).GetErrors()
 	if len(err) != 0 {
@@ -553,7 +553,7 @@ func createLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	return err
 }
 
-//getLoanPayment trae pagos de prestamos
+//getLoanPayment trae pagos de prestamos (id,created_at,updated_at,cod_loan,cash,cod_user)
 func getLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	err := db.Select("id,created_at,updated_at,cod_loan,cash,cod_user").First(lp).GetErrors()
 	if len(err) != 0 {
@@ -562,7 +562,7 @@ func getLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	return nil
 }
 
-//getLoanPaymentList trae pagos de prestamos
+//getLoanPaymentList trae pagos de prestamos (id,updated_at,cod_loan,cash,cod_user)
 func getLoanPaymentList(lps *[]models.LoanPayment, db *gorm.DB) error {
 	var lp models.LoanPayment
 	if len(*lps) == 1 {
