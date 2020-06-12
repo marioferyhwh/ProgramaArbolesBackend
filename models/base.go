@@ -36,6 +36,7 @@ type ModelBig struct {
 	TimeModel
 }
 
+//TimeValidator  estructura para validar y corregir los tiempos
 type TimeValidator struct {
 	I  time.Time
 	E  time.Time

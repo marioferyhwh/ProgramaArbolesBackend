@@ -36,7 +36,7 @@ func SetBusinessTypeGetRoutes(c echo.Context) error {
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
+	bt.ID = id
 	controllers.BusinessTypeGet(bt, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -67,7 +67,7 @@ func SetBusinessTypeEditRoutes(c echo.Context) error {
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
+	bt.ID = id
 	controllers.BusinessTypeUpdate(bt, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -83,7 +83,7 @@ func SetBusinessTypeDeleteRoutes(c echo.Context) error {
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	bt.ID = uint8(id)
+	bt.ID = id
 	controllers.BusinessTypeDelete(bt, &m)
 	return commons.DisplayMessage(c, &m)
 }

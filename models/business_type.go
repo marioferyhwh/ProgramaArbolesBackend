@@ -2,7 +2,7 @@ package models
 
 // BusinessType tipo de negocio que tien el cliente
 type BusinessType struct {
-	Modelsmall
+	Model
 	Descrip string `json:"type_business,omitempty" gorm:"type:varchar(45);not null;default:''"`
 }
 
