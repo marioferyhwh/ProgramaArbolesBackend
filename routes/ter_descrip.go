@@ -30,13 +30,13 @@ func SetTelDescripGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	td.ID = uint8(id)
+	td.ID = id
 	controllers.TelDescripGet(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -46,13 +46,13 @@ func SetTelDescripGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	td.ID = uint8(id)
+	td.ID = id
 	controllers.TelDescripGetList(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -68,13 +68,13 @@ func SetTelDescripEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	td.ID = uint8(id)
+	td.ID = id
 	controllers.TelDescripUpdate(td, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -84,13 +84,13 @@ func SetTelDescripDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var td models.TelDescrip
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	td.ID = uint8(id)
+	td.ID = id
 	controllers.TelDescripDelete(td, &m)
 	return commons.DisplayMessage(c, &m)
 }

@@ -30,7 +30,7 @@ func SetExpenseGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var e models.Expense
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de gasto no valido"
@@ -46,7 +46,7 @@ func SetExpenseGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var e models.Expense
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de gasto no valido"
@@ -68,7 +68,7 @@ func SetExpenseEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego gasto ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de gasto no valido"
@@ -84,7 +84,7 @@ func SetExpenseDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var e models.Expense
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de gasto no valido"
@@ -121,7 +121,7 @@ func SetExpenseDescripGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ed models.ExpenseDescrip
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de gasto no valido"
@@ -137,7 +137,7 @@ func SetExpenseDescripGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ed models.ExpenseDescrip
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de gasto no valido"
@@ -159,7 +159,7 @@ func SetExpenseDescripEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego tipo de gasto ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de gasto no valido"
@@ -175,7 +175,7 @@ func SetExpenseDescripDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ed models.ExpenseDescrip
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de gasto no valido"

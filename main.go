@@ -15,7 +15,7 @@ import (
 
 func main() {
 	log.Println("Inicia Backend")
-	testdb := true
+	testdb := false
 	var migrate string
 	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
 	flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")

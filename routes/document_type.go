@@ -30,13 +30,13 @@ func SetDocumentTypeGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var dt models.DocumentType
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	dt.ID = uint8(id)
+	dt.ID = id
 	controllers.DocumentTypeGet(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -61,13 +61,13 @@ func SetDocumentTypeEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	dt.ID = uint8(id)
+	dt.ID = id
 	controllers.DocumentTypeUpdate(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -77,13 +77,13 @@ func SetDocumentTypeDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var dt models.DocumentType
-	id, err := getid32(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	dt.ID = uint8(id)
+	dt.ID = id
 	controllers.DocumentTypeDelete(dt, &m)
 	return commons.DisplayMessage(c, &m)
 }

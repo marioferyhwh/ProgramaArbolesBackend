@@ -30,7 +30,7 @@ func SetBusinessTypeGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var bt models.BusinessType
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -61,7 +61,7 @@ func SetBusinessTypeEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego tipo de negocio ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"
@@ -77,7 +77,7 @@ func SetBusinessTypeDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var bt models.BusinessType
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de tipo de negocio no valido"

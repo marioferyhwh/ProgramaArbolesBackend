@@ -12,7 +12,8 @@ import (
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
 
-func getid(c echo.Context) (uint64, error) {
+//getParams64
+func getParams64(c echo.Context) (uint64, error) {
 	i64, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return 0, err
@@ -20,12 +21,31 @@ func getid(c echo.Context) (uint64, error) {
 	return uint64(i64), nil
 }
 
-func getid32(c echo.Context) (uint32, error) {
+//getParams32
+func getParams32(c echo.Context) (uint32, error) {
 	i64, err := strconv.ParseInt(c.Param("id"), 10, 32)
 	if err != nil {
 		return 0, err
 	}
 	return uint32(i64), nil
+}
+
+//getParams16
+func getParams16(c echo.Context) (uint16, error) {
+	i64, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint16(i64), nil
+}
+
+//getParams8
+func getParams8(c echo.Context) (uint8, error) {
+	i64, err := strconv.ParseInt(c.Param("id"), 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint8(i64), nil
 }
 
 func getUserInterface(c echo.Context, u *models.User) {
@@ -75,7 +95,7 @@ func SetUserGetRoutes(c echo.Context) error {
 	m := models.Message{}
 	getUserInterface(c, &m.User)
 	var u models.User
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de usuario no valido"
@@ -101,7 +121,7 @@ func SetUserEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de usuario no valido"
@@ -122,7 +142,7 @@ func SetUserDeleteRoutes(c echo.Context) error {
 	m := models.Message{}
 	getUserInterface(c, &m.User)
 	var u models.User
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de usuario no valido"
@@ -159,7 +179,7 @@ func SetUserTelGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ut models.UserTel
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono de usuario no valido"
@@ -175,7 +195,7 @@ func SetUserTelGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ut models.UserTel
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono de usuario no valido"
@@ -197,13 +217,12 @@ func SetUserTelEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego telefono de usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	ut.ID, err = getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	ut.ID = id
 	controllers.UserTelUpdate(ut, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -213,7 +232,7 @@ func SetUserTelDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ut models.UserTel
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de telefono de usuario no valido"
@@ -250,13 +269,13 @@ func SetUserLevelGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserLevel
-	id, err := getid(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de nivel de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	uc.ID = uint8(id)
+	uc.ID = id
 	controllers.UserLevelGet(uc, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -281,13 +300,13 @@ func SetUserLevelEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego nivel de usuario ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de nivel de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	uc.ID = uint8(id)
+	uc.ID = id
 	controllers.UserLevelUpdate(uc, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -297,13 +316,13 @@ func SetUserLevelDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserLevel
-	id, err := getid(c)
+	id, err := getParams8(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de nivel de usuario no valido"
 		return commons.DisplayMessage(c, &m)
 	}
-	uc.ID = uint8(id)
+	uc.ID = id
 	controllers.UserLevelDelete(uc, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -334,7 +353,7 @@ func SetUserCollectionGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de asignacion de usuario a cobro no valido"
@@ -350,7 +369,7 @@ func SetUserCollectionGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de asignacion de usuario a cobro no valido"
@@ -372,7 +391,7 @@ func SetUserCollectionEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego asignacion de usuario a cobro ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de asignacion de usuario a cobro no valido"
@@ -388,7 +407,7 @@ func SetUserCollectionDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de asignacion de usuario a cobro no valido"

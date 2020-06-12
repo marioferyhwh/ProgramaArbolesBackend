@@ -36,7 +36,7 @@ func SetCollectionGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var co models.Collection
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de cobro no valido"
@@ -67,7 +67,7 @@ func SetCollectionEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego cobro ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de cobro no valido"
@@ -83,7 +83,7 @@ func SetCollectionDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var co models.Collection
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de cobro no valido"
@@ -120,7 +120,7 @@ func SetCollectionCashGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ch models.CollectionCash
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Movimentos Cobro no valido"
@@ -136,7 +136,7 @@ func SetCollectionCashGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ch models.CollectionCash
-	id, err := getid32(c)
+	id, err := getParams32(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Movimentos Cobro no valido"
@@ -158,7 +158,7 @@ func SetCollectionCashEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego Movimentos Cobro ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Movimentos Cobro no valido"
@@ -174,7 +174,7 @@ func SetCollectionCashDeleteRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var ch models.CollectionCash
-	id, err := getid(c)
+	id, err := getParams64(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "identificador de Movimentos Cobro no valido"
