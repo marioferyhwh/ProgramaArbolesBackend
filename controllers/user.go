@@ -768,7 +768,7 @@ func deleteUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	return nil
 }
 
-//modifiCashUserCollection se suma cash al valir actual
+//modifiCashUserCollection se suma cash al valor actual
 func sumCashUserCollection(uc *models.UserCollection, m *models.Message, db *gorm.DB, nc float32) error {
 	err := getUserCollection(uc, db)
 	if err != nil {
