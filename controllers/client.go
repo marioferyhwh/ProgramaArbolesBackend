@@ -22,7 +22,7 @@ func ClientCreate(c models.Client, m *models.Message) {
 		m.Message = "falta nombre cliente"
 		return
 	}
-	if c.Adress == "" || c.CodClientListLocation == 0 {
+	if c.Adress == "" || c.CodClientListLocation <= 0 {
 		m.Message = "falta direccion cliente"
 		return
 	}

@@ -35,7 +35,7 @@ func BusinessTypeCreate(bt models.BusinessType, m *models.Message) {
 
 //BusinessTypeGet traer un nuevo tipo de negocio
 func BusinessTypeGet(bt models.BusinessType, m *models.Message) {
-	if bt.ID == 0 {
+	if bt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique tipo de negocio"
 		return
@@ -71,7 +71,7 @@ func BusinessTypeGetList(bt models.BusinessType, m *models.Message) {
 
 //BusinessTypeUpdate se edita un tipo de negocio
 func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
-	if bt.ID == 0 {
+	if bt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique tipo de negocio"
 		return
@@ -94,7 +94,7 @@ func BusinessTypeUpdate(bt models.BusinessType, m *models.Message) {
 
 //BusinessTypeDelete se borra un tipo de negocio
 func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
-	if bt.ID == 0 {
+	if bt.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique tipo de negocio"
 		return

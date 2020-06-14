@@ -188,7 +188,7 @@ func sumBalanceCollection(c *models.Collection, m *models.Message, db *gorm.DB, 
 //CollectionCashCreate crea un nuevo movimento de cobro
 func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 	m.Code = http.StatusBadRequest
-	if cc.CodCollection >= 0 {
+	if cc.CodCollection <= 0 {
 		m.Message = "especifique cobro"
 		return
 	}
@@ -196,7 +196,7 @@ func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 		m.Message = "valor no valido"
 		return
 	}
-	if cc.CodUser >= 0 {
+	if cc.CodUser <= 0 {
 		cc.CodUser = m.User.ID
 	}
 	db := configuration.GetConnection()

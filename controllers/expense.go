@@ -177,7 +177,7 @@ func getExpense(e *models.Expense, db *gorm.DB) error {
 //getExpenseList trae gasto (id,cash,cod_expense_descrip,cod_user)
 func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 	var e models.Expense
-	if len(*es) == 0 {
+	if len(*es) == 1 {
 		e = (*es)[0]
 	}
 	where := fmt.Sprintf("cod_collection = %v", e.CodCollection)
@@ -296,7 +296,7 @@ func ExpenseDescripUpdate(ed models.ExpenseDescrip, m *models.Message) {
 
 //ExpenseDescripDelete se borra un descripcion de gastos
 func ExpenseDescripDelete(ed models.ExpenseDescrip, m *models.Message) {
-	if ed.ID == 0 {
+	if ed.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique descripcion gasto"
 		return
