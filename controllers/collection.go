@@ -282,7 +282,7 @@ func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 		db.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, (ccn.Cash - cc.Cash))
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, (cc.Cash - ccn.Cash))
 	if err != nil {
 		db.Rollback()
 		return

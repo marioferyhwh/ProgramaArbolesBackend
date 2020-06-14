@@ -531,7 +531,7 @@ func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
 	}
 	var l models.Loan
 	l.ID = lp.CodLoan
-	err = sumCashloan(&l, m, db, lpn.Cash-lp.Cash) //-(lp.Cash - lpn.Cash)
+	err = sumCashloan(&l, m, db, lpn.Cash-lp.Cash)
 	if err != nil {
 		m.Message = "prestamo no se actualizo"
 		db.Rollback()
