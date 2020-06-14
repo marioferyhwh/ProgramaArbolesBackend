@@ -366,10 +366,18 @@ func SetUserCollectionGetRoutes(c echo.Context) error {
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
 	id, err := getParams64(models.GetParams{C: c})
+	m.Code = http.StatusBadRequest
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "identificador de asignacion de usuario a cobro no valido"
-		return commons.DisplayMessage(c, &m)
+		uc.CodUser, err = getParams32(models.GetParams{C: c, P: "user"})
+		if err != nil {
+			m.Message = "identificador de asignacion de usuario a cobro no valido"
+			return commons.DisplayMessage(c, &m)
+		}
+		uc.CodCollection, err = getParams32(models.GetParams{C: c, P: "collection"})
+		if err != nil {
+			m.Message = "identificador de asignacion de usuario a cobro no valido"
+			return commons.DisplayMessage(c, &m)
+		}
 	}
 	uc.ID = id
 	controllers.UserCollectionGet(uc, &m)

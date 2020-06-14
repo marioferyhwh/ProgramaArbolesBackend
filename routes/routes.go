@@ -117,6 +117,7 @@ func InitRoutes(e *echo.Echo) {
 	const prefixUserCollection = prefixUser + "collection"
 	e.POST(prefixUserCollection, SetUserCollectionCreateRoutes, controllers.ValidateJWT)
 	e.GET(prefixUserCollection+"/:id", SetUserCollectionGetRoutes, controllers.ValidateJWT)
+	e.GET(prefixUserCollection+"/:user/:collection", SetUserCollectionGetRoutes, controllers.ValidateJWT)
 	e.GET(prefixUserCollection+"/:id", SetUserCollectionGetListRoutes, controllers.ValidateJWT)
 	e.PUT(prefixUserCollection+"/:id", SetUserCollectionEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixUserCollection+"/:id", SetUserCollectionDeleteRoutes, controllers.ValidateJWT)

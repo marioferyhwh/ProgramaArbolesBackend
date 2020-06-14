@@ -724,7 +724,7 @@ func createUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 //getUserCollection trae  relacion entre usuario y collection (id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name)
 func getUserCollection(uc *models.UserCollection, db *gorm.DB) error {
 	where := ""
-	if uc.ID <= 0 && (uc.CodCollection != 0 && uc.CodUser != 0) {
+	if uc.ID <= 0 && (uc.CodCollection > 0 && uc.CodUser > 0) {
 		where = fmt.Sprintf("cod_collection = %v and cod_user =%v", uc.CodCollection, uc.CodUser)
 	}
 	err := db.Where(where).Select("id,created_at,updated_at,actived,cod_user,cod_user_level,cod_collection,cash,name").First(uc).GetErrors()
