@@ -26,7 +26,7 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 		var m models.Message
 		tokenString, err := getToken(c.Request())
 		if err != nil {
-			m.Code = http.StatusBadRequest
+			m.Code = http.StatusUnauthorized
 			m.Message = err.Error()
 			return commons.DisplayMessage(c, &m)
 		}
@@ -36,6 +36,7 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		token, err := jwt.ParseWithClaims(tokenString, &models.Claim{}, verifyFuction)
 		if err != nil {
+			m.Code = http.StatusUnauthorized
 			switch err.(type) {
 			case *jwt.ValidationError:
 				mErr := ""

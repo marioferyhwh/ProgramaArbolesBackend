@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/migration"
 	"github.com/marioferyhwh/IMFBackend_forest/routes"
@@ -43,6 +44,11 @@ func main() {
 	//middleware
 	//routes
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	routes.InitRoutes(e)
 	//inicio del servidor
 	for _, a := range addrs {
