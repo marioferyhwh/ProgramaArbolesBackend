@@ -28,7 +28,7 @@ func GeneralValuesGet(m *models.Message) {
 	err = getTelDescripList(&ge.TelDescrips, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "descripcion del telefono no se creo"
+		m.Message = "no se econtro descripcion del telefonos"
 		return
 	}
 	err = getLoanStateList(&ge.LoanStates, db)

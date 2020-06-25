@@ -34,7 +34,8 @@ func Login(u models.User, m *models.Message) {
 	pwd := encriptPasswordUser(u.Password)
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Where("(nick_name = ? or email = ?) and password = ? and actived = 1", u.Email, u.Email, pwd).First(&u)
+	// db.Debug().Where("(nick_name = ? or email = ?) and password = ? and actived = true", u.Email, u.Email, pwd).First(&u)
+	db.Where("(email = ?) and password = ? and actived = true", u.Email, pwd).First(&u)
 	u.Password = ""
 	if u.ID <= 0 {
 		m.Code = http.StatusUnauthorized

@@ -13,10 +13,10 @@ import (
 func Migrate() {
 	db := configuration.GetConnection()
 	defer db.Close()
-	// deleteTables(db)
-	// createTables(db)
+	deleteTables(db)
+	createTables(db)
 	// createConstrain(db)
-	// createDataInit()
+	createDataInit()
 
 	var m models.Message
 	controllers.BusinessTypeGetList(models.BusinessType{}, &m)
@@ -48,12 +48,12 @@ func createDataInit() {
 	m := models.Message{}
 	documents := []models.DocumentType{
 		{
-			Descrip:   "Targeta de iendtificacion",
-			NameShort: "TI",
-		},
-		{
 			Descrip:   "Cedula De Ciudadania",
 			NameShort: "CC",
+		},
+		{
+			Descrip:   "Targeta de iendtificacion",
+			NameShort: "TI",
 		},
 		{
 			Descrip:   "DNI",
@@ -63,7 +63,7 @@ func createDataInit() {
 	users := []models.User{
 		{
 			NickName:        "forest",
-			Email:           "forest",
+			Email:           "forest@correo.com",
 			Password:        "forest",
 			CodDocumentType: "CC",
 			Document:        "1111111111",
@@ -84,9 +84,9 @@ func createDataInit() {
 		{Descrip: "otro"},
 	}
 	loanStates := []models.LoanState{
-		{State: "personal"},
-		{State: "trabajo"},
-		{State: "casa"},
+		{State: "normal"},
+		{State: "mala paga"},
+		{State: "perdido"},
 		{State: "otro"},
 	}
 
