@@ -120,6 +120,22 @@ func SetUserGetRoutes(c echo.Context) error {
 	return commons.DisplayMessage(c, &m)
 }
 
+//SetUserGetListRoutes listado de usuarios
+func SetUserGetListRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var u models.User
+	id, err := getParams32(models.GetParams{C: c})
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "identificador de telefono de usuario no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	u.ID = id
+	controllers.UserGetList(u, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
 //SetUserEditRoutes editar de usuario
 func SetUserEditRoutes(c echo.Context) error {
 

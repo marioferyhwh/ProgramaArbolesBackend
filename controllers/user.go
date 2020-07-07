@@ -135,7 +135,24 @@ func UserGet(u models.User, m *models.Message) {
 
 //UserGetList pendiente por desarrollar
 func UserGetList(u models.User, m *models.Message) {
+	if u.ID != 0 {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique usuario"
+		return
+	}
+	var us = []models.User{u}
 
+	db := configuration.GetConnection()
+	defer db.Close()
+	err := getUserList(&us, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "no se encontro usuario"
+		return
+	}
+	m.Code = http.StatusOK
+	m.Message = "informacion de usuario"
+	m.Data = us
 }
 
 //UserUpdate trae un usuario

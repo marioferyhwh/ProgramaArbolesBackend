@@ -124,7 +124,7 @@ func InitRoutes(e *echo.Echo) {
 	e.PUT(prefixUserCollection+"/:id", SetUserCollectionEditRoutes, controllers.ValidateJWT)
 	e.DELETE(prefixUserCollection+"/:id", SetUserCollectionDeleteRoutes, controllers.ValidateJWT)
 
-	e.GET(prefixUser+"/list/:id", SetUserGetRoutes, controllers.ValidateJWT)
+	e.GET(prefixUser+"/list/:id", SetUserGetListRoutes, controllers.ValidateJWT)
 	e.GET(prefixUser+"/:id", SetUserGetRoutes, controllers.ValidateJWT)
 	e.POST(prefixUser, SetUserCreateRoutes, controllers.ValidateJWT)
 	e.PUT(prefixUser+"/:id", SetUserEditRoutes, controllers.ValidateJWT)
