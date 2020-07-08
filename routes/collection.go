@@ -67,7 +67,6 @@ func SetCollectionEditRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego cobro ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	fmt.Println(co)
 	id, err := getParams32(models.GetParams{C: c})
 	if err != nil {
 		m.Code = http.StatusBadRequest
