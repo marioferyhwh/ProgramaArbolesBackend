@@ -167,36 +167,36 @@ func UserUpdate(u models.User, m *models.Message) {
 	var err error
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
-	db.Begin()
+	tx := db.Begin()
 	for _, tel := range u.UserTelDelete {
-		err = deleteUserTel(&tel, db)
+		err = deleteUserTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
 	for _, tel := range u.UserTelNew {
-		err = createUserTel(&tel, db)
+		err = createUserTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
 	for _, tel := range u.UserTel {
-		err = updateUserTel(&tel, db)
+		err = updateUserTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
-	err = updateUser(&u, db)
+	err = updateUser(&u, tx)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	u.Password = ""
 	u.ConfirmPassword = ""
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "Usuario Editado"
 	m.Data = u
@@ -211,22 +211,22 @@ func UserDelete(u models.User, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
+	tx := db.Begin()
 	var err error
 	m.Message = "no se pudo Borrado Usuario"
 	for _, tel := range u.UserTel {
-		err = deleteUserTel(&tel, db)
+		err = deleteUserTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
-	err = deleteUser(&u, db)
+	err = deleteUser(&u, tx)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "Usuario Borrado"
 	m.Data = u
@@ -282,12 +282,12 @@ func updateUser(u *models.User, db *gorm.DB) error {
 	//q := `update from users set .. where id=?;`
 	omitList := []string{"id", "deleted_at"} //"CodDocumentType", "Document"
 	if !u.ChangePassword || u.ConfirmPassword == u.Password {
-		omitList = append(omitList, "password")
+		omitList = append(omitList, "password", "passeword_at")
 	}
 	if !u.ChangeActived {
 		omitList = append(omitList, "actived")
 	}
-	err := db.Model(u).Omit(omitList...).Save(u).Error
+	err := db.Debug().Model(u).Omit(omitList...).Save(u).Error
 	return err
 }
 

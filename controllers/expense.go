@@ -37,19 +37,19 @@ func ExpenseCreate(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, -e.Cash)
+	tx := db.Begin()
+	err := sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, tx, -e.Cash)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = createExpense(&e, db)
+	err = createExpense(&e, tx)
 	if err != nil {
 		m.Message = "gasto no se creo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "gasto creado"
 	m.Data = e
@@ -111,19 +111,19 @@ func ExpenseUpdate(e models.Expense, m *models.Message) {
 		m.Message = "no se encotro gasto"
 		return
 	}
-	db.Begin()
-	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, (en.Cash - e.Cash))
+	tx := db.Begin()
+	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, tx, (en.Cash - e.Cash))
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = updateExpense(&e, db)
+	err = updateExpense(&e, tx)
 	if err != nil {
 		m.Message = "no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo gasto"
 	m.Data = e
@@ -138,19 +138,19 @@ func ExpenseDelete(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := deleteExpense(&e, db)
+	tx := db.Begin()
+	err := deleteExpense(&e, tx)
 	if err != nil {
 		m.Message = "gasto no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, db, e.Cash)
+	err = sumCashUserCollection(&models.UserCollection{CodUser: e.CodUser, CodCollection: e.CodCollection}, m, tx, e.Cash)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = e

@@ -113,36 +113,36 @@ func ClientUpdate(c models.Client, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := updateClient(&c, db)
+	tx := db.Begin()
+	err := updateClient(&c, tx)
 	m.Code = http.StatusBadRequest
 	m.Message = "no se puedo actualizar"
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	for _, tel := range c.ClientTelDelete {
-		err = deleteClientTel(&tel, db)
+		err = deleteClientTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
 	for _, tel := range c.ClientTelNew {
-		err = createClientTel(&tel, db)
+		err = createClientTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
 	for _, tel := range c.ClientTel {
-		err = updateClientTel(&tel, db)
+		err = updateClientTel(&tel, tx)
 		if err != nil {
-			db.Rollback()
+			tx.Rollback()
 			return
 		}
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo cliente"
 	m.Data = c

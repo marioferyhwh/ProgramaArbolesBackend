@@ -47,27 +47,27 @@ func LoanCreate(l models.Loan, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, -l.InitialValue)
+	tx := db.Begin()
+	err := sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, tx, -l.InitialValue)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	var uc models.Collection
 	uc.ID = l.CodCollection
-	err = sumBalanceCollection(&uc, m, db, l.Balance)
+	err = sumBalanceCollection(&uc, m, tx, l.Balance)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = createLoan(&l, db)
+	err = createLoan(&l, tx)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "prestamo no se creo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "prestamo creado"
 	m.Data = l
@@ -134,10 +134,10 @@ func LoanUpdate(l models.Loan, m *models.Message) {
 	// err = sumCashloan(&l, m, db, nv)
 	// if err != nil {
 	// 	m.Message = "prestamo no se actualizo"
-	// 	db.Rollback()
+	// 	tx.Rollback()
 	// 	return
 	// }
-	// db.Commit()
+	// tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "no se premite actualizar"
 	m.Data = l
@@ -152,28 +152,28 @@ func LoanDelete(l models.Loan, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := deleteLoan(&l, db)
+	tx := db.Begin()
+	err := deleteLoan(&l, tx)
 	if err != nil {
 		m.Message = "prestamo no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, db, l.InitialValue)
+	err = sumCashUserCollection(&models.UserCollection{CodCollection: l.CodCollection, CodUser: l.CodUser}, m, tx, l.InitialValue)
 	if err != nil {
 		m.Message = "prestamo no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	var c models.Collection
 	c.ID = l.CodCollection
-	err = sumBalanceCollection(&c, m, db, -l.Balance)
+	err = sumBalanceCollection(&c, m, tx, -l.Balance)
 	if err != nil {
 		m.Message = "prestamo no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = l
@@ -439,23 +439,23 @@ func LoanPaymentCreate(lp models.LoanPayment, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
+	tx := db.Begin()
 	var l models.Loan
 	l.ID = lp.CodLoan
 	l.CodUser = lp.CodUser
-	err := sumCashloan(&l, m, db, -lp.Cash)
+	err := sumCashloan(&l, m, tx, -lp.Cash)
 	if err != nil {
 		m.Message = "prestamo no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = createLoanPayment(&lp, db)
+	err = createLoanPayment(&lp, tx)
 	if err != nil {
 		m.Message = "pago a prestamo no se creo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "pago a prestamo creado"
 	m.Data = lp
@@ -519,25 +519,24 @@ func LoanPaymentUpdate(lp models.LoanPayment, m *models.Message) {
 	err := getLoanPayment(&lpn, db)
 	if err != nil {
 		m.Message = "pago a prestamo no se encotro"
-		db.Rollback()
 		return
 	}
-	db.Begin()
-	err = updateLoanPayment(&lp, db)
+	tx := db.Begin()
+	err = updateLoanPayment(&lp, tx)
 	if err != nil {
 		m.Message = "pago a prestamo no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	var l models.Loan
 	l.ID = lp.CodLoan
-	err = sumCashloan(&l, m, db, lpn.Cash-lp.Cash)
+	err = sumCashloan(&l, m, tx, lpn.Cash-lp.Cash)
 	if err != nil {
 		m.Message = "prestamo no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo pago a prestamo"
 	m.Data = lp
@@ -552,22 +551,22 @@ func LoanPaymentDelete(lp models.LoanPayment, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := deleteLoanPayment(&lp, db)
+	tx := db.Begin()
+	err := deleteLoanPayment(&lp, tx)
 	if err != nil {
 		m.Message = "pago a prestamo no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
 	var l models.Loan
 	l.ID = lp.CodLoan
-	err = sumCashloan(&l, m, db, lp.Cash)
+	err = sumCashloan(&l, m, tx, lp.Cash)
 	if err != nil {
 		m.Message = "prestamo no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = lp

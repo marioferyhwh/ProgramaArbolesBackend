@@ -201,19 +201,19 @@ func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, cc.Cash)
+	tx := db.Begin()
+	err := sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, tx, cc.Cash)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = createCollectionCash(&cc, db)
+	err = createCollectionCash(&cc, tx)
 	if err != nil {
 		m.Message = "movimento de cobro no se creo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "movimento de cobro creado"
 	m.Data = cc
@@ -275,19 +275,19 @@ func CollectionCashUpdate(cc models.CollectionCash, m *models.Message) {
 		m.Message = "no se encontro movimiento"
 		return
 	}
-	db.Begin()
-	err = updateCollectionCash(&cc, db)
+	tx := db.Begin()
+	err = updateCollectionCash(&cc, tx)
 	if err != nil {
 		m.Message = "movimento de cobro no se actualizo"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, (cc.Cash - ccn.Cash))
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, tx, (cc.Cash - ccn.Cash))
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "se actualizo movimento de cobro"
 	m.Data = cc
@@ -302,19 +302,19 @@ func CollectionCashDelete(cc models.CollectionCash, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	db.Begin()
-	err := deleteCollectionCash(&cc, db)
+	tx := db.Begin()
+	err := deleteCollectionCash(&cc, tx)
 	if err != nil {
 		m.Message = "movimento de cobro no se borro"
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, db, -cc.Cash)
+	err = sumCashUserCollection(&models.UserCollection{CodUser: cc.CodUser, CodCollection: cc.CodCollection}, m, tx, -cc.Cash)
 	if err != nil {
-		db.Rollback()
+		tx.Rollback()
 		return
 	}
-	db.Commit()
+	tx.Commit()
 	m.Code = http.StatusOK
 	m.Message = "borrado correctamente"
 	m.Data = cc
