@@ -144,7 +144,7 @@ func getBusinessTypeList(bt *[]models.BusinessType, db *gorm.DB) error {
 
 //updateBusinessType actualizar el tipo de negocio
 func updateBusinessType(bt *models.BusinessType, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "deleted_at"}
 	err := db.Model(bt).Omit(omitList...).Save(bt).Error
 	return err
 }

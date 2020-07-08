@@ -280,7 +280,7 @@ func getUserList(u *[]models.User, db *gorm.DB) error {
 //updateUser se borra el usuario
 func updateUser(u *models.User, db *gorm.DB) error {
 	//q := `update from users set .. where id=?;`
-	omitList := []string{"id"} //"CodDocumentType", "Document"
+	omitList := []string{"id", "deleted_at"} //"CodDocumentType", "Document"
 	if !u.ChangePassword || u.ConfirmPassword == u.Password {
 		omitList = append(omitList, "password")
 	}
@@ -446,7 +446,7 @@ func getUserTelList(uts *[]models.UserTel, db *gorm.DB) error {
 
 //updateUserTel se borra el telefono de usuario
 func updateUserTel(ut *models.UserTel, db *gorm.DB) error {
-	omitList := []string{"id", "cod_user"}
+	omitList := []string{"id", "cod_user", "deleted_at"}
 	err := db.Model(ut).Omit(omitList...).Save(ut).Error
 	return err
 }
@@ -598,7 +598,7 @@ func getUserLevelList(ul *[]models.UserLevel, m *models.Message, db *gorm.DB) er
 
 //updateUserLevel se borra el nivel de usuario
 func updateUserLevel(ul *models.UserLevel, m *models.Message, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "deleted_at"}
 	err := db.Model(ul).Omit(omitList...).Save(ul).Error
 	return err
 }
@@ -772,7 +772,7 @@ func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 
 //updateUserCollection se borra el  relacion entre usuario y collection
 func updateUserCollection(uc *models.UserCollection, db *gorm.DB) error {
-	omitList := []string{"id", "cod_collection", "cod_user", ""}
+	omitList := []string{"id", "cod_collection", "cod_user", "deleted_at"}
 	err := db.Model(uc).Omit(omitList...).Save(uc).Error
 	return err
 }

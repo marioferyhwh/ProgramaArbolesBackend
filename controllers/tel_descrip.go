@@ -152,7 +152,7 @@ func getTelDescripList(tds *[]models.TelDescrip, db *gorm.DB) error {
 
 //updateTelDescrip se borra el descripcion de los telefonos
 func updateTelDescrip(td *models.TelDescrip, db *gorm.DB) error {
-	omitList := []string{"id"}
+	omitList := []string{"id", "deleted_at"}
 	err := db.Model(td).Omit(omitList...).Save(td).Error
 	return err
 }

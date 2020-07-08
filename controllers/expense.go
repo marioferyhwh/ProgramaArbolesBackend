@@ -193,7 +193,7 @@ func getExpenseList(es *[]models.Expense, db *gorm.DB) error {
 
 //updateExpense actualizar el gasto
 func updateExpense(e *models.Expense, db *gorm.DB) error {
-	omitList := []string{"id", "cod_user", "cod_collection"}
+	omitList := []string{"id", "cod_user", "cod_collection", "deleted_at"}
 	err := db.Model(e).Omit(omitList...).Save(e).Error
 	return err
 }
@@ -347,7 +347,7 @@ func getExpenseDescripList(eds *[]models.ExpenseDescrip, db *gorm.DB) error {
 
 //updateExpenseDescrip se borra el descripcion de gasto
 func updateExpenseDescrip(ed *models.ExpenseDescrip, db *gorm.DB) error {
-	omitList := []string{"id", "cod_collection"}
+	omitList := []string{"id", "cod_collection", "deleted_at"}
 	err := db.Model(ed).Omit(omitList...).Save(ed).Error
 	return err
 }
