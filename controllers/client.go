@@ -202,7 +202,7 @@ func getClientList(cs *[]models.Client, db *gorm.DB) error {
 //updateClient se actualiza el cliente
 func updateClient(c *models.Client, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection", "cod_user"}
-	err := db.Model(c).Omit(omitList...).Updates(c).Error
+	err := db.Model(c).Omit(omitList...).Save(c).Error
 	return err
 }
 
@@ -356,7 +356,7 @@ func getClientTelList(cts *[]models.ClientTel, db *gorm.DB) error {
 //updateClientTel actualiza telefono de cliente
 func updateClientTel(ct *models.ClientTel, db *gorm.DB) error {
 	omitList := []string{"id", "cod_client"}
-	err := db.Model(ct).Omit(omitList...).Updates(ct).Error
+	err := db.Model(ct).Omit(omitList...).Save(ct).Error
 	return err
 }
 
@@ -510,7 +510,7 @@ func getClientListLocationList(clls *[]models.ClientListLocation, db *gorm.DB) e
 //updateClientListLocation actualizar el ubicacion valida para clientes por collection
 func updateClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection"}
-	err := db.Model(cll).Omit(omitList...).Updates(cll).Error
+	err := db.Model(cll).Omit(omitList...).Save(cll).Error
 	return err
 }
 

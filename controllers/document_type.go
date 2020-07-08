@@ -145,7 +145,7 @@ func getDocumentTypeList(dts *[]models.DocumentType, db *gorm.DB) error {
 //updateDocumentType se borra el tipo de documento
 func updateDocumentType(dt *models.DocumentType, db *gorm.DB) error {
 	omitList := []string{"id", "name_short"}
-	err := db.Model(dt).Omit(omitList...).Updates(dt).Error
+	err := db.Model(dt).Omit(omitList...).Save(dt).Error
 	return err
 }
 

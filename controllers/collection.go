@@ -147,8 +147,8 @@ func getCollectionList(cs *[]models.Collection, db *gorm.DB) error {
 
 //updateCollection se borra el cobro
 func updateCollection(c *models.Collection, db *gorm.DB) error {
-	omitList := []string{"id"}
-	err := db.Model(c).Omit(omitList...).Updates(c).Error
+	omitList := []string{"id", "deleted_at"}
+	err := db.Debug().Model(c).Omit(omitList...).Save(c).Error
 	return err
 }
 
@@ -355,8 +355,8 @@ func getCollectionCashList(ccs *[]models.CollectionCash, db *gorm.DB) error {
 
 //updateCollectionCash se borra el movimento de cobro
 func updateCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
-	omitList := []string{"id", "cod_user", "cod_collection"}
-	err := db.Model(cc).Omit(omitList...).Updates(cc).Error
+	omitList := []string{"id", "cod_user", "cod_collection", "deleted_at"}
+	err := db.Model(cc).Omit(omitList...).Save(cc).Error
 	return err
 }
 

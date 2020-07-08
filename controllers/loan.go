@@ -223,7 +223,7 @@ func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 //updateLoan se borra el Prestamos
 func updateLoan(l *models.Loan, db *gorm.DB) error {
 	omitList := []string{"id", "initial_value", "interest", "quota", "cod_client", "cod_collection", "cod_user"}
-	err := db.Model(l).Omit(omitList...).Updates(l).Error
+	err := db.Model(l).Omit(omitList...).Save(l).Error
 	return err
 }
 
@@ -400,7 +400,7 @@ func getLoanStateList(lss *[]models.LoanState, db *gorm.DB) error {
 //updateLoanState se borra el estado de  prestamos
 func updateLoanState(ls *models.LoanState, db *gorm.DB) error {
 	omitList := []string{"id"}
-	err := db.Model(ls).Omit(omitList...).Updates(ls).Error
+	err := db.Model(ls).Omit(omitList...).Save(ls).Error
 	return err
 }
 
@@ -614,7 +614,7 @@ func getLoanPaymentList(lps *[]models.LoanPayment, db *gorm.DB) error {
 //updateLoanPayment se borra el pagos de prestamos
 func updateLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection", "cod_user", "cod_loan"}
-	err := db.Model(lp).Omit(omitList...).Updates(lp).Error
+	err := db.Model(lp).Omit(omitList...).Save(lp).Error
 	return err
 }
 
