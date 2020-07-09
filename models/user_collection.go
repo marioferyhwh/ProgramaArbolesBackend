@@ -10,9 +10,9 @@ type UserCollection struct {
 	Cash          float32 `json:"money,omitempty"          gorm:"type:numeric(6,1);not null;default: 0"`
 	Name          string  `json:"name,omitempty"           gorm:"type:varchar(20);default:'-'"`
 
-	UserLevel  UserLevel  `json:"access,omitempty"      gorm:"foreignkey:id;association_foreignkey:CodUserLevel"`
-	User       User       `json:"user,omitempty"        gorm:"foreignkey:id;association_foreignkey:CodUser"`
-	Collection Collection `json:"collection,omitempty"  gorm:"foreignkey:id;association_foreignkey:CodCollection"`
+	UserLevel  UserLevel  `json:"access,omitempty"      gorm:"-"`
+	User       User       `json:"user,omitempty"        gorm:"-"`
+	Collection Collection `json:"collection,omitempty"  gorm:"-"`
 }
 
 /*

@@ -668,7 +668,7 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 //UserCollectionGetList crea un nuevo tipo de documento
 func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
-	if uc.CodCollection <= 0 && uc.CodUser <= 0 {
+	if (uc.CodCollection <= 0 && uc.CodUser <= 0) && !m.User.Admin {
 		m.Message = "especifique cobro y/o usuario"
 		return
 	}
@@ -759,11 +759,14 @@ func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 		uc = (*ucs)[0]
 	}
 	where := ""
-	where = fmt.Sprintf("cod_collection = %v", uc.CodCollection)
+
+	if uc.CodCollection != 0 {
+		where = fmt.Sprintf("cod_collection = %v", uc.CodCollection)
+	}
 	if uc.CodUser != 0 {
 		where = fmt.Sprintf("cod_user = %v", uc.CodUser)
 	}
-	err := db.Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
+	err := db.Debug().Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}

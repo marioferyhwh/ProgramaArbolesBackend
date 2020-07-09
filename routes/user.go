@@ -367,6 +367,7 @@ func SetUserCollectionCreateRoutes(c echo.Context) error {
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
 	err := c.Bind(&uc)
+	fmt.Println(c)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = fmt.Sprint("no llego asignacion de usuario a cobro ->", err)
