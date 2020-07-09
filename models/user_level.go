@@ -3,7 +3,7 @@ package models
 //UserLevel nivel de acceso del usario a la base de datos
 type UserLevel struct {
 	Modelsmall
-	Level string `json:"level_access,omitempty" gorm:"type:varchar(11);NOT NULL;DEFAULT:''"`
+	Level string `json:"level,omitempty" gorm:"type:varchar(11);NOT NULL;DEFAULT:''"`
 }
 
 /*

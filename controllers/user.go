@@ -260,7 +260,7 @@ func getUserShort(u *models.User, db *gorm.DB) error {
 //getUser trae usuario (id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name)
 func getUser(u *models.User, db *gorm.DB) error {
 	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
-	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name").First(u).GetErrors()
+	err := db.Select("id,created_at,updated_at,actived,nick_name,email,cod_document_type,document,name,time_zone").First(u).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -287,7 +287,7 @@ func updateUser(u *models.User, db *gorm.DB) error {
 	if !u.ChangeActived {
 		omitList = append(omitList, "actived")
 	}
-	err := db.Debug().Model(u).Omit(omitList...).Save(u).Error
+	err := db.Model(u).Omit(omitList...).Save(u).Error
 	return err
 }
 
