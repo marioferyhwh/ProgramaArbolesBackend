@@ -23,7 +23,7 @@ func LoanCreate(l models.Loan, m *models.Message) {
 		m.Message = "especifique valor inicial"
 		return
 	}
-	if l.Client.ID <= 0 {
+	if l.CodClient <= 0 {
 		m.Message = "especifique cliente"
 		return
 	}
@@ -32,7 +32,7 @@ func LoanCreate(l models.Loan, m *models.Message) {
 		return
 	}
 	if l.CodUser <= 0 {
-		m.Message = "especifique usuario"
+		m.Message = "especifique usuario2"
 		return
 	}
 	if l.Interest <= 0 {
@@ -42,9 +42,12 @@ func LoanCreate(l models.Loan, m *models.Message) {
 	if l.Quota <= 0 {
 		l.Quota = 30
 	}
-	if l.Balance != l.InitialValue*float32(l.Interest) {
-		l.Balance = l.InitialValue * float32(l.Interest)
-	}
+	// if l.Balance != l.InitialValue*float32(l.Interest) {
+	// 	l.Balance = l.InitialValue * float32(l.Interest)
+	// }
+	l.Balance = l.InitialValue * (1 + (float32(l.Interest) / 100))
+
+	fmt.Println(l.Balance)
 	db := configuration.GetConnection()
 	defer db.Close()
 	tx := db.Begin()
@@ -205,7 +208,7 @@ func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	}
 	where := ""
 	if l.CodCollection != 0 {
-		where = fmt.Sprintf("cod_collextion = %v", l.CodCollection)
+		where = fmt.Sprintf("cod_collection = %v", l.CodCollection)
 	}
 	if l.CodClient != 0 {
 		where = fmt.Sprintf("cod_client = %v", l.CodClient)
@@ -213,7 +216,7 @@ func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	if where != "" && l.CodLoanState != 0 {
 		where += fmt.Sprintf(" and cod_loan_state = %v", l.CodLoanState)
 	}
-	err := db.Where(where).Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client").Find(ls).GetErrors()
+	err := db.Debug().Where(where).Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client").Find(ls).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}

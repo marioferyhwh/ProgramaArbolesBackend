@@ -809,14 +809,14 @@ func sumCashUserCollection(uc *models.UserCollection, m *models.Message, db *gor
 	err := getUserCollection(uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "no se encontro relacion"
+		m.Message = "El usuario no pertenece al prestamo"
 		return err
 	}
 	uc.Cash = uc.Cash + nc
 	err = updateUserCollection(uc, db)
 	if err != nil {
 		m.Code = http.StatusBadGateway
-		m.Message = "no se pudo actualizar"
+		m.Message = "saldo insuficiente"
 		return err
 	}
 	return nil
