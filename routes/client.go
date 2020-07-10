@@ -203,7 +203,7 @@ func SetClientListLocationCreateRoutes(c echo.Context) error {
 		m.Message = fmt.Sprint("no llego Ubicacion ->", err)
 		return commons.DisplayMessage(c, &m)
 	}
-	controllers.ClientListLocationCreate(cll, &m)
+	controllers.ClientLocationCreate(cll, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -219,7 +219,7 @@ func SetClientListLocationGetRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	cll.ID = id
-	controllers.ClientListLocationGet(cll, &m)
+	controllers.ClientLocationGet(cll, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -235,7 +235,7 @@ func SetClientListLocationGetListRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	cll.CodCollection = id
-	controllers.ClientListLocationGetList(cll, &m)
+	controllers.ClientLocationGetList(cll, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -257,7 +257,7 @@ func SetClientListLocationEditRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	cll.ID = id
-	controllers.ClientListLocationUpdate(cll, &m)
+	controllers.ClientLocationUpdate(cll, &m)
 	return commons.DisplayMessage(c, &m)
 }
 
@@ -273,6 +273,6 @@ func SetClientListLocationDeleteRoutes(c echo.Context) error {
 		return commons.DisplayMessage(c, &m)
 	}
 	cll.ID = id
-	controllers.ClientListLocationDelete(cll, &m)
+	controllers.ClientLocationDelete(cll, &m)
 	return commons.DisplayMessage(c, &m)
 }

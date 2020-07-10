@@ -375,8 +375,8 @@ func deleteClientTel(ct *models.ClientTel, db *gorm.DB) error {
 ································································
 ······························································*/
 
-//ClientListLocationCreate crea un nuevo descripcion de ubicacion
-func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) {
+//ClientLocationCreate crea un nuevo descripcion de ubicacion
+func ClientLocationCreate(cll models.ClientListLocation, m *models.Message) {
 	if cll.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
@@ -384,7 +384,7 @@ func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := createClientListLocation(&cll, db)
+	err := createClientLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se creo"
@@ -395,8 +395,8 @@ func ClientListLocationCreate(cll models.ClientListLocation, m *models.Message) 
 	m.Data = cll
 }
 
-//ClientListLocationGet crea un nuevo descripcion de ubicacion
-func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
+//ClientLocationGet crea un nuevo descripcion de ubicacion
+func ClientLocationGet(cll models.ClientListLocation, m *models.Message) {
 	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
@@ -404,7 +404,7 @@ func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientListLocation(&cll, db)
+	err := getClientLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se encotro descripcion de ubicacion"
@@ -415,8 +415,8 @@ func ClientListLocationGet(cll models.ClientListLocation, m *models.Message) {
 	m.Data = cll
 }
 
-//ClientListLocationGetList crea un nuevo descripcion de ubicacion
-func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message) {
+//ClientLocationGetList crea un nuevo descripcion de ubicacion
+func ClientLocationGetList(cll models.ClientListLocation, m *models.Message) {
 	if cll.CodCollection <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique cobro"
@@ -425,7 +425,7 @@ func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message)
 	clls := []models.ClientListLocation{cll}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := getClientListLocationList(&clls, db)
+	err := getClientLocationList(&clls, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "no se creo el listado de negocios"
@@ -436,8 +436,8 @@ func ClientListLocationGetList(cll models.ClientListLocation, m *models.Message)
 	m.Data = clls
 }
 
-//ClientListLocationUpdate crea un nuevo descripcion de ubicacion
-func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) {
+//ClientLocationUpdate crea un nuevo descripcion de ubicacion
+func ClientLocationUpdate(cll models.ClientListLocation, m *models.Message) {
 	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
@@ -445,7 +445,7 @@ func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := updateClientListLocation(&cll, db)
+	err := updateClientLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se actualizo"
@@ -456,8 +456,8 @@ func ClientListLocationUpdate(cll models.ClientListLocation, m *models.Message) 
 	m.Data = cll
 }
 
-//ClientListLocationDelete crea un nuevo descripcion de ubicacion
-func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) {
+//ClientLocationDelete crea un nuevo descripcion de ubicacion
+func ClientLocationDelete(cll models.ClientListLocation, m *models.Message) {
 	if cll.ID <= 0 {
 		m.Code = http.StatusBadRequest
 		m.Message = "especifique localizacion"
@@ -465,7 +465,7 @@ func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) 
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClientListLocation(&cll, db)
+	err := deleteClientLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se borro"
@@ -479,23 +479,23 @@ func ClientListLocationDelete(cll models.ClientListLocation, m *models.Message) 
 /*······························································
 ······························································*/
 
-//createClientListLocation crea ubicacion valida para clientes por collection
-func createClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
+//createClientLocation crea ubicacion valida para clientes por collection
+func createClientLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Create(cll).Error
 	return err
 }
 
-//getClientListLocation trae ubicacion valida para clientes por collection (id,created_at,updated_at,descrip)
-func getClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,descrip").First(cll).GetErrors()
+//getClientLocation trae ubicacion valida para clientes por collection (id,created_at,updated_at,descrip)
+func getClientLocation(cll *models.ClientListLocation, db *gorm.DB) error {
+	err := db.Select("id,created_at,updated_at,cod_collection,descrip").First(cll).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//getClientListLocationList trae lista de ubicacion valida para clientes por collection (id,descrip)
-func getClientListLocationList(clls *[]models.ClientListLocation, db *gorm.DB) error {
+//getClientLocationList trae lista de ubicacion valida para clientes por collection (id,descrip)
+func getClientLocationList(clls *[]models.ClientListLocation, db *gorm.DB) error {
 	var cll models.ClientListLocation
 	if len(*clls) == 1 {
 		cll = (*clls)[0]
@@ -507,15 +507,15 @@ func getClientListLocationList(clls *[]models.ClientListLocation, db *gorm.DB) e
 	return nil
 }
 
-//updateClientListLocation actualizar el ubicacion valida para clientes por collection
-func updateClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
+//updateClientLocation actualizar el ubicacion valida para clientes por collection
+func updateClientLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	omitList := []string{"id", "cod_collection", "deleted_at"}
 	err := db.Model(cll).Omit(omitList...).Save(cll).Error
 	return err
 }
 
-//deleteClientListLocation borra el ubicacion valida para clientes por collection
-func deleteClientListLocation(cll *models.ClientListLocation, db *gorm.DB) error {
+//deleteClientLocation borra el ubicacion valida para clientes por collection
+func deleteClientLocation(cll *models.ClientListLocation, db *gorm.DB) error {
 	err := db.Unscoped().Delete(cll).GetErrors()
 	if len(err) != 0 {
 		return errors.New("Error al borrar")

@@ -5,8 +5,8 @@ type Client struct {
 	ModelBig
 	Name                  string `json:"name,omitempty"             gorm:"type:varchar(50); NOT NULL"`
 	Email                 string `json:"email,omitempty"            gorm:"type:varchar(100)"`
-	CodDocumentType       string `json:"document_code,omitempty"  gorm:"type:varchar(3);default:'CC'"`
-	Document              string `json:"document,omitempty"  gorm:"type:NUMERIC(11)"`
+	CodDocumentType       string `json:"document_code,omitempty"    gorm:"type:varchar(3);default:'CC'"`
+	Document              string `json:"document,omitempty"         gorm:"type:NUMERIC(11)"`
 	Adress                string `json:"adress,omitempty"           gorm:"type:varchar(60); NOT NULL"`
 	LoanNumber            uint8  `json:"number_loans,omitempty"     gorm:"type:SMALLINT; NOT NULL;default:0"`
 	CodCollection         uint32 `json:"id_collection,omitempty"    gorm:"type:integer; NOT NULL"`
@@ -15,14 +15,14 @@ type Client struct {
 	CodClientListLocation uint64 `json:"id_location,omitempty"      gorm:"type:BIGINT; NOT NULL;default:0"`
 	CodUser               uint32 `json:"id_user,omitempty"          gorm:"type:integer; NOT NULL"`
 
-	LoanState          LoanState          `json:"state,omitempty"                gorm:"-"`
-	BusinessTypes      BusinessType       `json:"bussiness,omitempty"            gorm:"-"`
-	ClientListLocation ClientListLocation `json:"location,omitempty"             gorm:"-"`
-	User               User               `json:"user_create,omitempty"          gorm:"-"`
-	ClientTelDelete    []ClientTel        `json:"tels_delete,omitempty"                 gorm:"-"`
-	ClientTelNew       []ClientTel        `json:"tels_new,omitempty"                 gorm:"-"`
-	ClientTel          []ClientTel        `json:"tels,omitempty"                 gorm:"-"`
-	Loan               []Loan             `json:"loans,omitempty"                gorm:"-"`
+	LoanState          LoanState          `json:"state,omitempty"       gorm:"-"`
+	BusinessTypes      BusinessType       `json:"bussiness,omitempty"   gorm:"-"`
+	ClientListLocation ClientListLocation `json:"location,omitempty"    gorm:"-"`
+	User               User               `json:"user_create,omitempty" gorm:"-"`
+	ClientTelDelete    []ClientTel        `json:"tels_delete,omitempty" gorm:"-"`
+	ClientTelNew       []ClientTel        `json:"tels_new,omitempty"    gorm:"-"`
+	ClientTel          []ClientTel        `json:"tels,omitempty"        gorm:"-"`
+	Loan               []Loan             `json:"loans,omitempty"       gorm:"-"`
 }
 
 /*
