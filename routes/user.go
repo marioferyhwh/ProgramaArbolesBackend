@@ -4,61 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
 	"github.com/marioferyhwh/IMFBackend_forest/controllers"
 	"github.com/marioferyhwh/IMFBackend_forest/models"
 )
-
-//getParams64
-func getParams64(g models.GetParams) (uint64, error) {
-	if g.P == "" {
-		g.P = "id"
-	}
-	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 64)
-	if err != nil {
-		return 0, err
-	}
-	return uint64(i64), nil
-}
-
-//getParams32
-func getParams32(g models.GetParams) (uint32, error) {
-	if g.P == "" {
-		g.P = "id"
-	}
-	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 32)
-	if err != nil {
-		return 0, err
-	}
-	return uint32(i64), nil
-}
-
-//getParams16
-func getParams16(g models.GetParams) (uint16, error) {
-	if g.P == "" {
-		g.P = "id"
-	}
-	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 16)
-	if err != nil {
-		return 0, err
-	}
-	return uint16(i64), nil
-}
-
-//getParams8
-func getParams8(g models.GetParams) (uint8, error) {
-	if g.P == "" {
-		g.P = "id"
-	}
-	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 8)
-	if err != nil {
-		return 0, err
-	}
-	return uint8(i64), nil
-}
 
 func getUserInterface(c echo.Context, u *models.User) {
 	user := c.Get(commons.User)
@@ -382,7 +333,35 @@ func SetUserCollectionGetRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var uc models.UserCollection
+	m.Code = http.StatusBadRequest
+	var err error
+	uc.CodUser, err = getParams32(models.GetParams{C: c, P: "user"})
+	if err != nil {
+		uc.CodUser = 0
+	}
+	uc.CodCollection, err = getParams32(models.GetParams{C: c, P: "collection"})
+	if err != nil {
+		uc.CodCollection = 0
+	}
 	id, err := getParams64(models.GetParams{C: c})
+	if err != nil {
+		id = 0
+	}
+	if err != nil && uc.CodCollection == 0 && uc.CodUser == 0 {
+		m.Message = "identificador de asignacion de usuario a cobro no valido"
+		return commons.DisplayMessage(c, &m)
+	}
+	uc.ID = id
+	controllers.UserCollectionGet(uc, &m)
+	return commons.DisplayMessage(c, &m)
+}
+
+//SetUserCollectionGetByCollectionRoutes traer asignacion de usuario a cobro
+func SetUserCollectionGetByCollectionRoutes(c echo.Context) error {
+	var m models.Message
+	getUserInterface(c, &m.User)
+	var uc models.UserCollection
+	id, err := getParams32(models.GetParams{C: c})
 	m.Code = http.StatusBadRequest
 	if err != nil {
 		uc.CodUser, err = getParams32(models.GetParams{C: c, P: "user"})
@@ -396,7 +375,7 @@ func SetUserCollectionGetRoutes(c echo.Context) error {
 			return commons.DisplayMessage(c, &m)
 		}
 	}
-	uc.ID = id
+	uc.CodCollection = id
 	controllers.UserCollectionGet(uc, &m)
 	return commons.DisplayMessage(c, &m)
 }
@@ -408,9 +387,12 @@ func SetUserCollectionGetListRoutes(c echo.Context) error {
 	var uc models.UserCollection
 	id, err := getParams32(models.GetParams{C: c})
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "identificador de asignacion de usuario a cobro no valido"
-		return commons.DisplayMessage(c, &m)
+		uc.CodUser, err = getParams32(models.GetParams{C: c, P: "user"})
+		uc.CodCollection, err = getParams32(models.GetParams{C: c, P: "collection"})
+		if err != nil {
+			m.Message = "identificador de asignacion de usuario a cobro no valido"
+			return commons.DisplayMessage(c, &m)
+		}
 	}
 	uc.CodCollection = id
 	controllers.UserCollectionGetList(uc, &m)

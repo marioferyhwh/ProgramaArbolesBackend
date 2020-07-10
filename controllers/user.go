@@ -648,6 +648,16 @@ func UserCollectionCreate(uc models.UserCollection, m *models.Message) {
 //UserCollectionGet traer un nuevo enlace entre usuario y cobro
 func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
+	if uc.CodCollection != 0 && uc.CodUser == 0 {
+		uc.CodUser = m.User.ID
+	}
+	if uc.CodCollection > 0 && m.User.Admin {
+		uc.CodUserLevel = 1
+		m.Code = http.StatusOK
+		m.Message = "resp para admin"
+		m.Data = uc
+		return
+	}
 	if uc.ID <= 0 && (uc.CodCollection <= 0 || uc.CodUser <= 0) {
 		m.Message = "especifique cobro"
 		return
@@ -656,7 +666,7 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 	defer db.Close()
 	err := getUserCollection(&uc, db)
 	if err != nil {
-		m.Code = http.StatusBadRequest
+		m.Code = http.StatusNoContent
 		m.Message = "no se encotro enlace entre usuario y cobro"
 		return
 	}
@@ -668,6 +678,9 @@ func UserCollectionGet(uc models.UserCollection, m *models.Message) {
 //UserCollectionGetList crea un nuevo tipo de documento
 func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 	m.Code = http.StatusBadGateway
+	if !m.User.Admin && uc.CodUser == 0 {
+		uc.CodUser = m.User.ID
+	}
 	if (uc.CodCollection <= 0 && uc.CodUser <= 0) && !m.User.Admin {
 		m.Message = "especifique cobro y/o usuario"
 		return
@@ -677,7 +690,9 @@ func UserCollectionGetList(uc models.UserCollection, m *models.Message) {
 	defer db.Close()
 	err := getUserCollectionList(&ucs, db)
 	if err != nil {
+		m.Code = http.StatusNoContent
 		m.Message = "no se creo el listado de negocios"
+		m.Data = ucs
 		return
 	}
 	m.Code = http.StatusOK

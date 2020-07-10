@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/marioferyhwh/IMFBackend_forest/commons"
@@ -161,4 +163,80 @@ func SetDefaultRoutes(c echo.Context) error {
 	m.Code = http.StatusBadRequest
 	m.Message = "no existe esa pagina"
 	return commons.DisplayMessage(c, &m)
+}
+
+//getParamsString
+func getParamsString(r *http.Request, s string) (string, error) {
+	p := r.Header.Get(s)
+	if p == "" {
+		p = r.URL.Query().Get(s)
+	}
+	if p == "" {
+		return "", errors.New("no llego " + s)
+	}
+	return p, nil
+}
+
+//getParams64
+func getParams64(g models.GetParams) (uint64, error) {
+	if g.P == "" {
+		g.P = "id"
+	}
+	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 64)
+	if err != nil {
+		s, err := getParamsString(g.C.Request(), g.P)
+		i64, err = strconv.ParseInt(s, 10, 64)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return uint64(i64), nil
+}
+
+//getParams32
+func getParams32(g models.GetParams) (uint32, error) {
+	if g.P == "" {
+		g.P = "id"
+	}
+	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 32)
+	if err != nil {
+		s, err := getParamsString(g.C.Request(), g.P)
+		i64, err = strconv.ParseInt(s, 10, 32)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return uint32(i64), nil
+}
+
+//getParams16
+func getParams16(g models.GetParams) (uint16, error) {
+	if g.P == "" {
+		g.P = "id"
+	}
+	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 16)
+	if err != nil {
+		s, err := getParamsString(g.C.Request(), g.P)
+		i64, err = strconv.ParseInt(s, 10, 16)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return uint16(i64), nil
+}
+
+//getParams8
+func getParams8(g models.GetParams) (uint8, error) {
+	if g.P == "" {
+		g.P = "id"
+	}
+	i64, err := strconv.ParseInt(g.C.Param(g.P), 10, 8)
+	if err != nil {
+		s, err := getParamsString(g.C.Request(), g.P)
+		i64, err = strconv.ParseInt(s, 10, 8)
+		if err != nil {
+			return 0, err
+		}
+	}
+	return uint8(i64), nil
 }
