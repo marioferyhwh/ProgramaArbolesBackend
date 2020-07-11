@@ -52,6 +52,12 @@ func SetCollectionGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var co models.Collection
+	var err error
+	co.CodUser, err = getParams32(models.GetParams{C: c, P: "user"})
+	if err != nil {
+		co.CodUser = 0
+	}
+	fmt.Println(co.CodUser)
 	controllers.CollectionGetList(co, &m)
 	return commons.DisplayMessage(c, &m)
 }

@@ -135,23 +135,22 @@ func UserGet(u models.User, m *models.Message) {
 
 //UserGetList pendiente por desarrollar
 func UserGetList(u models.User, m *models.Message) {
-	if u.ID != 0 {
+	if u.CodCollection == 0 && !validateAdmin(m) {
 		m.Code = http.StatusBadRequest
-		m.Message = "especifique usuario"
+		m.Message = "especifique cobro dpara los usarios"
 		return
 	}
 	var us = []models.User{u}
-
 	db := configuration.GetConnection()
 	defer db.Close()
 	err := getUserList(&us, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "no se encontro usuario"
+		m.Message = "no se encontro usuarios"
 		return
 	}
 	m.Code = http.StatusOK
-	m.Message = "informacion de usuario"
+	m.Message = "informacion de usuarios"
 	m.Data = us
 }
 
@@ -273,9 +272,24 @@ func getUser(u *models.User, db *gorm.DB) error {
 }
 
 //getUserList trae usuario (id,actived,name)
-func getUserList(u *[]models.User, db *gorm.DB) error {
-	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`
-	err := db.Select("id,actived,name").Find(u).GetErrors()
+func getUserList(us *[]models.User, db *gorm.DB) error {
+	//q := `select (id,created_at,updated_at,active,nick_name,email,cod_document_type,document,name)from users;`	var u models.Collection
+	var u models.User
+	if len(*us) == 1 {
+		u = (*us)[0]
+	}
+	var err []error
+	if u.CodCollection != 0 {
+		var uc []models.UserCollection
+		var ids []uint32
+		db.Where("cod_collection = ?", u.CodCollection).Select("cod_user").Find(&uc)
+		for _, d := range uc {
+			ids = append(ids, d.CodUser)
+		}
+		err = db.Where(ids).Select("id,actived,name").Find(us).GetErrors()
+	} else {
+		err = db.Select("id,actived,name").Find(us).GetErrors()
+	}
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -804,7 +818,7 @@ func getUserCollectionList(ucs *[]models.UserCollection, db *gorm.DB) error {
 	if uc.CodUser != 0 {
 		where = fmt.Sprintf("cod_user = %v", uc.CodUser)
 	}
-	err := db.Debug().Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
+	err := db.Where(where).Select("id,actived,cod_user,cod_user_level,cod_collection,cash,name").Find(ucs).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}

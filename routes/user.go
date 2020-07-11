@@ -76,13 +76,11 @@ func SetUserGetListRoutes(c echo.Context) error {
 	var m models.Message
 	getUserInterface(c, &m.User)
 	var u models.User
-	id, err := getParams32(models.GetParams{C: c})
+	var err error
+	u.CodCollection, err = getParams32(models.GetParams{C: c, P: "collection"})
 	if err != nil {
-		m.Code = http.StatusBadRequest
-		m.Message = "identificador de telefono de usuario no valido"
-		return commons.DisplayMessage(c, &m)
+		u.CodCollection = 0
 	}
-	u.ID = id
 	controllers.UserGetList(u, &m)
 	return commons.DisplayMessage(c, &m)
 }

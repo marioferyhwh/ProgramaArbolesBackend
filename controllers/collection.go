@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -55,7 +56,9 @@ func CollectionGet(c models.Collection, m *models.Message) {
 
 //CollectionGetList traer lista de cobro
 func CollectionGetList(c models.Collection, m *models.Message) {
-	if !validateAdmin(m) {
+	if c.CodUser == 0 && !validateAdmin(m) {
+		m.Code = http.StatusBadRequest
+		m.Message = "especifique usuario"
 		return
 	}
 	cs := []models.Collection{c}
@@ -144,7 +147,22 @@ func getCollection(c *models.Collection, db *gorm.DB) error {
 
 //getCollectionList trae cobro (id,descrip,actived,balance_total)
 func getCollectionList(cs *[]models.Collection, db *gorm.DB) error {
-	err := db.Select("id,descrip,actived,balance_total").Find(cs).GetErrors()
+	var c models.Collection
+	if len(*cs) == 1 {
+		c = (*cs)[0]
+	}
+	var err []error
+	if c.CodUser != 0 {
+		var uc []models.UserCollection
+		var ids []uint32
+		db.Where("cod_user = ?", c.CodUser).Select("cod_collection").Find(&uc)
+		for _, d := range uc {
+			ids = append(ids, d.CodCollection)
+		}
+		err = db.Where(ids).Select("id,descrip,actived,balance_total").Find(cs).GetErrors()
+	} else {
+		err = db.Select("id,descrip,actived,balance_total").Find(cs).GetErrors()
+	}
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -198,7 +216,7 @@ func CollectionCashCreate(cc models.CollectionCash, m *models.Message) {
 		m.Message = "especifique cobro"
 		return
 	}
-	if cc.Cash != 0 {
+	if cc.Cash == 0 {
 		m.Message = "valor no valido"
 		return
 	}
@@ -252,6 +270,7 @@ func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
 		m.Message = "especifique cobro"
 		return
 	}
+	fmt.Println(cc.CodCollection)
 	ccs := []models.CollectionCash{cc}
 	db := configuration.GetConnection()
 	defer db.Close()
@@ -342,7 +361,7 @@ func createCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
 
 //getCollectionCash trae movimento de cobro (id,created_at,updated_at,cod_user,cod_collection,cash)
 func getCollectionCash(cc *models.CollectionCash, db *gorm.DB) error {
-	//.Where("cod_collection == ?", cc.CodCollection)
+	//.Where("cod_collection = ?", cc.CodCollection)
 	err := db.Select("id,created_at,updated_at,cod_user,cod_collection,cash").First(cc).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
@@ -357,7 +376,7 @@ func getCollectionCashList(ccs *[]models.CollectionCash, db *gorm.DB) error {
 		cc = (*ccs)[0]
 	}
 	cc.CreatedAt, cc.UpdatedAt = validateTime(models.TimeValidator{I: cc.CreatedAt, E: cc.UpdatedAt})
-	err := db.Where("cod_collection == ? and (created_at >= ? and create_at <= ?)", cc.CodCollection, cc.CreatedAt, cc.UpdatedAt).Select("id,cod_user,cod_collection,cash").Find(ccs).GetErrors()
+	err := db.Where("cod_collection = ? and (created_at >= ? and created_at <= ?)", cc.CodCollection, cc.CreatedAt, cc.UpdatedAt).Select("id,cod_user,cod_collection,cash").Find(ccs).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}

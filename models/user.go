@@ -24,12 +24,13 @@ type User struct {
 	UserTelDelete  []UserTel        `json:"tels_delete,omitempty"          gorm:"foreignkey:CodUser;association_foreignkey:id"`
 	Expense        []Expense        `json:"expenses,omitempty"             gorm:"foreignkey:CodUser;association_foreignkey:id"`
 
-	GetDocumentType bool `json:"-" gorm:"-"`
-	GetListUser     bool `json:"-" gorm:"-"`
-	GetUserTel      bool `json:"-" gorm:"-"`
-	GetExpense      bool `json:"-" gorm:"-"`
-	ChangePassword  bool `json:"-" gorm:"-"`
-	ChangeActived   bool `json:"-" gorm:"-"`
+	CodCollection   uint32 `json:"-" gorm:"-"`
+	GetDocumentType bool   `json:"-" gorm:"-"`
+	GetListUser     bool   `json:"-" gorm:"-"`
+	GetUserTel      bool   `json:"-" gorm:"-"`
+	GetExpense      bool   `json:"-" gorm:"-"`
+	ChangePassword  bool   `json:"-" gorm:"-"`
+	ChangeActived   bool   `json:"-" gorm:"-"`
 }
 
 /*

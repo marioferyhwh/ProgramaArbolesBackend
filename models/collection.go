@@ -11,6 +11,7 @@ type Collection struct {
 	Expense        []Expense        `json:"expenses,omitempty"  gorm:"-"`
 	Client         []Client         `json:"clients,omitempty"   gorm:"-"`
 	UserCollection []UserCollection `json:"users,omitempty"     gorm:"-"`
+	CodUser        uint32           `json:"-" gorm:"-"`
 }
 
 /*
