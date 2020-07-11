@@ -191,16 +191,16 @@ func createLoan(l *models.Loan, db *gorm.DB) error {
 	return err
 }
 
-//getLoan trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user)
+//getLoan trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client,cod_collection,cod_user)
 func getLoan(l *models.Loan, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client,cod_collection,cod_user").First(l).GetErrors()
+	err := db.Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client,cod_collection,cod_user").First(l).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
 	return nil
 }
 
-//getLoanList trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loanState,cod_client)
+//getLoanList trae Prestamos (id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client)
 func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	var l models.Loan
 	if len(*ls) == 1 {
