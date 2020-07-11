@@ -155,8 +155,13 @@ func LoanDelete(l models.Loan, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	err := getLoan(&l, db)
+	if err != nil {
+		m.Message = "prestamo no se encontro"
+		return
+	}
 	tx := db.Begin()
-	err := deleteLoan(&l, tx)
+	err = deleteLoan(&l, tx)
 	if err != nil {
 		m.Message = "prestamo no se borro"
 		tx.Rollback()
@@ -216,7 +221,7 @@ func getLoanList(ls *[]models.Loan, db *gorm.DB) error {
 	if where != "" && l.CodLoanState != 0 {
 		where += fmt.Sprintf(" and cod_loan_state = %v", l.CodLoanState)
 	}
-	err := db.Debug().Where(where).Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client").Find(ls).GetErrors()
+	err := db.Where(where).Select("id,created_at,updated_at,initial_value,interest,quota,balance,cod_loan_state,cod_client").Find(ls).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
@@ -363,7 +368,12 @@ func LoanStateDelete(ls models.LoanState, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteLoanState(&ls, db)
+	err := getLoanState(&ls, db)
+	if err != nil {
+		m.Message = "estado de prestamo no se encontro"
+		return
+	}
+	err = deleteLoanState(&ls, db)
 	if err != nil {
 		m.Message = "estado de prestamo no se borro"
 		return
@@ -554,8 +564,13 @@ func LoanPaymentDelete(lp models.LoanPayment, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	err := getLoanPayment(&lp, db)
+	if err != nil {
+		m.Message = "pago a prestamo no se encontro"
+		return
+	}
 	tx := db.Begin()
-	err := deleteLoanPayment(&lp, tx)
+	err = deleteLoanPayment(&lp, tx)
 	if err != nil {
 		m.Message = "pago a prestamo no se borro"
 		tx.Rollback()

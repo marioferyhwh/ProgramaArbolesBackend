@@ -157,7 +157,14 @@ func ClientDelete(c models.Client, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClient(&c, db)
+	err := getClient(&c, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "cliente no se encontro"
+		return
+	}
+
+	err = deleteClient(&c, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "cliente no se borro"
@@ -311,7 +318,13 @@ func ClientTelDelete(ct models.ClientTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClientTel(&ct, db)
+	err := getClientTel(&ct, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "telefono de cliente no se encontro"
+		return
+	}
+	err = deleteClientTel(&ct, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de cliente no se borro"
@@ -465,7 +478,13 @@ func ClientLocationDelete(cll models.ClientListLocation, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteClientLocation(&cll, db)
+	err := getClientLocation(&cll, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion de ubicacion no se encontro"
+		return
+	}
+	err = deleteClientLocation(&cll, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de ubicacion no se borro"

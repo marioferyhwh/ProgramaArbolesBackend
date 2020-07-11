@@ -104,7 +104,13 @@ func BusinessTypeDelete(bt models.BusinessType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteBusinessType(&bt, db)
+	err := getBusinessType(&bt, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de negocio no se encontro"
+		return
+	}
+	err = deleteBusinessType(&bt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de negocio no se borro"

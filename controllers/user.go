@@ -221,6 +221,11 @@ func UserDelete(u models.User, m *models.Message) {
 			return
 		}
 	}
+	err = getUser(&u, tx)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 	err = deleteUser(&u, tx)
 	if err != nil {
 		tx.Rollback()
@@ -402,7 +407,13 @@ func UserTelDelete(ut models.UserTel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUserTel(&ut, db)
+	err := getUserTel(&ut, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "telefono de usuario no se encotro"
+		return
+	}
+	err = deleteUserTel(&ut, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "telefono de usuario no se borro"
@@ -558,7 +569,13 @@ func UserLevelDelete(ul models.UserLevel, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUserLevel(&ul, m, db)
+	err := getUserLevel(&ul, m, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "tipo de usuario no se encontro"
+		return
+	}
+	err = deleteUserLevel(&ul, m, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "tipo de usuario no se borro"
@@ -734,7 +751,13 @@ func UserCollectionDelete(uc models.UserCollection, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteUserCollection(&uc, db)
+	err := getUserCollection(&uc, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "enlace entre usuario y cobro no se encontro"
+		return
+	}
+	err = deleteUserCollection(&uc, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "enlace entre usuario y cobro no se borro"

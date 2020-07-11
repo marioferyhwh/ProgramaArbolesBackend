@@ -138,8 +138,13 @@ func ExpenseDelete(e models.Expense, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
+	err := getExpense(&e, db)
+	if err != nil {
+		m.Message = "gasto no se encontro"
+		return
+	}
 	tx := db.Begin()
-	err := deleteExpense(&e, tx)
+	err = deleteExpense(&e, tx)
 	if err != nil {
 		m.Message = "gasto no se borro"
 		tx.Rollback()
@@ -303,7 +308,13 @@ func ExpenseDescripDelete(ed models.ExpenseDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteExpenseDescrip(&ed, db)
+	err := getExpenseDescrip(&ed, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion de gastos no se encontro"
+		return
+	}
+	err = deleteExpenseDescrip(&ed, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "descripcion de gastos no se borro"

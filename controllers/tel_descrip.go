@@ -112,10 +112,16 @@ func TelDescripDelete(td models.TelDescrip, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteTelDescrip(&td, db)
+	err := getTelDescrip(&td, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
-		m.Message = "descripcion del telefono no se creo"
+		m.Message = "descripcion del telefono no se encontro"
+		return
+	}
+	err = deleteTelDescrip(&td, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "descripcion del telefono no se borro"
 		return
 	}
 	m.Code = http.StatusOK

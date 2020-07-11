@@ -104,7 +104,13 @@ func DocumentTypeDelete(dt models.DocumentType, m *models.Message) {
 	}
 	db := configuration.GetConnection()
 	defer db.Close()
-	err := deleteDocumentType(&dt, db)
+	err := getDocumentType(&dt, db)
+	if err != nil {
+		m.Code = http.StatusBadRequest
+		m.Message = "documento no se encontro"
+		return
+	}
+	err = deleteDocumentType(&dt, db)
 	if err != nil {
 		m.Code = http.StatusBadRequest
 		m.Message = "documento no se borro"
