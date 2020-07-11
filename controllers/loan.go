@@ -599,9 +599,9 @@ func createLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
 	return err
 }
 
-//getLoanPayment trae pagos de prestamos (id,created_at,updated_at,cod_loan,cash,cod_user)
+//getLoanPayment trae pagos de prestamos (id,created_at,updated_at,cod_loan,cash,cod_user,cod_collection)
 func getLoanPayment(lp *models.LoanPayment, db *gorm.DB) error {
-	err := db.Select("id,created_at,updated_at,cod_loan,cash,cod_user").First(lp).GetErrors()
+	err := db.Select("id,created_at,updated_at,cod_loan,cash,cod_user,cod_collection").First(lp).GetErrors()
 	if len(err) != 0 {
 		return errors.New("no se encuentra")
 	}
