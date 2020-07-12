@@ -23,9 +23,11 @@ func main() {
 	flag.IntVar(&commons.Port, "port", 0, " puerto del servidor")
 	var err error
 	s := os.Getenv("PORT")
-	fmt.Println(s)
+	fmt.Println("port:", s)
 	if commons.Port == 0 {
 		port, err := strconv.ParseInt(s, 10, 64)
+
+		fmt.Println("port2:", port)
 		if err != nil {
 			commons.Port = int(port)
 		} else {
