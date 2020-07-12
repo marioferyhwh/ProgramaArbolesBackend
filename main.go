@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -19,7 +20,12 @@ func main() {
 	testdb := false
 	var migrate string
 	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
-	flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")
+	port, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64)
+	if err != nil {
+		commons.Port = int(port)
+	} else {
+		flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")
+	}
 	flag.Parse()
 	if migrate == "yes" {
 		migration.Migrate()
@@ -32,7 +38,7 @@ func main() {
 	}
 	addrs, err := net.LookupHost(hostName)
 	if err != nil {
-		fmt.Printf("erroro leyendo las direcciones ip del hostname: %v\n", err)
+		fmt.Printf("error leyendo las direcciones ip del hostname: %v\n", err)
 		return
 	}
 
@@ -47,7 +53,7 @@ func main() {
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowHeaders: []string{"*"},
 	}))
 	routes.InitRoutes(e)
 	//inicio del servidor

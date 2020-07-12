@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -270,7 +269,6 @@ func CollectionCashGetList(cc models.CollectionCash, m *models.Message) {
 		m.Message = "especifique cobro"
 		return
 	}
-	fmt.Println(cc.CodCollection)
 	ccs := []models.CollectionCash{cc}
 	db := configuration.GetConnection()
 	defer db.Close()
