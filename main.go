@@ -22,8 +22,10 @@ func main() {
 	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
 	flag.IntVar(&commons.Port, "port", 0, " puerto del servidor")
 	var err error
+	s := os.Getenv("PORT")
+	fmt.Println(s)
 	if commons.Port == 0 {
-		port, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64)
+		port, err := strconv.ParseInt(s, 10, 64)
 		if err != nil {
 			commons.Port = int(port)
 		} else {
