@@ -20,12 +20,17 @@ func main() {
 	testdb := false
 	var migrate string
 	flag.StringVar(&migrate, "migrate", "no", "Generar la migracion")
-	port, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64)
-	if err != nil {
-		commons.Port = int(port)
-	} else {
-		flag.IntVar(&commons.Port, "port", 8080, " puerto del servidor")
+	flag.IntVar(&commons.Port, "port", 0, " puerto del servidor")
+	var err error
+	if commons.Port == 0 {
+		port, err := strconv.ParseInt(os.Getenv("PORT"), 10, 64)
+		if err != nil {
+			commons.Port = int(port)
+		} else {
+			commons.Port = 8080
+		}
 	}
+
 	flag.Parse()
 	if migrate == "yes" {
 		migration.Migrate()
